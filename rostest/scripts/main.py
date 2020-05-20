@@ -95,15 +95,24 @@ class ObjectDetector:
                              (int(right), int(bottom)), (125, 255, 51),
                              thickness=2)
                 print(detection)
-                pub.publish(observation(detection["class_id"], detection["label"], detection["score"], boundingbox(detection["bbox"]["top"], detection["bbox"]["right"], detection["bbox"]["bottom"], detection["bbox"]["left"])))
+                pub.publish(
+                    observation(
+                        detection["class_id"], detection["label"],
+                        detection["score"],
+                        boundingbox(detection["bbox"]["top"],
+                                    detection["bbox"]["right"],
+                                    detection["bbox"]["bottom"],
+                                    detection["bbox"]["left"])))
             cv.imshow('img', img)
             cv.waitKey(1)
 
     def close(self):
         self.sess.close()
 
+
 def handler(sig, frame):
     exit(0)
+
 
 if __name__ == "__main__":
     rospy.init_node("Testnode")
