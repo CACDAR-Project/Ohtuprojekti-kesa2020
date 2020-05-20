@@ -1,5 +1,12 @@
 [![CircleCI](https://circleci.com/gh/kordaniel/Ohtuprojekti-kesa2020.svg?style=svg)](https://circleci.com/gh/kordaniel/Ohtuprojekti-kesa2020) [![codecov](https://codecov.io/gh/kordaniel/Ohtuprojekti-kesa2020/branch/master/graph/badge.svg)](https://codecov.io/gh/kordaniel/Ohtuprojekti-kesa2020) [![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
 
+## Definition of done
+  * All task features are implemented
+  * Code is formatted with yapf
+  * All non trivial code should be tested
+  * All code should be well documented, at least with a docstring for every block
+  * All code should use type hinting
+
 ## Commands for virtual environment
 [pipenv](https://github.com/pypa/pipenv) is used for managing dependencies
 
