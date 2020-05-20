@@ -1,6 +1,9 @@
+#!/usr/bin/env python3.7
 import cv2 as cv
 import tensorflow as tf
 from typing import List
+import rospy
+from rostest.msg import observation, boundingbox
 
 # https://github.com/opencv/opencv/wiki/TensorFlow-Object-Detection-API
 tf.compat.v1.disable_v2_behavior()
@@ -56,7 +59,7 @@ class ObjectDetector:
             bbox = [float(v) for v in out[2][0][i]]
             if score > 0.3:
                 detections.append({
-                    "classId": classId,
+                    "class_id": classId,
                     "label": self.labels[int(classId)],
                     "score": score,
                     "bbox": {
@@ -69,6 +72,7 @@ class ObjectDetector:
         return detections
 
     def run(self):
+        pub = rospy.Publisher("observations", observation, queue_size=50)
         cam = cv.VideoCapture(
             "test.mp4")  # Can be replaced with camera id, path to camera etc.
         while cam.grab():
@@ -90,16 +94,21 @@ class ObjectDetector:
                 cv.rectangle(img, (int(left), int(top)),
                              (int(right), int(bottom)), (125, 255, 51),
                              thickness=2)
+                print(detection)
+                pub.publish(observation(detection["class_id"], detection["label"], detection["score"], boundingbox(detection["bbox"]["top"], detection["bbox"]["right"], detection["bbox"]["bottom"], detection["bbox"]["left"])))
             cv.imshow('img', img)
             cv.waitKey(1)
-            print(detection)
 
     def close(self):
         self.sess.close()
 
+def handler(sig, frame):
+    exit(0)
 
 if __name__ == "__main__":
+    rospy.init_node("Testnode")
     detector = ObjectDetector(
         "ssdlite_mobilenet_v2_coco_2018_05_09/frozen_inference_graph.pb",
         "mscoco_complete_labels")
     detector.run()
+    rospy.spin()
