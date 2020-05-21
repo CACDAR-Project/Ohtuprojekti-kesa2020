@@ -23,6 +23,13 @@ or `pipenv run <command>` to run a single command in the environment
 When the application is run, it checks for various needed directories and if they are not found, creates them. Therefore it should always be run from the root directory.
 `python src/main.py`
 
+## Run OpenCV face detection in main
+from video:
+`pipenv run -- python main.py -v`
+from image file:
+`pipenv run -- python main.py -i` + number 0-4
+Exit with ctrl + c
+
 # Arguments for live_detect.py
 
 ## Define tensorflow model (default: detect.tflite)
