@@ -97,8 +97,9 @@ class ObjectDetector:
                     right = detection["bbox"]["right"] * width
                     bottom = detection["bbox"]["bottom"] * height
                     cv.putText(
-                        img, "{} score: {}".format(detection["label"],
-                                                   round(detection["score"], 3)),
+                        img,
+                        "{} score: {}".format(detection["label"],
+                                              round(detection["score"], 3)),
                         (int(left), int(top - 5)), cv.QT_FONT_NORMAL, 1,
                         (255, 0, 255), 1, cv.LINE_AA)
                     cv.rectangle(img, (int(left), int(top)),
@@ -109,6 +110,7 @@ class ObjectDetector:
 
     def close(self):
         self.sess.close()
+
 
 if __name__ == "__main__":
     rospy.init_node("Testnode")
