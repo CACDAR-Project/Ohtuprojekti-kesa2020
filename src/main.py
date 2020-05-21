@@ -1,16 +1,12 @@
 # code from https://opencv-python-tutroals.readthedocs.io/en/latest/py_tutorials/py_gui/py_image_display/py_image_display.html#goals
-
+import argparse
 import os
 import cv2
 import numpy as np
 from matplotlib import pyplot as plt
-
 from configuration import Configuration
 from tools import filereaderwriter as fileio
 
-path = 'src/images/face_front.jpg'
-#path = '/'.join([conf.paths['PATH_IMAGES'], 'face_front.jpg'])
-#path = fileio.build_path(conf.paths['PATH_IMAGES'], 'face_front.jpg')
 font = cv2.FONT_HERSHEY_DUPLEX
 
 face_cascade = cv2.CascadeClassifier(
@@ -18,26 +14,26 @@ face_cascade = cv2.CascadeClassifier(
 eye_cascade = cv2.CascadeClassifier('src/data/haarcascade_eye.xml')
 
 
-def show_image():
+def show_image(image_path):
     '''
     Load and convert an image from disk to grayscale. draw a line and show the result. OpenCV with pyplot
     '''
-    if not check_image(path):
+    if not check_image(image_path):
         return
 
-    img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
-    # cv2.imshow('image', img)
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
+    img = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
 
     plt.imshow(img, cmap='gray', interpolation='bicubic')
     plt.xticks([])
     plt.yticks([])
     plt.plot([200, 300, 400], [100, 200, 300], 'c', linewidth=5)
-    detect_faces_from_image(path)
+    detect_faces_from_image(image_path)
     plt.show()
 
     # cv2.imwrite('naturegray.png', img) #save image
+    cv2.imshow('image', img)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
 
 def show_video():
@@ -83,42 +79,6 @@ def record_video():
     cv2.destroyAllWindows()
 
 
-def read_img():
-    '''
-    OpenCV
-    '''
-    image_bool = check_image(path)
-    if not image_bool:
-        return
-
-    img = cv2.imread(path, cv2.IMREAD_COLOR)
-
-    # x,y, start coords, end coords, color (bgr), line thickness
-    cv2.line(img, (0, 0), (130, 130), (255, 255, 255), 10)
-
-    # top left, bottom right
-    cv2.rectangle(img, (135, 45), (230, 130), (0, 255, 0), 5)
-    # center of circle, radius, color and linewidth, negative fills the circle
-    cv2.circle(img, (350, 250), 55, (0, 0, 255), -1)
-
-    # Polygons
-    # List of points
-    # pts = np.array([[10,5], [20,30], [70,20], [50,10]], np.int32)
-    pts = np.array([[50, 30], [150, 30], [100, 90]], np.int32)
-    # pts = pts.reshape((-1,1,2)) # correct shape of points array
-    cv2.polylines(img, [pts], True, (0, 255, 255), 3)
-
-    # Writing text
-    font = cv2.FONT_HERSHEY_SIMPLEX
-    # place, size, color, text thickness, antialiazing
-    cv2.putText(img, 'OpenCV testing', (0, 130), font, 3, (200, 255, 255), 2,
-                cv2.LINE_AA)
-    detect_faces_from_image(path)
-    cv2.imshow('image', img)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
-
-
 def detect_faces_from_image(search_path):
     found_faces = 0
     img = cv2.imread(search_path)
@@ -141,8 +101,8 @@ def detect_faces_from_image(search_path):
     elif found_faces == 1:
         info = f'{found_faces} person present'
         cv2.putText(img, info, (0, 20), font, 1, (0, 0, 0), 1, cv2.LINE_4)
-        cv2.imshow('img', img)
 
+    cv2.imshow('image', img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
@@ -176,8 +136,8 @@ def detect_faces_from_video():
 
 
 # Check if picture exists
-def check_image(image_path):
-    if os.path.isfile(image_path):
+def check_image(given_path):
+    if os.path.isfile(given_path):
         return True
     else:
         print('Cannot find image file.')
@@ -199,10 +159,50 @@ def main():
     # show_video()
     # record_video()
     # read_img()
-    detect_faces_from_video()
-    #configuration = Configuration(False)
+    # detect_faces_from_video()
     config = Configuration()
 
 
+def read_coordinates():
+    pass
+
+
+def save_coordinates():
+    pass
+
+
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('-i',
+                        '--image',
+                        type=int,
+                        choices=[0, 1, 2, 3, 4],
+                        help='Show an image with face detection.')
+    group.add_argument('-v',
+                        '--video',
+                        help='Show video feed with face detection.',
+                        action="store_true")
+    parser.add_argument('-c', help='Read coordinates.', action="store_true")
+    parser.add_argument('-s',
+                        help='Save coordinates on file.',
+                        action="store_true")
+    args = parser.parse_args()
+    if args.video:
+        detect_faces_from_video()
+    elif args.image:
+        if args.image == 0:
+            show_image('src/images/lion.jpg')
+        elif args.image == 1:
+            show_image('src/images/face_front.jpg.jpg')
+        elif args.image == 2:
+            show_image('src/images/nataliadyer.jpg')
+        elif args.image == 3:
+            show_image('src/images/nature.png')
+        elif args.image == 4:
+            show_image('src/images/six_people.jpg')
+        else:
+            show_image('src/images/six_people.jpg')
+    else:
+        print('Select -image with a number 0-4, or -video.')
     main()
