@@ -24,11 +24,11 @@ When the application is run, it checks for various needed directories and if the
 `python src/main.py`
 
 ## Run OpenCV face detection in main
-from video:
-`pipenv run -- python main.py -v`
-from image file:
-`pipenv run -- python main.py -i` + number 0-4
-Exit with ctrl + c
+from video:  
+`pipenv run -- python main.py -v`  
+from image file:  
+`pipenv run -- python main.py -i` + number 0-4  
+Exit with ctrl + c  
 
 # Arguments for live_detect.py
 
