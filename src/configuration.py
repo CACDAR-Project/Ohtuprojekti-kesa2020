@@ -10,7 +10,7 @@ from tools.helpers import str_convert
 
 # Default settings for the application can be set here
 # Directories
-paths = {'SETTINGS': 'config', 'IMAGES': 'images', 'DATA': 'data'}
+paths = {'SETTINGS': 'config', 'IMAGES': 'src/images', 'DATA': 'src/data'}
 
 # Filenames
 filenames = {'SETTINGS': 'settings'}

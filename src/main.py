@@ -8,7 +8,7 @@ from matplotlib import pyplot as plt
 from configuration import Configuration
 from tools import filereaderwriter as fileio
 
-path = 'images/face_front.jpg'
+path = 'src/images/face_front.jpg'
 #path = '/'.join([conf.paths['PATH_IMAGES'], 'face_front.jpg'])
 #path = fileio.build_path(conf.paths['PATH_IMAGES'], 'face_front.jpg')
 font = cv2.FONT_HERSHEY_DUPLEX
