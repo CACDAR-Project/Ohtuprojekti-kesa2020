@@ -93,6 +93,5 @@ class FilereaderwriterTest(unittest.TestCase):
 #        #        'exception error output here',
 #        #        'Exiting..\n'])
 
-
 if __name__ == '__main__':
     unittest.main()

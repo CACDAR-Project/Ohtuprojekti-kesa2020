@@ -3,6 +3,7 @@
 from typing import Union
 from pathlib import Path
 
+
 def str_convert(val: str) -> Union[str, bool, float, int]:
     '''Helper function that takes an argument of type string and if the arguments contains a number,
     that can be converted to int or float, returns the converted number. If the arguments contains

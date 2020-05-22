@@ -2,11 +2,14 @@ import argparse
 
 from application.conf.configuration import Configuration
 
+
 def run_facedetection():
     pass
 
+
 def run_something_else():
     pass
+
 
 def handle_args(parser, conf):
     parser.add_argument('-m',
@@ -32,16 +35,15 @@ def handle_args(parser, conf):
 
     return parser.parse_args()
 
+
 def run():
     ''' This function starts the application'''
     conf = Configuration(load_settings_from_file=False)
     args = handle_args(parser=argparse.ArgumentParser(), conf=conf)
-    
-    
+
     print('We are up and running with the following args:')
     print(args)
     print('Thats enough for now, exiting..')
-    
 
 
 if __name__ == '__main__':

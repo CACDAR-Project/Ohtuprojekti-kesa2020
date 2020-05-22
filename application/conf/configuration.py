@@ -8,18 +8,18 @@ from typing import Union, List, Tuple, Dict, Optional
 from application.tools import filereaderwriter as fileio
 from application.tools.helpers import str_convert, build_path
 
-
 # Default settings for the application can be set here
 
 app_path = 'application'
 resources_path = f'{app_path}/resources'
 
 # Directories
-paths = {'SETTINGS': f'{app_path}/config',
-         'IMAGES': f'{resources_path}/images',
-         'DATA': f'{resources_path}/data',
-         'MODELS': f'{resources_path}/models',
-         'LABELS': f'{resources_path}/labels'
+paths = {
+    'SETTINGS': f'{app_path}/config',
+    'IMAGES': f'{resources_path}/images',
+    'DATA': f'{resources_path}/data',
+    'MODELS': f'{resources_path}/models',
+    'LABELS': f'{resources_path}/labels'
 }
 
 # Filenames
@@ -35,6 +35,7 @@ settings = {
 }
 
 # end default settings
+
 
 class Initializer():
     '''Class that holds static methods to help with initializing'''
@@ -111,7 +112,7 @@ class Configuration():
     def load_settings_from_file(self) -> None:
         '''Reads the settings, converts them into the right type and loads them'''
         settings_file = build_path(self.paths['SETTINGS'],
-                                          self.filenames['SETTINGS'])
+                                   self.filenames['SETTINGS'])
         print(f'Using settings file \'./{settings_file}\'.')
 
         settings_read = Initializer.filter_map_settings(

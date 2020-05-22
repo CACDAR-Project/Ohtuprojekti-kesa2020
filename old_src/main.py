@@ -13,7 +13,8 @@ path = 'images/face_front.jpg'
 #path = fileio.build_path(conf.paths['PATH_IMAGES'], 'face_front.jpg')
 font = cv2.FONT_HERSHEY_DUPLEX
 
-face_cascade = cv2.CascadeClassifier('data/haarcascade_frontalface_default.xml')
+face_cascade = cv2.CascadeClassifier(
+    'data/haarcascade_frontalface_default.xml')
 eye_cascade = cv2.CascadeClassifier('data/haarcascade_eye.xml')
 
 

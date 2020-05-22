@@ -42,4 +42,3 @@ def create_directory(path: str) -> bool:
         sys.exit()
 
     return check_directory_exists(path)
-
