@@ -1,8 +1,3 @@
-# NOTE!!!!
-# This file as well as this directory along with the other directories should
-# probably be moved out from the src-directory.
-
-
 # Comments starts with the usual sign: #
 # Integers values will be converted to type integer and floats to float.
 # True/False values will be converted to booleans.
