@@ -1,6 +1,9 @@
-import argparse
+#import argparse
+import cv2
 
-from application.conf.configuration import Configuration
+#from application.conf.configuration import Configuration
+from application.camera.camera import Camera
+from application.output.screen.draw import Draw
 
 
 def run_facedetection():
@@ -11,39 +14,33 @@ def run_something_else():
     pass
 
 
-def handle_args(parser, conf):
-    parser.add_argument('-m',
-                        '--model_file',
-                        default=conf.settings['DEFAULT_MODEL'],
-                        help='.tflite model to be executed')
-    parser.add_argument('-l',
-                        '--label_file',
-                        default=conf.settings['DEFAULT_LABELS'],
-                        help='name of file containing labels')
-    parser.add_argument('--input_mean',
-                        default=127.5,
-                        type=float,
-                        help='input_mean')
-    parser.add_argument('--input_std',
-                        default=127.5,
-                        type=float,
-                        help='input standard deviation')
-    parser.add_argument('-c',
-                        '--camera_id',
-                        default=conf.settings['VIDEO_ID'],
-                        help='number of the a webcamera')
+def show_video(camera, output):
+    while True:
+        frame = camera.frameRGB()
+        #gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        #cv2.imshow('frame', gray)
+        output.set_frame(frame)
+        output.draw()
+        if cv2.waitKey(2) & 0xFF == ord('t'):
+            output.toggle_gray()
+        elif cv2.waitKey(1) & 0xFF == ord('q'):
+            break
 
-    return parser.parse_args()
+    #cv2.destroyAllWindows()
 
 
-def run():
-    ''' This function starts the application'''
-    conf = Configuration(load_settings_from_file=False)
-    args = handle_args(parser=argparse.ArgumentParser(), conf=conf)
+def run(conf, args):
 
-    print('We are up and running with the following args:')
-    print(args)
-    print('Thats enough for now, exiting..')
+    #conf = Configuration(load_settings_from_file=False)
+    #args = handle_args(parser=argparse.ArgumentParser(), conf=conf)
+
+    #print('We are up and running with the following args:')
+    #print(args)
+
+    # Run a simple webcam app, quit with q and toggle gray with t
+    cam = Camera()
+    out = Draw()
+    show_video(cam, out)
 
 
 if __name__ == '__main__':

@@ -133,13 +133,11 @@ class Configuration():
             print('No settings loaded, using default values.')
         print()
 
-
     def update_setting(self, var: str, val: str) -> None:
         '''
         Update or insert new setting into settings dictionary as proper type
         '''
         self.settings[var] = str_convert(val)
-
 
     def __str__(self) -> str:
         def join_helper(pair):
