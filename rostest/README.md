@@ -1,6 +1,7 @@
-Setup catkin workspace, `git clone` to `catkin_ws/src/`
-
 ## Usage
+
+Setup ROS catkin workspace, `git clone` to `catkin_ws/src/` and build the catkin workspace.
+
 
 `pipenv shell`
 ```
@@ -34,11 +35,8 @@ sudo docker run -it --rm \
     --name rostest \
     --env ROS_HOSTNAME=rostest \
     --env ROS_MASTER_URI=http://master:11311 \
-    rostest:1.0 \
-    bash
+    rostest:1.0
 ```
-Run commands on rostest node bash
+Attaching camera devices to the container can be done by adding parameters to node container startup
 
-`cd /catkin_ws/src/ohtu && pipenv shell`
-
-`source /opt/ros/melodic/setup.bash && source ../../devel/setup.bash && cd rostest && rosrun rostest main.py`
+`--device` argument, for example `--device /dev/video0`

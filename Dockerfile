@@ -10,3 +10,4 @@ RUN pipenv install
 COPY . /catkin_ws/src/ohtu/
 WORKDIR /catkin_ws
 RUN /bin/bash -c "source /opt/ros/melodic/setup.bash && catkin_make"
+CMD cd /catkin_ws/src/ohtu && pipenv shell "/bin/bash -c 'source /opt/ros/melodic/setup.bash && source ../../devel/setup.bash && cd rostest && rosrun rostest main.py'"
