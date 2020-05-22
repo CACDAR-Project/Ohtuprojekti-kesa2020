@@ -31,7 +31,8 @@ settings = {
     'settings_assignment_sign': '=',
     'VIDEO_ID': -1,
     'DEFAULT_MODEL': f'{paths["MODELS"]}/detect.tflite',
-    'DEFAULT_LABELS': f'{paths["LABELS"]}/labelmap.txt'
+    'DEFAULT_LABELS': f'{paths["LABELS"]}/labelmap.txt',
+    'DEF_SHAPE': (480, 640, 3)
 }
 
 # end default settings
@@ -131,6 +132,14 @@ class Configuration():
         else:
             print('No settings loaded, using default values.')
         print()
+
+
+    def update_setting(self, var: str, val: str) -> None:
+        '''
+        Update or insert new setting into settings dictionary as proper type
+        '''
+        self.settings[var] = str_convert(val)
+
 
     def __str__(self) -> str:
         def join_helper(pair):
