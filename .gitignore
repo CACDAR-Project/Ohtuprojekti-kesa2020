@@ -22,3 +22,7 @@ htmlcov/
 detect.tflite
 labelmap.txt
 
+# Data created during runtime
+
+output.avi
+
