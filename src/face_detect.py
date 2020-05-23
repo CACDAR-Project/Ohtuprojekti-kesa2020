@@ -8,10 +8,45 @@ from configuration import Configuration
 from tools import filereaderwriter as fileio
 
 font = cv2.FONT_HERSHEY_DUPLEX
-
 face_cascade = cv2.CascadeClassifier(
     'src/data/haarcascade_frontalface_default.xml')
 eye_cascade = cv2.CascadeClassifier('src/data/haarcascade_eye.xml')
+
+
+def detect_faces_from_video():
+    face_cascade = cv2.CascadeClassifier(
+        'src/data/haarcascade_frontalface_default.xml')
+    eye_cascade = cv2.CascadeClassifier('src/data/haarcascade_eye.xml')
+    cap = cv2.VideoCapture(0)
+    if not check_video(cap):
+        return
+
+    fourcc = cv2.VideoWriter_fourcc(*'XVID')
+    out = cv2.VideoWriter('src/saved_detections/output.avi', fourcc, 20.0,
+                          (640, 480))
+
+    while True:
+        ret, img = cap.read()
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        faces = face_cascade.detectMultiScale(gray, 1.3, 5)
+
+        for (x, y, w, h) in faces:
+            cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
+            roi_gray = gray[y:y + h, x:x + w]
+            roi_color = img[y:y + h, x:x + w]
+
+            eyes = eye_cascade.detectMultiScale(roi_gray)
+            for (ex, ey, ew, eh) in eyes:
+                cv2.rectangle(roi_color, (ex, ey), (ex + ew, ey + eh),
+                              (0, 255, 0), 2)
+        cv2.imshow('img', img)
+        out.write(img)  # in colors
+        k = cv2.waitKey(30) & 0xff
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+    cap.release()
+    cv2.destroyAllWindows()
 
 
 def show_image(image_path):
@@ -33,49 +68,6 @@ def show_image(image_path):
     # cv2.imwrite('naturegray.png', img) #save image
     cv2.imshow('image', img)
     cv2.waitKey(0)
-    cv2.destroyAllWindows()
-
-
-def show_video():
-    cap = cv2.VideoCapture(0)
-    if not check_video(cap):
-        return
-
-    while True:
-        ret, frame = cap.read(
-        )  # ret is boolean indicating if we have any image returned, will be None if no image is returned
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        # convert frame to grayscale. Opencv uses BGR-colors as oposed to RGB
-
-        cv2.imshow('frame', gray)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
-
-    cap.release()
-    cv2.destroyAllWindows()
-
-
-def record_video():
-    '''
-    Show video and also save as xvid-encoded
-    '''
-    cap = cv2.VideoCapture(0)
-    if not check_video(cap):
-        return
-
-    fourcc = cv2.VideoWriter_fourcc(*'XVID')
-    out = cv2.VideoWriter('output.avi', fourcc, 20.0, (640, 480))
-
-    while True:
-        ret, frame = cap.read()
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        out.write(frame)  # in colors
-        cv2.imshow('frame', gray)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
-
-    cap.release()
-    out.release()
     cv2.destroyAllWindows()
 
 
@@ -101,37 +93,8 @@ def detect_faces_from_image(search_path):
     elif found_faces == 1:
         info = f'{found_faces} person present'
         cv2.putText(img, info, (0, 20), font, 1, (0, 0, 0), 1, cv2.LINE_4)
-
     cv2.imshow('image', img)
     cv2.waitKey(0)
-    cv2.destroyAllWindows()
-
-
-def detect_faces_from_video():
-    cap = cv2.VideoCapture(0)
-    if not check_video(cap):
-        return
-
-    while True:
-        ret, img = cap.read()
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        faces = face_cascade.detectMultiScale(gray, 1.3, 5)
-
-        for (x, y, w, h) in faces:
-            cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
-            roi_gray = gray[y:y + h, x:x + w]
-            roi_color = img[y:y + h, x:x + w]
-
-            eyes = eye_cascade.detectMultiScale(roi_gray)
-            for (ex, ey, ew, eh) in eyes:
-                cv2.rectangle(roi_color, (ex, ey), (ex + ew, ey + eh),
-                              (0, 255, 0), 2)
-        cv2.imshow('img', img)
-        k = cv2.waitKey(30) & 0xff
-        if k == 27:
-            break
-
-    cap.release()
     cv2.destroyAllWindows()
 
 
@@ -153,6 +116,14 @@ def check_video(video_cap):
         return False
 
 
+def read_coordinates():
+    pass
+
+
+def save_coordinates():
+    pass
+
+
 def main():
     # exit all methods with pressing q
     # show_image()
@@ -163,26 +134,18 @@ def main():
     config = Configuration()
 
 
-def read_coordinates():
-    pass
-
-
-def save_coordinates():
-    pass
-
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-i',
-                        '--image',
-                        type=int,
-                        choices=[0, 1, 2, 3, 4],
-                        help='Show an image with face detection.')
+                       '--image',
+                       type=int,
+                       choices=[0, 1, 2, 3],
+                       help='Show an image with face detection.')
     group.add_argument('-v',
-                        '--video',
-                        help='Show video feed with face detection.',
-                        action="store_true")
+                       '--video',
+                       help='Show video feed with face detection.',
+                       action="store_true")
     parser.add_argument('-c', help='Read coordinates.', action="store_true")
     parser.add_argument('-s',
                         help='Save coordinates on file.',
@@ -196,13 +159,11 @@ if __name__ == '__main__':
         elif args.image == 1:
             show_image('src/images/face_front.jpg.jpg')
         elif args.image == 2:
-            show_image('src/images/nataliadyer.jpg')
+            show_image('src/images/six_people.jpg')
         elif args.image == 3:
             show_image('src/images/nature.png')
-        elif args.image == 4:
-            show_image('src/images/six_people.jpg')
         else:
             show_image('src/images/six_people.jpg')
     else:
-        print('Select -image with a number 0-4, or -video.')
+        print('Select -image with a number 0-3, or -video.')
     main()
