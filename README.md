@@ -71,6 +71,13 @@ from image file:
 `pipenv run -- python src/main.py -i` + number 0-4  
 Exit with ctrl + c  
 
+## Run OpenCV face detection from root
+from video:  
+`pipenv run -- python src/main.py -v`  
+from image file:  
+`pipenv run -- python src/main.py -i` + number 0-4  
+Exit with ctrl + c  
+
 # Arguments for live_detect.py
 
 ## Define tensorflow model (default: detect.tflite)
