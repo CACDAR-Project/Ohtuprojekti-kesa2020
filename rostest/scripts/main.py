@@ -71,7 +71,7 @@ class ObjectDetector:
                 })
         return detections
 
-    def run(self):
+    def run(self, showgui: bool):
         pub = rospy.Publisher("observations", observation, queue_size=50)
         cam = cv.VideoCapture(
             "test.mp4")  # Can be replaced with camera id, path to camera etc.
@@ -81,19 +81,6 @@ class ObjectDetector:
             height = img.shape[0]
             width = img.shape[1]
             for detection in self.detect(img):
-                # Draw boxes around objects and display the result
-                top = detection["bbox"]["top"] * height
-                left = detection["bbox"]["left"] * width
-                right = detection["bbox"]["right"] * width
-                bottom = detection["bbox"]["bottom"] * height
-                cv.putText(
-                    img, "{} score: {}".format(detection["label"],
-                                               round(detection["score"], 3)),
-                    (int(left), int(top - 5)), cv.QT_FONT_NORMAL, 1,
-                    (255, 0, 255), 1, cv.LINE_AA)
-                cv.rectangle(img, (int(left), int(top)),
-                             (int(right), int(bottom)), (125, 255, 51),
-                             thickness=2)
                 print(detection)
                 pub.publish(
                     observation(
@@ -103,15 +90,26 @@ class ObjectDetector:
                                     detection["bbox"]["right"],
                                     detection["bbox"]["bottom"],
                                     detection["bbox"]["left"])))
-            cv.imshow('img', img)
-            cv.waitKey(1)
+                if showgui:
+                    # Draw boxes around objects and display the result
+                    top = detection["bbox"]["top"] * height
+                    left = detection["bbox"]["left"] * width
+                    right = detection["bbox"]["right"] * width
+                    bottom = detection["bbox"]["bottom"] * height
+                    cv.putText(
+                        img,
+                        "{} score: {}".format(detection["label"],
+                                              round(detection["score"], 3)),
+                        (int(left), int(top - 5)), cv.QT_FONT_NORMAL, 1,
+                        (255, 0, 255), 1, cv.LINE_AA)
+                    cv.rectangle(img, (int(left), int(top)),
+                                 (int(right), int(bottom)), (125, 255, 51),
+                                 thickness=2)
+                    cv.imshow('img', img)
+                    cv.waitKey(1)
 
     def close(self):
         self.sess.close()
-
-
-def handler(sig, frame):
-    exit(0)
 
 
 if __name__ == "__main__":
@@ -119,5 +117,6 @@ if __name__ == "__main__":
     detector = ObjectDetector(
         "ssdlite_mobilenet_v2_coco_2018_05_09/frozen_inference_graph.pb",
         "mscoco_complete_labels")
-    detector.run()
+    detector.run(False)
+    #detector.run(True)
     rospy.spin()

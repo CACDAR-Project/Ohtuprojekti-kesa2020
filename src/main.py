@@ -11,8 +11,8 @@ from tools import filereaderwriter as fileio
 font = cv2.FONT_HERSHEY_DUPLEX
 
 face_cascade = cv2.CascadeClassifier(
-    'data/haarcascade_frontalface_default.xml')
-eye_cascade = cv2.CascadeClassifier('data/haarcascade_eye.xml')
+    'src/data/haarcascade_frontalface_default.xml')
+eye_cascade = cv2.CascadeClassifier('src/data/haarcascade_eye.xml')
 
 
 def show_image(image_path):
@@ -161,7 +161,6 @@ def main():
     # record_video()
     # read_img()
     # detect_faces_from_video()
-    # configuration = Configuration(False)
     config = Configuration()
 
 
