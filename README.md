@@ -64,11 +64,11 @@ coverage html
 
 Create an test file named `test_<module_to_test>.py` inside `application/tests/<package>` along with an `__init.py__` for every package.
 
-## Run OpenCV face detection in main
+## Run OpenCV face detection from root
 from video:  
-`pipenv run -- python main.py -v`  
+`pipenv run -- python src/main.py -v`  
 from image file:  
-`pipenv run -- python main.py -i` + number 0-4  
+`pipenv run -- python src/main.py -i` + number 0-4  
 Exit with ctrl + c  
 
 # Arguments for live_detect.py
