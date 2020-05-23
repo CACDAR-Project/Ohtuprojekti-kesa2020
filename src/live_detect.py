@@ -157,7 +157,7 @@ def read_img():
 
 def main():
     # exit all methods with pressing q
-    # detect_faces_from_image()
+    # show_image()
     #show_video()
     #record_video()
     #read_img()
