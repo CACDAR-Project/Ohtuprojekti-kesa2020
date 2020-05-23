@@ -4,7 +4,6 @@ import os
 import cv2
 import numpy as np
 from matplotlib import pyplot as plt
-
 from configuration import Configuration
 from tools import filereaderwriter as fileio
 
@@ -174,12 +173,13 @@ def save_coordinates():
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-i',
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('-i',
                         '--image',
                         type=int,
                         choices=[0, 1, 2, 3, 4],
                         help='Show an image with face detection.')
-    parser.add_argument('-v',
+    group.add_argument('-v',
                         '--video',
                         help='Show video feed with face detection.',
                         action="store_true")
@@ -190,16 +190,19 @@ if __name__ == '__main__':
     args = parser.parse_args()
     if args.video:
         detect_faces_from_video()
-    if args.image == 0:
-        show_image('images/lion.jpg')
-    elif args.image == 1:
-        show_image('images/face_front.jpg.jpg')
-    elif args.image == 2:
-        show_image('images/nataliadyer.jpg')
-    elif args.image == 3:
-        show_image('images/nature.png')
-    elif args.image == 4:
-        show_image('images/six_people.jpg')
+    elif args.image:
+        if args.image == 0:
+            show_image('src/images/lion.jpg')
+        elif args.image == 1:
+            show_image('src/images/face_front.jpg.jpg')
+        elif args.image == 2:
+            show_image('src/images/nataliadyer.jpg')
+        elif args.image == 3:
+            show_image('src/images/nature.png')
+        elif args.image == 4:
+            show_image('src/images/six_people.jpg')
+        else:
+            show_image('src/images/six_people.jpg')
     else:
-        show_image('images/six_people.jpg')
+        print('Select -image with a number 0-4, or -video.')
     main()
