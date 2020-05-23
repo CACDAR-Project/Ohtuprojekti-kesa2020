@@ -24,5 +24,5 @@ labelmap.txt
 
 # Data created during runtime
 
-saved_detections/
+# saved_detections/
 
