@@ -14,9 +14,6 @@ eye_cascade = cv2.CascadeClassifier('src/data/haarcascade_eye.xml')
 
 
 def detect_faces_from_video():
-    face_cascade = cv2.CascadeClassifier(
-        'src/data/haarcascade_frontalface_default.xml')
-    eye_cascade = cv2.CascadeClassifier('src/data/haarcascade_eye.xml')
     cap = cv2.VideoCapture(0)
     if not check_video(cap):
         return
@@ -49,33 +46,23 @@ def detect_faces_from_video():
     cv2.destroyAllWindows()
 
 
-def show_image(image_path):
+def detect_faces_from_image(image_path):
     '''
     Load and convert an image from disk to grayscale. draw a line and show the result. OpenCV with pyplot
     '''
+    found_faces = 0
     if not check_image(image_path):
         return
 
-    img = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+    img = cv2.imread(image_path)
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    faces = face_cascade.detectMultiScale(gray, 1.3, 5)
 
     plt.imshow(img, cmap='gray', interpolation='bicubic')
     plt.xticks([])
     plt.yticks([])
     plt.plot([200, 300, 400], [100, 200, 300], 'c', linewidth=5)
-    detect_faces_from_image(image_path)
     plt.show()
-
-    # cv2.imwrite('naturegray.png', img) #save image
-    cv2.imshow('image', img)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
-
-
-def detect_faces_from_image(search_path):
-    found_faces = 0
-    img = cv2.imread(search_path)
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    faces = face_cascade.detectMultiScale(gray, 1.3, 5)
 
     for (x, y, w, h) in faces:
         img = cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
@@ -89,11 +76,12 @@ def detect_faces_from_image(search_path):
 
     if found_faces > 1:
         info = f'{found_faces} people present'
-        cv2.putText(img, info, (0, 20), font, 1, (0, 0, 0), 1, cv2.LINE_4)
     elif found_faces == 1:
         info = f'{found_faces} person present'
-        cv2.putText(img, info, (0, 20), font, 1, (0, 0, 0), 1, cv2.LINE_4)
-    cv2.imshow('image', img)
+
+    savepath = os.getcwd() + '/src/saved_detections/' + 'faces.jpg'
+    cv2.imwrite(savepath, img)
+    cv2.imshow(info, img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
@@ -126,7 +114,7 @@ def save_coordinates():
 
 def main():
     # exit all methods with pressing q
-    # show_image()
+    # detect_faces_from_image()
     # show_video()
     # record_video()
     # read_img()
@@ -140,7 +128,7 @@ if __name__ == '__main__':
     group.add_argument('-i',
                        '--image',
                        type=int,
-                       choices=[0, 1, 2, 3],
+                       choices=[1, 2, 3],
                        help='Show an image with face detection.')
     group.add_argument('-v',
                        '--video',
@@ -154,16 +142,14 @@ if __name__ == '__main__':
     if args.video:
         detect_faces_from_video()
     elif args.image:
-        if args.image == 0:
-            show_image('src/images/lion.jpg')
-        elif args.image == 1:
-            show_image('src/images/face_front.jpg.jpg')
+        if args.image == 1:
+            detect_faces_from_image('src/images/nature.png')
         elif args.image == 2:
-            show_image('src/images/six_people.jpg')
+            detect_faces_from_image('src/images/face_front.jpg')
         elif args.image == 3:
-            show_image('src/images/nature.png')
+            detect_faces_from_image('src/images/six_people.jpg')
         else:
-            show_image('src/images/six_people.jpg')
+            detect_faces_from_image('src/images/six_people.jpg')
     else:
-        print('Select -image with a number 0-3, or -video.')
+        print('Select -image with a number 1-3, or -video.')
     main()
