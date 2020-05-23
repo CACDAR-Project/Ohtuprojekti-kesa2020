@@ -1,0 +1,11 @@
+# Comments starts with the usual sign: #
+# Integers values will be converted to type integer and floats to float.
+# True/False values will be converted to booleans.
+#
+# One setting per line in the following format:
+#CAMERA_ID=12
+#DEBUG=True
+#VERY_LONG_ORNOT_SO-short = stringtype text over here in the variable
+#INTEGER_VAL=-1
+#FLOATNUM=12.001
+#boolean_val=True

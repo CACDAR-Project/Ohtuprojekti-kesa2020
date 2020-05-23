@@ -1,9 +1,7 @@
-import sys
-sys.path.append('../../src')
-
 import unittest
+from pathlib import Path
 
-from tools.helpers import str_convert
+from application.tools.helpers import str_convert, build_path
 
 
 class HelpersTest(unittest.TestCase):
@@ -83,6 +81,24 @@ class HelpersTest(unittest.TestCase):
         res = str_convert('-0.01')
         self.assertTrue(isinstance(res, float))
         self.assertEqual(res, -0.01)
+
+    def test_build_path_returns_Pathobject(self):
+        self.assertTrue(isinstance(build_path(), Path))
+
+    def test_build_path_empty(self):
+        self.assertEqual(build_path().as_posix(), '.')
+
+    def test_build_path_one_argument(self):
+        self.assertEqual(build_path('dir_name').as_posix(), 'dir_name')
+
+    def test_build_path_two_args(self):
+        self.assertEqual(
+            build_path('dir', 'filename').as_posix(), 'dir/filename')
+
+    def test_build_path_to_parent(self):
+        '''Needed for symbolic links to work'''
+        self.assertEqual(
+            build_path('dir', '..', 'file').as_posix(), 'dir/../file')
 
 
 if __name__ == '__main__':

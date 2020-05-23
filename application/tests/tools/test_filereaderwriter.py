@@ -1,18 +1,13 @@
-import sys
-sys.path.append('../../src')
-
 import unittest
 from unittest.mock import patch, mock_open
 from io import StringIO
 from contextlib import redirect_stdout
-from pathlib import Path
 
-from tools.filereaderwriter import *
+from application.tools.filereaderwriter import check_directory_exists, check_file_exists, read_file_lines, create_directory
 
 
 class FilereaderwriterTest(unittest.TestCase):
     def setUp(self):
-        # Initialize
         self.file_contents_mock = '\n'.join(
             ('# This is a mock of the settings file.', 'var=val',
              'something =smthing',
@@ -97,25 +92,6 @@ class FilereaderwriterTest(unittest.TestCase):
 #        #        'Error while trying to create directory \'{self.mock_directory_path}\'.',
 #        #        'exception error output here',
 #        #        'Exiting..\n'])
-
-    def test_build_path_returns_Pathobject(self):
-        self.assertTrue(isinstance(build_path(), Path))
-
-    def test_build_path_empty(self):
-        '''Points to current directory'''
-        self.assertEqual(build_path().as_posix(), '.')
-
-    def test_build_path_one_argument(self):
-        self.assertEqual(build_path('dir_name').as_posix(), 'dir_name')
-
-    def test_build_path_two_args(self):
-        self.assertEqual(
-            build_path('dir', 'filename').as_posix(), 'dir/filename')
-
-    def test_build_path_to_parent(self):
-        '''Needed for symbolic links to work'''
-        self.assertEqual(
-            build_path('dir', '..', 'file').as_posix(), 'dir/../file')
 
 if __name__ == '__main__':
     unittest.main()

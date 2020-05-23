@@ -19,9 +19,50 @@ or `pipenv run <command>` to run a single command in the environment
 #### More
 [pipenv usage](https://github.com/pypa/pipenv#-usage)
 
-## Start main.py
-When the application is run, it checks for various needed directories and if they are not found, creates them. Therefore it should always be run from the root directory.
-`python src/main.py`
+## Structure of the application
+```bash
+application/
+├── app.py          - The main loop lies here
+├── config
+│    └── settings   - All settings go in here
+├── __main__.py     - This file starts the application
+├── resources       - All resources should be put in here
+│   ├── data
+│   └── images
+└── tests           - All tests live here
+```
+
+All the source code should be placed inside the directory `application`. All directories should be made into packages with modules by putting an file `__init__.py` into every directory.  
+
+When importing modules into another modules, use the full package/module path: `application.package<.module>`. For example as in `app.py`: `from application.conf.configuration import Configuration`.
+
+## Running and testing the application
+All commands should be run from the base directory.  
+After activating the virtual environment run:  
+
+```console
+python -m application
+```
+to run the application. Use the `-h` flag for a help message.
+```console
+python -m application -h
+```
+
+Tests can be run with:  
+```
+python -m unittest <-v>
+```
+Use the `-v` flag for verbose output.
+
+Run tests and generate coverage report:
+```console
+coverage run -m unittest discover
+coverage html
+```
+
+## Create test
+
+Create an test file named `test_<module_to_test>.py` inside `application/tests/<package>` along with an `__init.py__` for every package.
 
 # Arguments for live_detect.py
 
@@ -36,22 +77,6 @@ When the application is run, it checks for various needed directories and if the
 ## Define a webcamera's ID (default: 0)
 `-c camera_id`
 
-# Testing
-Run all tests from root folder:
-```console
-python -m unittest
-```
-Add -v flag after `unittest` for verbose output  
-
-Run tests and generate coverage report
-```console
-coverage run -m unittest discover
-coverage html
-```
-
-# Create test
-
-Create test file named `test_<module_to_test>.py` and empty file called `__init__.py` side by side in `tests` folder or any of it's subfolders.
 
 # Formatting
 
