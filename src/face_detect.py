@@ -31,6 +31,8 @@ def detect_faces_from_video():
             cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
             roi_gray = gray[y:y + h, x:x + w]
             roi_color = img[y:y + h, x:x + w]
+            print('Upper left: ', x, ' Upper right: ', y, ' Lower left: ', w,
+                  ' Lower right: ', h)
 
             eyes = eye_cascade.detectMultiScale(roi_gray)
             for (ex, ey, ew, eh) in eyes:
@@ -104,14 +106,6 @@ def check_video(video_cap):
         return False
 
 
-def read_coordinates():
-    pass
-
-
-def save_coordinates():
-    pass
-
-
 def main():
     # exit all methods with pressing q
     # detect_faces_from_image()
@@ -134,10 +128,6 @@ if __name__ == '__main__':
                        '--video',
                        help='Show video feed with face detection.',
                        action="store_true")
-    parser.add_argument('-c', help='Read coordinates.', action="store_true")
-    parser.add_argument('-s',
-                        help='Save coordinates on file.',
-                        action="store_true")
     args = parser.parse_args()
     if args.video:
         detect_faces_from_video()
