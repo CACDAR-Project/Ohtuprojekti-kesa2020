@@ -50,7 +50,7 @@ class Camera():
         '''
 
         ret, frame = self.cap.read()
-        
+
         # if ret is False, no image was captured and black image is returned
         if not ret:
             return np.zeros(shape=self.shape).astype(np.uint8)

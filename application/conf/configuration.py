@@ -38,9 +38,9 @@ settings = {
 
 # 5 different color of each basecolor in BGR for opencv compatibility
 colors = {
-    'red': tuple((0, 0, 255-b) for b in range(0, 190, 38)),
-    'green': tuple((0, 255-b, 0) for b in range(0, 190, 38)),
-    'blue': tuple((255-b, 0, 0) for b in range(0, 190, 38))
+    'red': tuple((0, 0, 255 - b) for b in range(0, 190, 38)),
+    'green': tuple((0, 255 - b, 0) for b in range(0, 190, 38)),
+    'blue': tuple((255 - b, 0, 0) for b in range(0, 190, 38))
 }
 # end default settings
 

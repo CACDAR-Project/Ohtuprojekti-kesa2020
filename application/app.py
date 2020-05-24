@@ -14,30 +14,30 @@ def run_something_else():
 
 
 def detect_qr_codes(camera, output, qrdet):
-    SCAN_FOR_CODES   = True
-    DRAW_RECTANGLES  = True
+    SCAN_FOR_CODES = True
+    DRAW_RECTANGLES = True
     DRAW_POLY_BOUNDS = True
-    DRAW_TEXTS       = True
+    DRAW_TEXTS = True
 
     while True:
         frame = camera.frameRGB()
         output.set_frame(frame)
-        
+
         if not SCAN_FOR_CODES:
             continue
-        
+
         qrdet.scan_frame(frame)
-        
+
         if DRAW_RECTANGLES:
             rectangles = qrdet.get_rectangles_coords()
             output.add_rectangles(rectangles)
-                #for r in rectangles:
-                #    output.add_rectangle(*r)
-        
+            #for r in rectangles:
+            #    output.add_rectangle(*r)
+
         if DRAW_POLY_BOUNDS:
             polygons = qrdet.get_polygons()
             output.add_polygons(polygons)
-        
+
         if DRAW_TEXTS:
             texts = qrdet.get_texts()
             output.add_texts(texts)
