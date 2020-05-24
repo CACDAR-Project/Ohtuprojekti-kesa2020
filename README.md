@@ -68,15 +68,8 @@ Create an test file named `test_<module_to_test>.py` inside `application/tests/<
 from video:  
 `pipenv run -- python src/main.py -v`  
 from image file:  
-`pipenv run -- python src/main.py -i` + number 0-4  
-Exit with ctrl + c  
-
-## Run OpenCV face detection from root
-from video:  
-`pipenv run -- python src/main.py -v`  
-from image file:  
-`pipenv run -- python src/main.py -i` + number 0-4  
-Exit with ctrl + c  
+`pipenv run -- python src/main.py -i` + number 1-3  
+Exit with ctrl + c   
 
 # Arguments for live_detect.py
 
