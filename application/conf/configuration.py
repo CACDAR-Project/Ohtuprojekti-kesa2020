@@ -19,7 +19,8 @@ paths = {
     'IMAGES': f'{resources_path}/images',
     'DATA': f'{resources_path}/data',
     'MODELS': f'{resources_path}/models',
-    'LABELS': f'{resources_path}/labels'
+    'LABELS': f'{resources_path}/labels',
+    'OUTPUT': f'{resources_path}/output'
 }
 
 # Filenames
@@ -35,6 +36,12 @@ settings = {
     'DEF_SHAPE': (480, 640, 3)
 }
 
+# 5 different color of each basecolor in BGR for opencv compatibility
+colors = {
+    'red': tuple((0, 0, 255-b) for b in range(0, 190, 38)),
+    'green': tuple((0, 255-b, 0) for b in range(0, 190, 38)),
+    'blue': tuple((255-b, 0, 0) for b in range(0, 190, 38))
+}
 # end default settings
 
 
@@ -102,6 +109,7 @@ class Configuration():
         self.paths = paths.copy()
         self.filenames = filenames.copy()
         self.settings = settings.copy()
+        self.colors = colors.copy()
 
         Initializer.initialize_directories(self.paths)
 
