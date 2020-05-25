@@ -64,6 +64,13 @@ coverage html
 
 Create an test file named `test_<module_to_test>.py` inside `application/tests/<package>` along with an `__init.py__` for every package.
 
+## Run OpenCV face detection from root
+from video:  
+`pipenv run -- python src/main.py -v`  
+from image file:  
+`pipenv run -- python src/main.py -i` + number 1-3  
+Exit with ctrl + c   
+
 # Arguments for live_detect.py
 
 ## Define tensorflow model (default: detect.tflite)

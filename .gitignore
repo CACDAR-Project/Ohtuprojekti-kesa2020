@@ -24,5 +24,6 @@ labelmap.txt
 
 # Data created during runtime
 
+saved_detections/
 output.avi
 
