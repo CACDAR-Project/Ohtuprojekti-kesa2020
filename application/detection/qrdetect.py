@@ -97,3 +97,6 @@ class QrDetect():
             map(
                 lambda c: (f'({c.type}): {c.data.decode("utf-8")}',
                            (c.rect.left, c.rect.top)), self.codes))
+
+    def get_detected_codes_amount(self):
+        return len(self.codes)

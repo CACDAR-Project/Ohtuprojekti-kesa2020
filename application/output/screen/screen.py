@@ -45,7 +45,8 @@ class Screen():
                                              Tuple[int, int]]]) -> None:
         '''Adds all rectangles from the rectangles iterable'''
         if self.rectangles:
-            self.rectangles.extend(rectangles)
+            #self.rectangles.extend(rectangles)
+            self.rectangles = self.rectangles + rectangles
         else:
             self.rectangles = rectangles
 
