@@ -71,19 +71,6 @@ from image file:
 `pipenv run -- python src/main.py -i` + number 1-3  
 Exit with ctrl + c   
 
-# Arguments for live_detect.py
-
-## Define tensorflow model (default: detect.tflite)
-
-`-m modelname.tflite`
-
-## Define labelmap for model (default: labelmap.txt)
-
-`-l labelmap.txt`
-
-## Define a webcamera's ID (default: 0)
-`-c camera_id`
-
 
 # Formatting
 
