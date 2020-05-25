@@ -28,7 +28,7 @@ sudo docker run -it --rm \
 ros:melodic-ros-core \
 roscore
 ```
-Start up rostest node
+Start up rostest node in another console
 ```
 sudo docker run -it --rm \
     --net rosnet \
