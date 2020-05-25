@@ -1,0 +1,18 @@
+version: "3.4"
+services:
+  master:
+    networks:
+      - rosnet
+    image: ros:melodic-ros-core
+    command: roscore
+  rostest:
+    networks:
+      - rosnet
+    depends_on:
+      - master
+    build: .
+    environment:
+      - "ROS_HOSTNAME=rostest"
+      - "ROS_MASTER_URI=http://master:11311"
+networks:
+  rosnet:

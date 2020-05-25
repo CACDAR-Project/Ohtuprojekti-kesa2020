@@ -40,3 +40,14 @@ sudo docker run -it --rm \
 Attaching camera devices to the container can be done by adding parameters to node container startup
 
 `--device` argument, for example `--device /dev/video0`
+
+### Docker compose
+
+Alternatively the above can be done with docker compose, with the following on the root directory of the project.
+
+`docker-compose build`
+
+`docker-compose up`
+
+Attaching devices
+https://docs.docker.com/compose/compose-file/#devices
