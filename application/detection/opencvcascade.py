@@ -4,16 +4,16 @@ import numpy as np
 from typing import Tuple, Union
 
 
-class FaceDetector():
+class OpenCVCascade():
     def __init__(self, cascade_classifier: str) -> None:
         self.detections = tuple(
-        )  # self.face_cascade will return empty tuple if no faces found, np.ndarray otherwise
+        )  # self.cascade will return empty tuple if no faces found, np.ndarray otherwise
         self.cascade = cv2.CascadeClassifier(cascade_classifier)
 
     def scan_frame(self, frame: np.ndarray) -> None:
         self.detections = self.cascade.detectMultiScale(frame, 1.3, 5)
 
-    def get_detections(self) -> Union[np.ndarray]:
+    def get_detections(self) -> Union[Tuple, np.ndarray]:
         return self.detections
 
     def get_rectangles_coords(

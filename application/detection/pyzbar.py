@@ -29,7 +29,7 @@ from typing import Tuple, List
 # ZBarSymbol.QRCODE
 # ZBarSymbol.CODE93
 # ZBarSymbol.CODE128
-class QrDetect():
+class PyzbarDetector():
     'Class that scans an opencv formatted np.array frame (image) for symbols, using pyzbar-library.'
 
     def __init__(self, only_qr_codes: bool = True) -> None:

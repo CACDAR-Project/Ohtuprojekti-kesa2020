@@ -1,13 +1,13 @@
-import cv2
+import cv2  # Only needed in the main loop for reading user input from console
 
 from application.conf.configuration import Configuration
 from application.input.camera.camera import Camera
 from application.output.screen.screen import Screen
-from application.detection.qrdetect import QrDetect
-from application.detection.faces import FaceDetector
+from application.detection.pyzbar import PyzbarDetector
+from application.detection.opencvcascade import OpenCVCascade
 
 
-def detect_qr_codes(camera, output, codedet, facedet, eyedet):
+def detection_loop(camera, output, codedet, facedet, eyedet):
     settings = Configuration.get_instance().settings
 
     while True:
@@ -68,24 +68,18 @@ def detect_qr_codes(camera, output, codedet, facedet, eyedet):
 
 
 def run():
-
-    #conf = Configuration(load_settings_from_file=False)
-    #args = handle_args(parser=argparse.ArgumentParser(), conf=conf)
-
-    #print('We are up and running with the following args:')
-    #print(args)
-
-    # Run a simple webcam app that detects QR-codes,
     # Quit with q and toggle gray with t
     cam = Camera()
     out = Screen()
-    qrdetector = QrDetect()
-    #self.face_cascade = cv2.CascadeClassifier('src/data/haarcascade_frontalface_default.xml')
-    #self.eye_cascade = cv2.CascadeClassifier('src/data/haarcascade_eye.xml')
-    facedetector = FaceDetector('src/data/haarcascade_frontalface_default.xml')
-    eyedetector = FaceDetector('src/data/haarcascade_eye.xml')
 
-    detect_qr_codes(cam, out, qrdetector, facedetector, eyedetector)
+    qrdetector = PyzbarDetector(
+        only_qr_codes=True)  # Set to False to scan for all supported symbols
+    facedetector = OpenCVCascade(
+        Configuration.get_instance().settings['DEFAULT_CASCADE_FACE'])
+    eyedetector = OpenCVCascade(
+        Configuration.get_instance().settings['DEFAULT_CASCADE_EYE'])
+
+    detection_loop(cam, out, qrdetector, facedetector, eyedetector)
 
 
 if __name__ == '__main__':

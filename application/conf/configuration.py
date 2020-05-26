@@ -24,15 +24,23 @@ paths = {
 }
 
 # Filenames
-filenames = {'SETTINGS': 'settings'}
+filenames = {
+    'SETTINGS': 'settings',
+    'CASCADE_FACE': 'haarcascade_frontalface_default.xml',
+    'CASCADE_EYE': 'haarcascade_eye.xml'
+}
 
 # Various settings
 settings = {
     'settings_comment_sign': '#',
     'settings_assignment_sign': '=',
     'VIDEO_ID': -1,
+    # Models to use
     'DEFAULT_MODEL': f'{paths["MODELS"]}/detect.tflite',
     'DEFAULT_LABELS': f'{paths["LABELS"]}/labelmap.txt',
+    'DEFAULT_CASCADE_FACE': f'{paths["DATA"]}/{filenames["CASCADE_FACE"]}',
+    'DEFAULT_CASCADE_EYE': f'{paths["DATA"]}/{filenames["CASCADE_EYE"]}',
+    #
     'DEF_SHAPE': (480, 640, 3),
     'DETECT_CODES': True,
     'DETECT_FACES': True,
@@ -42,7 +50,7 @@ settings = {
     'DRAW_CODES_TEXTS': True,
     'DRAW_FACES_RECTANGLES': True,
     'DRAW_EYES_RECTANGLES': True,
-    'PRINT_DETECTIONS_CONSOLE': False
+    'PRINT_DETECTIONS_CONSOLE': True
 }
 
 # 5 different color of each basecolor in BGR for opencv compatibility
