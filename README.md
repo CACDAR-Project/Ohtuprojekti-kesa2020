@@ -6,6 +6,10 @@
   * All non trivial code should be tested
   * All code should be well documented, at least with a docstring for every block
   * All code should use type hinting
+  
+## Documentation
+
+[Backlog](https://docs.google.com/spreadsheets/d/1jyyo4Vl1vxXgr6DDcG-a-Rb9Xx-2B-TYjd2KzZyrj3M)
 
 ## Commands for virtual environment
 [pipenv](https://github.com/pypa/pipenv) is used for managing dependencies
