@@ -10,9 +10,23 @@ services:
       - rosnet
     depends_on:
       - master
-    build: .
+    build: 
+      context: .
+      target: rostest
     environment:
       - "ROS_HOSTNAME=rostest"
       - "ROS_MASTER_URI=http://master:11311"
+  rosprinter:
+    networks:
+      - rosnet
+    depends_on:
+      - master
+    build:
+      context: .
+      target: rosprinter
+    environment:
+      - "ROS_HOSTNAME=rosprinter"
+      - "ROS_MASTER_URI=http://master:11311"
+
 networks:
   rosnet:

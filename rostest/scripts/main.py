@@ -81,7 +81,6 @@ class ObjectDetector:
             height = img.shape[0]
             width = img.shape[1]
             for detection in self.detect(img):
-                print(detection)
                 pub.publish(
                     observation(
                         detection["class_id"], detection["label"],
