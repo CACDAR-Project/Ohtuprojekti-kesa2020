@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/kordaniel/Ohtuprojekti-kesa2020.svg?style=svg)](https://circleci.com/gh/kordaniel/Ohtuprojekti-kesa2020) [![codecov](https://codecov.io/gh/kordaniel/Ohtuprojekti-kesa2020/branch/master/graph/badge.svg)](https://codecov.io/gh/kordaniel/Ohtuprojekti-kesa2020) [![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
+[![CircleCI](https://circleci.com/gh/Konenako/Ohtuprojekti-kesa2020.svg?style=svg)](https://circleci.com/gh/Konenako/Ohtuprojekti-kesa2020) [![codecov](https://codecov.io/gh/Konenako/Ohtuprojekti-kesa2020/branch/master/graph/badge.svg)](https://codecov.io/gh/Konenako/Ohtuprojekti-kesa2020) [![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
 
 ## Definition of done
   * All task features are implemented
@@ -6,6 +6,10 @@
   * All non trivial code should be tested
   * All code should be well documented, at least with a docstring for every block
   * All code should use type hinting
+  
+## Documentation
+
+[Backlog](https://docs.google.com/spreadsheets/d/1jyyo4Vl1vxXgr6DDcG-a-Rb9Xx-2B-TYjd2KzZyrj3M)
 
 ## Commands for virtual environment
 [pipenv](https://github.com/pypa/pipenv) is used for managing dependencies
@@ -64,18 +68,12 @@ coverage html
 
 Create an test file named `test_<module_to_test>.py` inside `application/tests/<package>` along with an `__init.py__` for every package.
 
-# Arguments for live_detect.py
-
-## Define tensorflow model (default: detect.tflite)
-
-`-m modelname.tflite`
-
-## Define labelmap for model (default: labelmap.txt)
-
-`-l labelmap.txt`
-
-## Define a webcamera's ID (default: 0)
-`-c camera_id`
+## Run OpenCV face detection from root
+from video:  
+`pipenv run -- python src/main.py -v`  
+from image file:  
+`pipenv run -- python src/main.py -i` + number 1-3  
+Exit with ctrl + c   
 
 
 # Formatting
