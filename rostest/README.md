@@ -51,3 +51,7 @@ Alternatively the above can be done with docker compose, with the following on t
 
 Attaching devices
 https://docs.docker.com/compose/compose-file/#devices
+
+## Versions
+
+Tested to work on Docker version 19.03.8-ce and Docker-compose version 1.25.5
