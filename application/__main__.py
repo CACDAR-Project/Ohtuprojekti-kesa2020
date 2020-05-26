@@ -34,7 +34,7 @@ def handle_args(parser, conf):
 
 
 def main():
-    conf = Configuration(load_settings_from_file=False)
+    conf = Configuration(load_settings_from_file=True)
     args = handle_args(parser=argparse.ArgumentParser(), conf=conf)
 
     # Here we can choose different app/main/node based on settings/arguments
