@@ -9,27 +9,29 @@ from application.detection.opencvcascade import OpenCVCascade
 
 def detection_loop(camera, output, codedet, facedet, eyedet):
     settings = Configuration.get_instance().settings
+    WAIT_FOR_KEYPRESS = int(1000 / camera.get_fps())  # in ms
 
     while True:
-        frame = camera.frameRGB()
+        #frame = camera.frameRGB()
+        # Use gray frame for detections
+        frame, frame_gray = camera.frames()
         output.set_frame(frame)
 
         if settings['DETECT_FACES']:
-            facedet.scan_frame(frame)
+            facedet.scan_frame(frame_gray)
             faces_coords = facedet.get_rectangles_coords()
-
             if settings['DRAW_FACES_RECTANGLES']:
                 output.add_rectangles(faces_coords)
 
             if settings['DETECT_EYES']:
                 # TODO: Slice frame and scan only faces for eyes.
-                eyedet.scan_frame(frame)
+                eyedet.scan_frame(frame_gray)
                 eyes_coords = eyedet.get_rectangles_coords()
                 if settings['DRAW_EYES_RECTANGLES']:
                     output.add_rectangles(eyes_coords)
 
         if settings['DETECT_CODES']:
-            codedet.scan_frame(frame)
+            codedet.scan_frame(frame_gray)
 
             if settings['DRAW_CODES_RECTANGLES']:
                 rectangles = codedet.get_rectangles_coords()
@@ -44,6 +46,7 @@ def detection_loop(camera, output, codedet, facedet, eyedet):
                 output.add_texts(texts)
 
         if settings['PRINT_DETECTIONS_CONSOLE']:
+            # If detections are False, will print old info
             print('--------')
             print('Codes found: {}'.format(
                 codedet.get_detected_codes_amount()))
@@ -59,21 +62,27 @@ def detection_loop(camera, output, codedet, facedet, eyedet):
             print('--------')
             print()
 
-        output.draw()
-
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
-        if cv2.waitKey(1) & 0xFF == ord('t'):
-            output.toggle_gray()
-        if cv2.waitKey(1) & 0xFF == ord('e'):  # Toggle eyes detection
-            settings['DETECT_EYES'] = not settings['DETECT_EYES']
-        if cv2.waitKey(1) & 0xFF == ord('f'):  # Toggle faces detection
-            settings['DETECT_FACES'] = not settings['DETECT_FACES']
-        if cv2.waitKey(1) & 0xFF == ord('c'):  # Toggle codes detection
-            settings['DETECT_CODES'] = not settings['DETECT_CODES']
-        if cv2.waitKey(1) & 0xFF == ord('p'):  # Toggle printing
+        k = cv2.waitKey(WAIT_FOR_KEYPRESS)
+        if k == ord('q'): break
+        elif k == ord('t'): output.toggle_gray()
+        elif k == ord('e'):
+            settings['DETECT_EYES'] = not settings[
+                'DETECT_EYES']  #Toggle eyes detection
+        elif k == ord('f'):
+            settings['DETECT_FACES'] = not settings[
+                'DETECT_FACES']  #Toggle faces detection
+        elif k == ord('c'):
+            settings['DETECT_CODES'] = not settings[
+                'DETECT_CODES']  #Toggle codes detection
+        elif k == ord('p'):
             settings['PRINT_DETECTIONS_CONSOLE'] = not settings[
-                'PRINT_DETECTIONS_CONSOLE']
+                'PRINT_DETECTIONS_CONSOLE']  # Toggle printing
+        elif k == ord('-'):
+            WAIT_FOR_KEYPRESS *= 2  # Decrease FPS
+        elif k == ord('+'):
+            WAIT_FOR_KEYPRESS //= 2  # Increase FPS
+
+        output.draw()
 
 
 def run():
@@ -88,6 +97,11 @@ def run():
     eyedetector = OpenCVCascade(
         Configuration.get_instance().settings['DEFAULT_CASCADE_EYE'])
 
+    # Use smaller resolution for improved performance
+    cam.set_size(480, 270)
+    #cam.print_video_info()
+    #return
+    #print('moo', cam.get_size())
     detection_loop(cam, out, qrdetector, facedetector, eyedetector)
 
 

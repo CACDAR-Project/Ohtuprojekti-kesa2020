@@ -34,7 +34,7 @@ filenames = {
 settings = {
     'settings_comment_sign': '#',
     'settings_assignment_sign': '=',
-    'VIDEO_ID': -1,
+    'VIDEO_ID': -1,  # -1 = automatically scan for working webcam
     # Models to use
     'DEFAULT_MODEL': f'{paths["MODELS"]}/detect.tflite',
     'DEFAULT_LABELS': f'{paths["LABELS"]}/labelmap.txt',

@@ -19,6 +19,7 @@ class Screen():
 
         self.rectangles = None
         self.shapes = None
+        self.circles = None
         self.texts = None
 
     def __del__(self):
@@ -37,6 +38,7 @@ class Screen():
         self.frame_in = frame
         self.rectangles = None
         self.shapes = None
+        self.circles = None
         self.texts = None
         self._reset_colors()  # Reset color iterators for every frame
 
@@ -58,8 +60,11 @@ class Screen():
 
         self.rectangles.append((top_left, bottom_right))
 
-    #def add_box(self, x, y, width, height) -> None:
-    #    self.boxes.append( ( (x, y), (x+width, y+height)) )
+    def add_circles(self, circles) -> None:
+        if not self.circles:
+            self.circles = circles
+        else:
+            self.circles = self.circles + circles
 
     def add_polygons(self, points: np.array) -> None:
         'Adds the np.array containing points for n polygons to be drawed onto the frame'
@@ -102,6 +107,10 @@ class Screen():
             for p in self.shapes:
                 cv2.polylines(self.frame_out, [p], True, next(self.colors_red),
                               2)
+
+        if self.circles is not None:
+            for c in self.circles:
+                cv2.circle(self.frame_out, c[0], c[1], (255, 0, 0), 3)
 
         if self.texts:
             offset_loc = lambda t: (t[0] + 3, t[
