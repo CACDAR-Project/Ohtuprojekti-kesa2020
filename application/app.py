@@ -61,10 +61,19 @@ def detection_loop(camera, output, codedet, facedet, eyedet):
 
         output.draw()
 
-        if cv2.waitKey(1) & 0xFF == ord('t'):
-            output.toggle_gray()
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
+        if cv2.waitKey(1) & 0xFF == ord('t'):
+            output.toggle_gray()
+        if cv2.waitKey(1) & 0xFF == ord('e'):  # Toggle eyes detection
+            settings['DETECT_EYES'] = not settings['DETECT_EYES']
+        if cv2.waitKey(1) & 0xFF == ord('f'):  # Toggle faces detection
+            settings['DETECT_FACES'] = not settings['DETECT_FACES']
+        if cv2.waitKey(1) & 0xFF == ord('c'):  # Toggle codes detection
+            settings['DETECT_CODES'] = not settings['DETECT_CODES']
+        if cv2.waitKey(1) & 0xFF == ord('p'):  # Toggle printing
+            settings['PRINT_DETECTIONS_CONSOLE'] = not settings[
+                'PRINT_DETECTIONS_CONSOLE']
 
 
 def run():
