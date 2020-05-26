@@ -41,12 +41,16 @@ class Camera():
     def set_shape(width: int, height: int) -> None:
         self.shape = (height, width, 3)
 
+    def get_fps(self):
+        return self.cap.get(cv2.CAP_PROPS_FPS)
+
     def frameRGB(self) -> np.ndarray:
         '''
         Return the newest fram from the camera as a 3 dimensional nupmy array.
         '''
 
         ret, frame = self.cap.read()
+
         # if ret is False, no image was captured and black image is returned
         if not ret:
             return np.zeros(shape=self.shape).astype(np.uint8)

@@ -1,6 +1,6 @@
 import unittest
 
-from application.conf.configuration import paths, filenames, settings, Initializer, Configuration
+from application.conf.configuration import paths, filenames, settings, colors, Initializer, Configuration
 
 
 class InitializerTest(unittest.TestCase):
@@ -85,6 +85,9 @@ class ConfigurationTest(unittest.TestCase):
 
     def test_configuration_is_created_with_configured_settings(self):
         self.assertDictEqual(self.obj.settings, settings)
+
+    def test_configuration_is_created_with_configured_colors(self):
+        self.assertDictEqual(self.obj.colors, colors)
 
 
 if __name__ == '__main__':
