@@ -33,7 +33,16 @@ settings = {
     'VIDEO_ID': -1,
     'DEFAULT_MODEL': f'{paths["MODELS"]}/detect.tflite',
     'DEFAULT_LABELS': f'{paths["LABELS"]}/labelmap.txt',
-    'DEF_SHAPE': (480, 640, 3)
+    'DEF_SHAPE': (480, 640, 3),
+    'DETECT_CODES': True,
+    'DETECT_FACES': True,
+    'DETECT_EYES': True,
+    'DRAW_CODES_RECTANGLES': True,
+    'DRAW_CODES_POLYGONS': True,
+    'DRAW_CODES_TEXTS': True,
+    'DRAW_FACES_RECTANGLES': True,
+    'DRAW_EYES_RECTANGLES': True,
+    'PRINT_DETECTIONS_CONSOLE': False
 }
 
 # 5 different color of each basecolor in BGR for opencv compatibility
@@ -42,6 +51,7 @@ colors = {
     'green': tuple((0, 255 - b, 0) for b in range(0, 190, 38)),
     'blue': tuple((255 - b, 0, 0) for b in range(0, 190, 38))
 }
+
 # end default settings
 
 

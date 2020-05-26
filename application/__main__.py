@@ -38,7 +38,7 @@ def main():
     args = handle_args(parser=argparse.ArgumentParser(), conf=conf)
 
     # Here we can choose different app/main/node based on settings/arguments
-    app.run(conf, args)
+    app.run()
 
 
 if __name__ == '__main__':

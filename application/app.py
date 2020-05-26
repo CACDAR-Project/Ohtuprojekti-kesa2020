@@ -1,71 +1,62 @@
 import cv2
 
+from application.conf.configuration import Configuration
 from application.input.camera.camera import Camera
 from application.output.screen.screen import Screen
 from application.detection.qrdetect import QrDetect
 from application.detection.faces import FaceDetector
 
 
-def detect_qr_codes(camera, output, qrdet, facedet, eyedet):
-    SCAN_FOR_CODES = True
-    DRAW_QR_RECTANGLES = True
-    DRAW_QR_POLY_BOUNDS = True
-    DRAW_QR_TEXTS = True
+def detect_qr_codes(camera, output, codedet, facedet, eyedet):
+    settings = Configuration.get_instance().settings
 
-    SCAN_FOR_FACES = True
-    SCAN_FOR_EYES = True
-
-    PRINT_TO_CONSOLE = True
     while True:
         frame = camera.frameRGB()
         output.set_frame(frame)
 
-        if SCAN_FOR_FACES:
+        if settings['DETECT_FACES']:
             facedet.scan_frame(frame)
-
             faces_coords = facedet.get_rectangles_coords()
-            output.add_rectangles(faces_coords)
-            print('FACES:', faces_coords)
-            if SCAN_FOR_EYES:
+
+            if settings['DRAW_FACES_RECTANGLES']:
+                output.add_rectangles(faces_coords)
+
+            if settings['DETECT_EYES']:
                 # TODO: Slice frame and scan only faces for eyes.
                 eyedet.scan_frame(frame)
                 eyes_coords = eyedet.get_rectangles_coords()
-                output.add_rectangles(eyes_coords)
-                print('EYES:', eyes_coords)
+                if settings['DRAW_EYES_RECTANGLES']:
+                    output.add_rectangles(eyes_coords)
 
-            if PRINT_TO_CONSOLE:
-                print('Faces found: {}'.format(
-                    facedet.get_detections_amount()))
-                print('Eyes found: {}'.format(eyedet.get_detections_amount()))
+        if settings['DETECT_CODES']:
+            codedet.scan_frame(frame)
 
-        if SCAN_FOR_CODES:
-            qrdet.scan_frame(frame)
-
-            if DRAW_QR_RECTANGLES:
-                rectangles = qrdet.get_rectangles_coords()
+            if settings['DRAW_CODES_RECTANGLES']:
+                rectangles = codedet.get_rectangles_coords()
                 output.add_rectangles(rectangles)
-                if PRINT_TO_CONSOLE:
-                    print('QR RECTANGLES:', rectangles)
-                #for r in rectangles:
-                #    output.add_rectangle(*r)
 
-            if DRAW_QR_POLY_BOUNDS:
-                polygons = qrdet.get_polygons()
+            if settings['DRAW_CODES_POLYGONS']:
+                polygons = codedet.get_polygons()
                 output.add_polygons(polygons)
-                if PRINT_TO_CONSOLE:
-                    print('QR POLYGONS:', polygons)
 
-            if DRAW_QR_TEXTS:
-                texts = qrdet.get_texts()
+            if settings['DRAW_CODES_TEXTS']:
+                texts = codedet.get_texts()
                 output.add_texts(texts)
-                if PRINT_TO_CONSOLE:
-                    print('QR TEXTS:', texts)
 
-            if PRINT_TO_CONSOLE:
-                print('Codes found: {}'.format(
-                    qrdet.get_detected_codes_amount()))
-
-        if PRINT_TO_CONSOLE:
+        if settings['PRINT_DETECTIONS_CONSOLE']:
+            print('--------')
+            print('Codes found: {}'.format(
+                codedet.get_detected_codes_amount()))
+            print('QR RECTANGLES:', rectangles)
+            print('QR POLYGONS:', polygons)
+            print('QR TEXTS:', texts)
+            print('--------')
+            print('Faces found: {}'.format(facedet.get_detections_amount()))
+            print('FACES:', faces_coords)
+            print('--------')
+            print('Eyes found: {}'.format(eyedet.get_detections_amount()))
+            print('EYES:', eyes_coords)
+            print('--------')
             print()
 
         output.draw()
@@ -76,7 +67,7 @@ def detect_qr_codes(camera, output, qrdet, facedet, eyedet):
             break
 
 
-def run(conf, args):
+def run():
 
     #conf = Configuration(load_settings_from_file=False)
     #args = handle_args(parser=argparse.ArgumentParser(), conf=conf)
