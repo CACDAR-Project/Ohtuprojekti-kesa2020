@@ -2,8 +2,10 @@
 from rostest.msg import observation
 import rospy
 
+
 def printer(obs):
     print(obs)
+
 
 def run():
 
@@ -13,6 +15,7 @@ def run():
     rospy.Subscriber("observations", observation, printer)
 
     rospy.spin()
+
 
 if __name__ == "__main__":
     run()
