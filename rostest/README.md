@@ -49,6 +49,10 @@ Alternatively the above can be done with docker compose, with the following on t
 
 `docker-compose up`
 
+For sending messages to main.py attach to input container with another terminal:
+
+`sudo docker attach rosinput`
+
 Attaching devices
 https://docs.docker.com/compose/compose-file/#devices
 
