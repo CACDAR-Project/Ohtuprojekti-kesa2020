@@ -59,7 +59,7 @@ For seeing recieved messages in separate terminal use:
 
 For seeing recieved information about the objects use:
 
-`sudo docker attach rostest`
+`sudo docker attach rosprinter`
 
 
 Attaching devices like webcams
