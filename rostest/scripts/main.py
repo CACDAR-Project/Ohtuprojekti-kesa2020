@@ -90,7 +90,7 @@ class ObjectDetector:
                                     detection["bbox"]["bottom"],
                                     detection["bbox"]["left"])))
                 if showgui:
-                    # Draw boxes around objects and display the result
+                    # Draw boxes around objects
                     top = detection["bbox"]["top"] * height
                     left = detection["bbox"]["left"] * width
                     right = detection["bbox"]["right"] * width
@@ -104,8 +104,11 @@ class ObjectDetector:
                     cv.rectangle(img, (int(left), int(top)),
                                  (int(right), int(bottom)), (125, 255, 51),
                                  thickness=2)
-                    cv.imshow('img', img)
-                    cv.waitKey(1)
+
+            # Display the result
+            if showgui:
+                cv.imshow('img', img)
+                cv.waitKey(1)
 
     def close(self):
         self.sess.close()
