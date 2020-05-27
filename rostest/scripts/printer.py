@@ -8,7 +8,6 @@ def printer(obs):
 
 
 def run():
-
     print("Printer running")
 
     rospy.init_node("printer")

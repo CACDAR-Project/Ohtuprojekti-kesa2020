@@ -49,7 +49,20 @@ Alternatively the above can be done with docker compose, with the following on t
 
 `docker-compose up`
 
-Attaching devices
+For sending messages to rostest.py attach to input container with another terminal:
+
+`sudo docker attach rosinput`
+
+For seeing recieved messages in separate terminal use:
+
+`sudo docker attach rostest`
+
+For seeing recieved information about the objects use:
+
+`sudo docker attach rostest`
+
+
+Attaching devices like webcams
 https://docs.docker.com/compose/compose-file/#devices
 
 ## Versions
