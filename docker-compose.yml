@@ -32,6 +32,20 @@ services:
       - "ROS_MASTER_URI=http://master:11311"
     stdin_open: true
     tty: true
+  rosprinter:
+    container_name: "rosprinter"
+    networks:
+      - rosnet
+    depends_on:
+      - master
+    build:
+      context: .
+      target: rosprinter
+    environment:
+      - "ROS_HOSTNAME=rosprinter"
+      - "ROS_MASTER_URI=http://master:11311"
+    tty: true
+    stdin_open: true
 
 networks:
   rosnet:

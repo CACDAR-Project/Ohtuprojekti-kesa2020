@@ -78,7 +78,8 @@ class ObjectDetector:
     def run(self, showgui: bool):
         pub = rospy.Publisher("observations", observation, queue_size=50)
         input_sub = rospy.Subscriber("inputs", String, self.print_input)
-        rospy.spin()
+        print("asdasd")
+        print("asdasd")
         cam = cv.VideoCapture(
             "test.mp4")  # Can be replaced with camera id, path to camera etc.
         while cam.grab():
@@ -125,4 +126,5 @@ if __name__ == "__main__":
    
     detector.run(False)
     #detector.run(True)
+    ros.spin()
     
