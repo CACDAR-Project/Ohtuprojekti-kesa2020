@@ -2,15 +2,18 @@
 
 pwd=$(pwd)
 
-docker kill $(docker ps -q);
+docker kill $(docker ps -q)
 docker-compose build
 docker-compose up -d
 
+# Open new terminal windows and which attach to different containers
 gnome-terminal --geometry 80x24+0+0 --title="ROSINPUT" -- /bin/sh -c 'docker attach rosinput' &
 gnome-terminal --geometry 80x24+0+488 --title="ROSTEST" -- /bin/sh -c 'docker attach rostest' &
 gnome-terminal --geometry 80x24+734+0 --title="MASTER" -- /bin/sh -c 'docker attach master' &
 gnome-terminal --geometry 80x24+734+488 --title="ROSPRINTER" -- /bin/sh -c 'docker attach rosprinter' &
-gnome-terminal --geometry 80x24+0+976 --title="All containers" -- /bin/sh -c 'cd '${pwd}'; docker-compose up; exec bash;'
+
+# Open window which can be used to close all containers
+gnome-terminal --geometry 80x24+0+976 --title="All containers" -- /bin/sh -c 'cd '${pwd}'; docker-compose up'
 
 #To a avoid using sudo with docker add yourself to docker group:
 #1. Create the docker group.
