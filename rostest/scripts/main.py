@@ -126,8 +126,7 @@ if __name__ == "__main__":
     detector = ObjectDetector(
         "ssdlite_mobilenet_v2_coco_2018_05_09/frozen_inference_graph.pb",
         "mscoco_complete_labels")
-   
+
     detector.run(False)
     #detector.run(True)
     ros.spin()
-    
