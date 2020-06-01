@@ -124,5 +124,5 @@ if __name__ == "__main__":
                               "mscoco_complete_labels")
 
     detector.run(False)
-    detector.run(True)
+    #detector.run(True)
     ros.spin()
