@@ -16,10 +16,12 @@ jobs:
         command: |
           curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
           poetry install
+    - run:
+        command: |      
+          poetry run yapf -rd .
     - run: 
         command: |
           poetry run coverage run -m unittest discover
           poetry run coverage xml
-          poetry run yapf -rd .
     - codecov/upload:
           file: "./coverage.xml"

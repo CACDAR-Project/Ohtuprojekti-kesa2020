@@ -4,6 +4,7 @@ import tensorflow as tf
 from typing import List
 import rospy
 from rostest.msg import observation, boundingbox
+from std_msgs.msg import String
 
 # https://github.com/opencv/opencv/wiki/TensorFlow-Object-Detection-API
 tf.compat.v1.disable_v2_behavior()
@@ -71,8 +72,14 @@ class ObjectDetector:
                 })
         return detections
 
+    def print_input(self, input):
+        print("Recieved input from another node: " + input.data)
+
     def run(self, showgui: bool):
         pub = rospy.Publisher("observations", observation, queue_size=50)
+        input_sub = rospy.Subscriber("inputs", String, self.print_input)
+        print("asdasd")
+        print("asdasd")
         cam = cv.VideoCapture(
             "test.mp4")  # Can be replaced with camera id, path to camera etc.
         while cam.grab():
@@ -81,7 +88,6 @@ class ObjectDetector:
             height = img.shape[0]
             width = img.shape[1]
             for detection in self.detect(img):
-                print(detection)
                 pub.publish(
                     observation(
                         detection["class_id"], detection["label"],
@@ -91,7 +97,7 @@ class ObjectDetector:
                                     detection["bbox"]["bottom"],
                                     detection["bbox"]["left"])))
                 if showgui:
-                    # Draw boxes around objects and display the result
+                    # Draw boxes around objects
                     top = detection["bbox"]["top"] * height
                     left = detection["bbox"]["left"] * width
                     right = detection["bbox"]["right"] * width
@@ -105,8 +111,11 @@ class ObjectDetector:
                     cv.rectangle(img, (int(left), int(top)),
                                  (int(right), int(bottom)), (125, 255, 51),
                                  thickness=2)
-                    cv.imshow('img', img)
-                    cv.waitKey(1)
+
+            # Display the result
+            if showgui:
+                cv.imshow('img', img)
+                cv.waitKey(1)
 
     def close(self):
         self.sess.close()
@@ -117,6 +126,7 @@ if __name__ == "__main__":
     detector = ObjectDetector(
         "ssdlite_mobilenet_v2_coco_2018_05_09/frozen_inference_graph.pb",
         "mscoco_complete_labels")
+
     detector.run(False)
     #detector.run(True)
-    rospy.spin()
+    ros.spin()

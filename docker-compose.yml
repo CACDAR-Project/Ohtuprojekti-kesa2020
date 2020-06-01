@@ -6,13 +6,46 @@ services:
     image: ros:melodic-ros-core
     command: roscore
   rostest:
+    container_name: "rostest"
     networks:
       - rosnet
     depends_on:
       - master
-    build: .
+    build: 
+      context: .
+      target: rostest
     environment:
       - "ROS_HOSTNAME=rostest"
       - "ROS_MASTER_URI=http://master:11311"
+    tty: true
+  rosinput:
+    container_name: "rosinput"
+    networks:
+      - rosnet
+    depends_on:
+      - master
+    build:
+      context: .
+      target: rosinput
+    environment:
+      - "ROS_HOSTNAME=rosinput"
+      - "ROS_MASTER_URI=http://master:11311"
+    stdin_open: true
+    tty: true
+  rosprinter:
+    container_name: "rosprinter"
+    networks:
+      - rosnet
+    depends_on:
+      - master
+    build:
+      context: .
+      target: rosprinter
+    environment:
+      - "ROS_HOSTNAME=rosprinter"
+      - "ROS_MASTER_URI=http://master:11311"
+    tty: true
+    stdin_open: true
+
 networks:
   rosnet:
