@@ -1,6 +1,7 @@
 #!/usr/bin/env python3.7
 import cv2 as cv
 import tensorflow as tf
+import numpy as np
 from typing import List
 import rospy
 from rostest.msg import observation, boundingbox
@@ -27,41 +28,39 @@ class ObjectDetector:
                 self.labels.append(line)
 
     def load_model(self, model_path: str):
-        with tf.compat.v1.gfile.GFile(model_path, 'rb') as f:
-            self.graph_def = tf.compat.v1.GraphDef()
-            self.graph_def.ParseFromString(f.read())
-        self.sess = tf.compat.v1.Session()
-        self.sess.graph.as_default()
-        tf.import_graph_def(self.graph_def, name='')
+        self.interpreter = tf.lite.Interpreter(model_path)
+        self.interpreter.allocate_tensors()
+        self.input_details = self.interpreter.get_input_details()
+        self.output_details = self.interpreter.get_output_details()
 
     # Input BGR from OpenCV
     def detect(self, img):
-        inp = cv.resize(img, (300, 300))
+        # Prepare the input
+        inp = cv.resize(img, (self.input_details[0]['shape'][1],
+                              self.input_details[0]['shape'][2]))
         inp = inp[:, :, [2, 1, 0]]  # BGR2RGB
+        inp = np.expand_dims(inp, axis=0)
 
         # Run the model
-        out = self.sess.run([
-            self.sess.graph.get_tensor_by_name('num_detections:0'),
-            self.sess.graph.get_tensor_by_name('detection_scores:0'),
-            self.sess.graph.get_tensor_by_name('detection_boxes:0'),
-            self.sess.graph.get_tensor_by_name('detection_classes:0')
-        ],
-                            feed_dict={
-                                'image_tensor:0':
-                                inp.reshape(1, inp.shape[0], inp.shape[1], 3)
-                            })
+        self.interpreter.set_tensor(self.input_details[0]['index'], inp)
+        self.interpreter.invoke()
+
+        boxes = self.interpreter.get_tensor(self.output_details[0]['index'])[0]
+        classes = self.interpreter.get_tensor(
+            self.output_details[1]['index'])[0]
+        scores = self.interpreter.get_tensor(
+            self.output_details[2]['index'])[0]
 
         # Visualize detected bounding boxes.
-        num_detections = int(out[0][0])
         detections = []
-        for i in range(num_detections):
-            classId = int(out[3][0][i])
-            score = float(out[1][0][i])
-            bbox = [float(v) for v in out[2][0][i]]
+        for i in range(len(scores)):
+            classId = int(classes[i])
+            score = float(scores[i])
+            bbox = [float(v) for v in boxes[i]]
             if score > 0.3:
                 detections.append({
                     "class_id": classId,
-                    "label": self.labels[int(classId)],
+                    "label": self.labels[int(classId) + 1],
                     "score": score,
                     "bbox": {
                         "top": bbox[0],
@@ -78,8 +77,6 @@ class ObjectDetector:
     def run(self, showgui: bool):
         pub = rospy.Publisher("observations", observation, queue_size=50)
         input_sub = rospy.Subscriber("inputs", String, self.print_input)
-        print("asdasd")
-        print("asdasd")
         cam = cv.VideoCapture(
             "test.mp4")  # Can be replaced with camera id, path to camera etc.
         while cam.grab():
@@ -123,10 +120,9 @@ class ObjectDetector:
 
 if __name__ == "__main__":
     rospy.init_node("Testnode")
-    detector = ObjectDetector(
-        "ssdlite_mobilenet_v2_coco_2018_05_09/frozen_inference_graph.pb",
-        "mscoco_complete_labels")
+    detector = ObjectDetector("ssd_mobilenet_v1_1_metadata_1.tflite",
+                              "mscoco_complete_labels")
 
     detector.run(False)
-    #detector.run(True)
+    detector.run(True)
     ros.spin()
