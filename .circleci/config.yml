@@ -14,12 +14,12 @@ jobs:
     - run: sudo chown -R circleci:circleci /usr/local/lib/python3.7/site-packages
     - run:
         command: |
-          sudo pip install pipenv
-          pipenv install --dev
+          curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+          poetry install
     - run: 
         command: |
-          pipenv run coverage run -m unittest discover
-          pipenv run coverage xml
-          pipenv run yapf -rd .
+          poetry run coverage run -m unittest discover
+          poetry run coverage xml
+          poetry run yapf -rd .
     - codecov/upload:
           file: "./coverage.xml"

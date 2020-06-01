@@ -3,7 +3,7 @@
 Setup ROS catkin workspace, `git clone` to `catkin_ws/src/` and build the catkin workspace.
 
 
-`pipenv shell`
+`poetry shell`
 ```
 source ../../devel/setup.bash
 cd rostest

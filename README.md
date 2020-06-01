@@ -12,16 +12,14 @@
 [Backlog](https://docs.google.com/spreadsheets/d/1jyyo4Vl1vxXgr6DDcG-a-Rb9Xx-2B-TYjd2KzZyrj3M)
 
 ## Commands for virtual environment
-[pipenv](https://github.com/pypa/pipenv) is used for managing dependencies
+[poetry](https://github.com/python-poetry/poetry) is used for managing dependencies
 
 #### Creating virtual environment for development
-`pipenv install --dev`
+`poetry install`
 
 #### Activate virtual environment
-`pipenv shell`
-or `pipenv run <command>` to run a single command in the environment
-#### More
-[pipenv usage](https://github.com/pypa/pipenv#-usage)
+`poetry shell`
+or `poetry run <command>` to run a single command in the environment
 
 ## Structure of the application
 ```bash
@@ -70,15 +68,15 @@ Create an test file named `test_<module_to_test>.py` inside `application/tests/<
 
 ## Run OpenCV face detection from root
 from video:  
-`pipenv run -- python src/main.py -v`  
+`poetry run -- python src/main.py -v`  
 from image file:  
-`pipenv run -- python src/main.py -i` + number 1-3  
+`poetry run -- python src/main.py -i` + number 1-3  
 Exit with ctrl + c   
 
 
 # Formatting
 
-Run [yapf](https://github.com/google/yapf/) before commits `pipenv run yapf -ri .`  
-Use `pipenv run yapf -rd .` to print diff of changes if needed.
+Run [yapf](https://github.com/google/yapf/) before commits `poetry run yapf -ri .`  
+Use `poetry run yapf -rd .` to print diff of changes if needed.
 
 [pep8 style guide](https://www.python.org/dev/peps/pep-0008/)
