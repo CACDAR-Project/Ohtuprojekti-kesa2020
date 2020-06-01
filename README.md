@@ -11,6 +11,13 @@
 
 [Backlog](https://docs.google.com/spreadsheets/d/1jyyo4Vl1vxXgr6DDcG-a-Rb9Xx-2B-TYjd2KzZyrj3M)
 
+## Runnin Docker with script file
+
+`./docker_runner.sh`
+
+Kills containers that are open, builds and runs containers and attaches new terminals to them.
+
+
 ## Commands for virtual environment
 [poetry](https://github.com/python-poetry/poetry) is used for managing dependencies
 
