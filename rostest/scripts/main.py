@@ -4,7 +4,7 @@ import tensorflow as tf
 from typing import List
 import rospy
 from rostest.msg import observation, boundingbox
-from std_msgs.msg import String
+from rostest.srv import text_message, text_messageResponse
 
 # https://github.com/opencv/opencv/wiki/TensorFlow-Object-Detection-API
 tf.compat.v1.disable_v2_behavior()
@@ -73,13 +73,12 @@ class ObjectDetector:
         return detections
 
     def print_input(self, input):
-        print("Recieved input from another node: " + input.data)
+        print("Recieved message from another node: " + input.message)
+        return text_messageResponse("We recieved your message!")
 
     def run(self, showgui: bool):
         pub = rospy.Publisher("observations", observation, queue_size=50)
-        input_sub = rospy.Subscriber("inputs", String, self.print_input)
-        print("asdasd")
-        print("asdasd")
+        recieved_message = rospy.Service('inputs', text_message, self.print_input)
         cam = cv.VideoCapture(
             "test.mp4")  # Can be replaced with camera id, path to camera etc.
         while cam.grab():
@@ -129,4 +128,4 @@ if __name__ == "__main__":
 
     detector.run(False)
     #detector.run(True)
-    ros.spin()
+    rospy.spin()

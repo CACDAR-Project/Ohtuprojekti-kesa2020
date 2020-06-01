@@ -1,6 +1,7 @@
 version: "3.4"
 services:
   master:
+    container_name: "master"
     networks:
       - rosnet
     image: ros:melodic-ros-core
@@ -44,6 +45,8 @@ services:
     environment:
       - "ROS_HOSTNAME=rosprinter"
       - "ROS_MASTER_URI=http://master:11311"
+    logging:
+      driver: none
     tty: true
     stdin_open: true
 
