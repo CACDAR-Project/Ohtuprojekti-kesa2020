@@ -21,6 +21,7 @@ jobs:
           poetry run yapf -rd .
     - run: 
         command: |
+          cd rostest
           poetry run coverage run -m unittest discover
           poetry run coverage xml
     - codecov/upload:
