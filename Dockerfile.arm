@@ -19,6 +19,7 @@ WORKDIR /catkin_ws/src/ohtu
 COPY pyproject.toml /catkin_ws/src/ohtu/
 RUN printf '[[tool.poetry.source]]\nname = "piwheels"\nurl = "https://www.piwheels.org/simple/"\ndefault = true\n' | cat - pyproject.toml > asd && mv asd pyproject.toml
 RUN poetry env use python3.7
+RUN poetry run pip install --upgrade pip
 RUN poetry install -vvv --no-dev
 COPY . /catkin_ws/src/ohtu/
 WORKDIR /catkin_ws
