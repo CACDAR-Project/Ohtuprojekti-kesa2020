@@ -8,8 +8,10 @@ from object_detector import ObjectDetector
 
 # https://github.com/opencv/opencv/wiki/TensorFlow-Object-Detection-API
 
+
 def print_input(self, input):
     print("Received a message from another node: {}".f(input.message))
+
 
 def run(showgui: bool):
     pub = rospy.Publisher("observations", observation, queue_size=50)
@@ -39,9 +41,8 @@ def run(showgui: bool):
                 right = detection["bbox"]["right"] * width
                 bottom = detection["bbox"]["bottom"] * height
                 cv.putText(
-                    img,
-                    "{} score: {}".format(detection["label"],
-                                          round(detection["score"], 3)),
+                    img, "{} score: {}".format(detection["label"],
+                                               round(detection["score"], 3)),
                     (int(left), int(top - 5)), cv.QT_FONT_NORMAL, 1,
                     (255, 0, 255), 1, cv.LINE_AA)
                 cv.rectangle(img, (int(left), int(top)),
@@ -52,7 +53,6 @@ def run(showgui: bool):
         if showgui:
             cv.imshow('img', img)
             cv.waitKey(1)
-
 
 
 if __name__ == "__main__":

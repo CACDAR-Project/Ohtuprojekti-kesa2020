@@ -3,6 +3,7 @@ import tensorflow as tf
 import numpy as np
 from typing import List
 
+
 class ObjectDetector:
     labels: List[str]
     interpreter: tf.lite.Interpreter
