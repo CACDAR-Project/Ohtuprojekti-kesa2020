@@ -7,6 +7,8 @@ RUN mkdir -p /catkin_ws/src/ohtu
 WORKDIR /catkin_ws/src/ohtu
 COPY pyproject.toml /catkin_ws/src/ohtu/
 COPY poetry.lock /catkin_ws/src/ohtu/
+RUN poetry run pip install --upgrade pip
+RUN poetry run pip install --upgrade setuptools
 RUN poetry install
 COPY . /catkin_ws/src/ohtu/
 WORKDIR /catkin_ws
@@ -22,6 +24,8 @@ RUN mkdir -p /catkin_ws/src/ohtu
 WORKDIR /catkin_ws/src/ohtu
 COPY pyproject.toml /catkin_ws/src/ohtu/
 COPY poetry.lock /catkin_ws/src/ohtu/
+RUN poetry run pip install --upgrade pip
+RUN poetry run pip install --upgrade setuptools
 RUN poetry install
 COPY . /catkin_ws/src/ohtu/
 WORKDIR /catkin_ws
@@ -37,6 +41,8 @@ RUN mkdir -p /catkin_ws/src/ohtu
 WORKDIR /catkin_ws/src/ohtu
 COPY pyproject.toml /catkin_ws/src/ohtu/
 COPY poetry.lock /catkin_ws/src/ohtu/
+RUN poetry run pip install --upgrade pip
+RUN poetry run pip install --upgrade setuptools
 RUN poetry install
 COPY . /catkin_ws/src/ohtu/
 WORKDIR /catkin_ws
