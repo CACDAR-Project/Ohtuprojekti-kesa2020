@@ -11,7 +11,7 @@ from object_detector import ObjectDetector
 
 #frequency in hertz
 run_frequency = 1
-period = 1.0/run_frequency
+period = 1.0 / run_frequency
 #video source - camera id, path to camera etc.
 source = "test.mp4"
 
@@ -20,22 +20,23 @@ def print_input(input):
     print(f"Received a message from another node: {input.message}")
     return text_messageResponse("We received you message!")
 
+
 def change_frequency(new_frequency):
     global run_frequency
     global period
     run_frequency = new_frequency.data
-    period = 1.0/run_frequency
+    period = 1.0 / run_frequency
     return new_frequencyResponse("We received you frequency!")
+
 
 def run(showgui: bool):
     pub = rospy.Publisher("observations", observation, queue_size=50)
     message_service = rospy.Service('inputs', text_message, print_input)
-    frequency_service = rospy.Service('frequency', new_frequency, change_frequency)
+    frequency_service = rospy.Service('frequency', new_frequency,
+                                      change_frequency)
     cam = cv.VideoCapture(source)
     detector = ObjectDetector("ssd_mobilenet_v1_1_metadata_1.tflite",
                               "mscoco_complete_labels")
-    
-    
 
     while cam.grab():
         start_time = time.time()
@@ -75,7 +76,6 @@ def run(showgui: bool):
         time_to_sleep = period - (time.time() - start_time)
         if time_to_sleep > 0:
             time.sleep(time_to_sleep)
-        
 
 
 if __name__ == "__main__":
