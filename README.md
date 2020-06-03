@@ -35,4 +35,6 @@ Use `poetry run yapf -rd .` to print diff of changes if needed.
 `rosdoc_lite rostest`
 
 ##### ...or from rostest folder
-`rosdoc_lite .`
+`rosdoc_lite .`  
+
+You can find the documentation in rostest/doc/ and view it on your browser.
