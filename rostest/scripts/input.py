@@ -7,6 +7,7 @@ import rospy
 # @TODO: ### **Fix input: not working on docker.**
 # - [ ] testing
 
+
 def run():
 
     print("Waiting for service")
