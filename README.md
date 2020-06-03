@@ -37,3 +37,12 @@ Run [yapf](https://github.com/google/yapf/) before commits `poetry run yapf -ri 
 Use `poetry run yapf -rd .` to print diff of changes if needed.
 
 [pep8 style guide](https://www.python.org/dev/peps/pep-0008/)
+
+
+# Documentation
+
+#### Generate documentation from root
+`rosdoc_lite rostest`
+
+##### ...or from rostest folder
+`rosdoc_lite .`
