@@ -14,7 +14,6 @@ script:
 deploy:
   - provider: script
     script:
-      - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-      - docker push ohtukonenako/ohtuprojekti_kesa2020:latest
+      - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin && docker push ohtukonenako/ohtuprojekti_kesa2020:latest
     on:
       branch: master
