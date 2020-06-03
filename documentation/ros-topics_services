@@ -1,0 +1,8 @@
+Name            | Type      | Topic | Queue | Comments
+                |           |  or   | Size  |
+                |           |Service|       |
+----------------+-----------+-------+-------+-----------
+"inputs"        | String    | ?     | ?     | Used for testing topics/services(?)
+"qr_results"    | String    | ?     | 50    | Detected QR-codes
+"observations"  |observation| ?     | 50    | "class_id", "label", "score", boundingbox
+"camera_feed"   | Image     | ?     | 1     | NOTE: currently in branch camera_as_node
