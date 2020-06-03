@@ -2,7 +2,13 @@
 
 pwd=$(pwd)
 
-docker kill $(docker ps -q)
+# Check for open containers and if they exist, kill them
+if [ $(docker ps -q | wc -l) -ne 0 ]; then
+    docker kill $(docker ps -q)
+else
+    echo "No containers running, continuing.."
+fi
+
 docker-compose build
 docker-compose up -d
 
