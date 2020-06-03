@@ -1,0 +1,20 @@
+actions: []
+authors: ''
+brief: ''
+bugtracker: ''
+depends:
+- message_generation
+- catkin
+- message_runtime
+- rospy
+description: The rostest package
+license: TODO
+maintainers: ros <ros@todo.todo>
+msgs:
+- observation
+- boundingbox
+package_type: package
+repo_url: ''
+srvs:
+- text_message
+url: ''
