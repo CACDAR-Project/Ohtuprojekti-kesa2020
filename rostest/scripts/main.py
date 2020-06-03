@@ -9,8 +9,9 @@ from object_detector import ObjectDetector
 # https://github.com/opencv/opencv/wiki/TensorFlow-Object-Detection-API
 
 
-def print_input(self, input):
-    print("Received a message from another node: {}".f(input.message))
+def print_input(input):
+    print(f"Received a message from another node: {input.message}")
+    return text_messageResponse("We received you message!")
 
 
 def run(showgui: bool):
@@ -58,5 +59,5 @@ def run(showgui: bool):
 if __name__ == "__main__":
     rospy.init_node("Testnode")
     run(False)
-    #detector.run(True)
+    #run(True)
     rospy.spin()

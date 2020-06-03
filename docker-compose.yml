@@ -6,6 +6,7 @@ services:
       - rosnet
     image: ros:melodic-ros-core
     command: roscore
+
   rostest:
     container_name: "rostest"
     networks:
@@ -18,7 +19,9 @@ services:
     environment:
       - "ROS_HOSTNAME=rostest"
       - "ROS_MASTER_URI=http://master:11311"
-    tty: true
+    tty: True
+    privileged: True
+
   rosinput:
     container_name: "rosinput"
     networks:
@@ -33,6 +36,7 @@ services:
       - "ROS_MASTER_URI=http://master:11311"
     stdin_open: true
     tty: true
+
   rosprinter:
     container_name: "rosprinter"
     networks:
