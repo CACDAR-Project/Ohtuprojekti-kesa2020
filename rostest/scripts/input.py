@@ -1,55 +1,28 @@
 #!/usr/bin/env python3.7
-from rostest.srv import text_message, text_messageResponse, new_frequency, new_frequencyResponse
+from rostest.srv import text_message, text_messageResponse
 import rospy
 
 # https://github.com/ros/ros_tutorials/blob/noetic-devel/rospy_tutorials/005_add_two_ints/add_two_ints_client
 
-message_receiver = None
-frequency_changer = None
-
-
-def send_message():
-    print("Give message!")
-    inp = input()
-    response = message_receiver(inp)
-    print("Received response: " + response.response)
-
-
-def send_frequency():
-    print("Give frequency!")
-    inp = int(input())
-    response = frequency_changer(inp)
-    print("Received response: " + response.response)
-
+# @TODO: ### **Fix input: not working on docker.**
+# - [ ] testing
 
 def run():
-    while not rospy.is_shutdown():
-        print(
-            "Give command.\n1 for sending message and 2 for changing frequency:"
-        )
-        inp = input()
 
-        if inp == "1":
-            send_message()
-        elif inp == "2":
-            send_frequency()
-        else:
-            print("Command not recognized!")
-
-
-def init():
-    print("Waiting for services")
+    print("Waiting for service")
     rospy.wait_for_service('inputs')
-    rospy.wait_for_service('frequency')
-    print("Service founds")
+    print("Service found")
 
-    global message_receiver
-    global frequency_changer
+    while not rospy.is_shutdown():
+        message_reciever = rospy.ServiceProxy('inputs', text_message)
 
-    message_receiver = rospy.ServiceProxy('inputs', text_message)
-    frequency_changer = rospy.ServiceProxy('frequency', new_frequency)
+        print("Type your message!")
+        inp = input()
+        print("You typed: " + inp)
+
+        response = message_reciever(inp)
+        print("Recieved response: " + response.response)
 
 
 if __name__ == "__main__":
-    init()
     run()
