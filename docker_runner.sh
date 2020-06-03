@@ -10,7 +10,17 @@ else
 fi
 
 docker-compose build
+if [ $? -ne 0 ]; then
+    echo "Errors running docker-compose build, exiting."
+    exit
+fi
+
 docker-compose up -d
+if [ $? -ne 0 ]; then
+    echo "Errors running docker-compose up, exiting"
+    exit
+fi
+
 
 # Open new terminal windows and which attach to different containers
 gnome-terminal --geometry 80x24+0+0 --title="ROSINPUT" -- /bin/sh -c 'docker attach rosinput' &
@@ -20,6 +30,7 @@ gnome-terminal --geometry 80x24+734+488 --title="ROSPRINTER" -- /bin/sh -c 'dock
 
 # Open window which can be used to close all containers
 gnome-terminal --geometry 80x24+0+976 --title="All containers" -- /bin/sh -c 'cd '${pwd}'; docker-compose up'
+
 
 #To a avoid using sudo with docker add yourself to docker group:
 #1. Create the docker group.
