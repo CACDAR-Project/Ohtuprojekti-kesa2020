@@ -2,8 +2,11 @@
 from rostest.srv import text_message, text_messageResponse
 import rospy
 
-
 # https://github.com/ros/ros_tutorials/blob/noetic-devel/rospy_tutorials/005_add_two_ints/add_two_ints_client
+
+# @TODO: ### **Fix input: not working on docker.**
+# - [ ] testing
+
 def run():
 
     print("Waiting for service")

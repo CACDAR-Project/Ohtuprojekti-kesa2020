@@ -5,6 +5,8 @@ RUN printf '\ndeb http://ports.ubuntu.com/ubuntu-ports/ focal main universe rest
 RUN printf '\ndeb http://ports.ubuntu.com/ubuntu-ports/ eoan main universe restricted' >> /etc/apt/sources.list
 RUN printf '\ndeb http://ports.ubuntu.com/ubuntu-ports/ xenial main universe restricted' >> /etc/apt/sources.list
 RUN apt-get update
+RUN apt-get install doxygen
+RUn apt-get install ros-melodic-rosdoc-lite
 RUN apt-get install -y libavutil56 libcairo-gobject2 libgtk-3-0 libpango-1.0-0 libavcodec58 libcairo2 libswscale5 libtiff5 libatk1.0-0 libavformat58 libgdk-pixbuf2.0-0 libilmbase23 libjasper1 libopenexr23 libpangocairo-1.0-0 libwebp6 libhdf5-103 libatlas3-base libjpeg62 # OpenCV dependencies
 RUN apt-get -y install python3.7 python3.7-dev python3-pip python3.7-venv
 RUN apt-get clean
