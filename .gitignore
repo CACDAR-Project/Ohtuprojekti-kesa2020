@@ -24,8 +24,10 @@ labelmap.txt
 
 # Data created during runtime
 
-
 **/resources/output/
 saved_detections/
 output.avi
 
+# doc folders
+
+doc/
