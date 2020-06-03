@@ -24,11 +24,10 @@ labelmap.txt
 
 # Data created during runtime
 
-
 **/resources/output/
 saved_detections/
 output.avi
 
-# ROS catking workspace
+# doc folders
 
-catkin_ws
+doc/

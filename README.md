@@ -42,9 +42,11 @@ Use `poetry run yapf -rd .` to print diff of changes if needed.
 # Documentation
 
 #### Generate documentation from root
+This creates a doc-folder to root
 `rosdoc_lite rostest`
 
 ##### ...or from rostest folder
+This creates a doc-folder inside rostest-folder
 `rosdoc_lite .`  
 
-You can find the documentation in rostest/doc/ and view it on your browser.
+You can find the documentation in the doc-folder and view it on your browser.
