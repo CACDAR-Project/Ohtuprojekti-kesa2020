@@ -14,6 +14,11 @@ from image_converter import ImageConverter
 run_frequency = 1
 period = 1.0 / run_frequency
 
+detector = ObjectDetector("ssd_mobilenet_v1_1_metadata_1.tflite",
+                            "mscoco_complete_labels")
+converter = ImageConverter()
+pub = rospy.Publisher("observations", observation, queue_size=50)
+
 
 def print_input(input):
     print(f"Received a message from another node: {input.message}")
@@ -27,7 +32,15 @@ def change_frequency(new_frequency):
     period = 1.0 / run_frequency
     return new_frequencyResponse("We received you frequency!")
 
+def run(showgui: bool):
+    message_service = rospy.Service('inputs', text_message, print_input)
+    frequency_service = rospy.Service('frequency', new_frequency,
+                                      change_frequency)
+    # Image feed topic
+    rospy.Subscriber("camera_feed", image, detect)
+
 def detect(img):
+    start_time = time.time()
     # Converting the image back from ros Image message to a numpy ndarray
     img = converter.msg_to_cv2(img)
     # Resizing could be better to do before sending the message, to save a little bandwidth
@@ -49,16 +62,6 @@ def detect(img):
         time.sleep(time_to_sleep)
     return
 
-def run(showgui: bool):
-    pub = rospy.Publisher("observations", observation, queue_size=50)
-    message_service = rospy.Service('inputs', text_message, print_input)
-    frequency_service = rospy.Service('frequency', new_frequency,
-                                      change_frequency)
-    # Image feed topic
-    rospy.Subscriber("camera_feed", image, detect)
-    detector = ObjectDetector("ssd_mobilenet_v1_1_metadata_1.tflite",
-                              "mscoco_complete_labels")
-    converter = ImageConverter()
 
 
 if __name__ == "__main__":
