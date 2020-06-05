@@ -54,5 +54,22 @@ services:
     tty: true
     stdin_open: true
 
+  roscamera:
+    container_name: "roscamera"
+    networks:
+      - rosnet
+    depends_on:
+      - master
+    build:
+      context: .
+      target: roscamera
+    environment:
+      - "ROS_HOSTNAME=roscamera"
+      - "ROS_MASTER_URI=http://master:11311"
+    logging:
+      driver: none
+    tty: true
+    stdin_open: true
+
 networks:
   rosnet:
