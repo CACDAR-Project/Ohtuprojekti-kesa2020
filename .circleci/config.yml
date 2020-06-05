@@ -19,6 +19,10 @@ jobs:
     - run:
         command: |      
           poetry run yapf -rd .
+    - run:
+        command: |
+          sudo apt-get update
+          sudo apt-get install -y libzbar0
     - run: 
         command: |
           cd rostest

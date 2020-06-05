@@ -21,6 +21,10 @@ Kills containers that are open, builds and runs containers and attaches new term
 `poetry shell`
 or `poetry run <command>` to run a single command in the environment
 
+#### Additional dependencies
+Some libraries must be separately installed, current list:
+ * zbar/libzbar0 
+
 # Formatting
 
 Run [yapf](https://github.com/google/yapf/) before commits `poetry run yapf -ri .`  
