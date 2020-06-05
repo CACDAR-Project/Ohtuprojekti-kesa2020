@@ -50,6 +50,7 @@ find_package(catkin REQUIRED COMPONENTS
    FILES
    boundingbox.msg
    observation.msg
+   image.msg
  )
 
 ## Generate services in the 'srv' folder
