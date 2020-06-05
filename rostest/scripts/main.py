@@ -64,8 +64,8 @@ def detect(img):
 
 
 
+
 if __name__ == "__main__":
     rospy.init_node("Testnode")
-    run(False)
-    #run(True)
+    run()
     rospy.spin()
