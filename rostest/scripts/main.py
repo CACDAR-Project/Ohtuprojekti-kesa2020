@@ -29,7 +29,7 @@ def change_frequency(new_frequency):
     return new_frequencyResponse("We received you frequency!")
 
 
-def run(showgui: bool):
+def run():
     pub = rospy.Publisher("observations", observation, queue_size=50)
     message_service = rospy.Service('inputs', text_message, print_input)
     frequency_service = rospy.Service('frequency', new_frequency,
@@ -42,8 +42,6 @@ def run(showgui: bool):
         start_time = time.time()
         # Read and preprocess an image.
         img = cam.retrieve()[1]
-        height = img.shape[0]
-        width = img.shape[1]
         for detection in detector.detect(img):
             pub.publish(
                 observation(
@@ -53,25 +51,6 @@ def run(showgui: bool):
                                 detection["bbox"]["right"],
                                 detection["bbox"]["bottom"],
                                 detection["bbox"]["left"])))
-            if showgui:
-                # Draw boxes around objects
-                top = detection["bbox"]["top"] * height
-                left = detection["bbox"]["left"] * width
-                right = detection["bbox"]["right"] * width
-                bottom = detection["bbox"]["bottom"] * height
-                cv.putText(
-                    img, "{} score: {}".format(detection["label"],
-                                               round(detection["score"], 3)),
-                    (int(left), int(top - 5)), cv.QT_FONT_NORMAL, 1,
-                    (255, 0, 255), 1, cv.LINE_AA)
-                cv.rectangle(img, (int(left), int(top)),
-                             (int(right), int(bottom)), (125, 255, 51),
-                             thickness=2)
-
-        # Display the result
-        if showgui:
-            cv.imshow('img', img)
-            cv.waitKey(1)
 
         time_to_sleep = period - (time.time() - start_time)
         if time_to_sleep > 0:
@@ -80,6 +59,5 @@ def run(showgui: bool):
 
 if __name__ == "__main__":
     rospy.init_node("Testnode")
-    run(False)
-    #run(True)
+    run()
     rospy.spin()
