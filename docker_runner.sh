@@ -23,13 +23,13 @@ fi
 
 
 # Open new terminal windows and which attach to different containers
-gnome-terminal --geometry 80x24+0+0 --title="ROSINPUT" -- /bin/sh -c 'docker attach rosinput' &
-gnome-terminal --geometry 80x24+0+488 --title="ROSTEST" -- /bin/sh -c 'docker attach rostest' &
-gnome-terminal --geometry 80x24+734+0 --title="MASTER" -- /bin/sh -c 'docker attach master' &
-gnome-terminal --geometry 80x24+734+488 --title="ROSPRINTER" -- /bin/sh -c 'docker attach rosprinter' &
+gnome-terminal --geometry 60x16+0+0 --title="ROSINPUT" -- /bin/sh -c 'docker attach rosinput' &
+gnome-terminal --geometry 60x16+0+359 --title="ROSTEST" -- /bin/sh -c 'docker attach rostest' &
+gnome-terminal --geometry 60x16+625+0 --title="MASTER" -- /bin/sh -c 'docker attach master' &
+gnome-terminal --geometry 60x16+625+359 --title="ROSPRINTER" -- /bin/sh -c 'docker attach rosprinter' &
 
 # Open window which can be used to close all containers
-gnome-terminal --geometry 80x24+0+976 --title="All containers" -- /bin/sh -c 'cd '${pwd}'; docker-compose up'
+gnome-terminal --geometry 60x16+0+680 --title="All containers" -- /bin/sh -c 'cd '${pwd}'; docker-compose up'
 
 
 #To a avoid using sudo with docker add yourself to docker group:
