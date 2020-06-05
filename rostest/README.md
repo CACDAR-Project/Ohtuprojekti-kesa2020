@@ -1,14 +1,54 @@
 ## Usage
 
-Setup ROS catkin workspace, `git clone` to `catkin_ws/src/` and build the catkin workspace.
+Instructions for running the nodes using a local installation of ROS. This is mainly intended for development purposes, while the Docker containers should be used in production.
 
+### Setup
 
-`poetry shell`
+[Setup ROS catkin workspace](https://wiki.ros.org/catkin/Tutorials/create_a_workspace), `git clone` this repository to `catkin_ws/src/` and build the catkin workspace by running 'catkin_make' in the catkin_ws directory.
+```
+cd catkin_ws/src/
+git clone https://github.com/Konenako/Ohtuprojekti-kesa2020.git
+cd ..
+catkin_make
+```
+
+If you haven't already, install the dependencies by running poetry in the repository's root directory.
+```
+cd src/Ohtuprojekti-kesa2020/
+poetry install
+```
+
+Enter the virtual environment.
+```
+poetry shell
+```
+
+Source the catkin workspace (must be done after entering the virtual environment).
 ```
 source ../../devel/setup.bash
-cd rostest
+```
+
+### Running nodes
+
+All the instructions in this section presume you are in the poetry shell, have sourced the setup.bash file and are in the rostest directory (catkin_ws/src/Ohtuprojekti-kesa2020/rostest/).
+
+
+For the ROS nodes to communicate, the master node must be running on the system.
+
+```
+roscore
+```
+
+Running the object detection node.
+```
 rosrun rostest main.py
 ```
+
+Running the printer node to view the detection results.
+```
+rosrun rostest printer.py
+```
+
 
 ## Docker
 
@@ -67,4 +107,4 @@ https://docs.docker.com/compose/compose-file/#devices
 
 ## Versions
 
-Tested to work on Docker version 19.03.8-ce and Docker-compose version 1.25.5
+Tested to work on Docker version 19.03.8-ce, Docker-compose version 1.25.5 and poetry 1.0.5.
