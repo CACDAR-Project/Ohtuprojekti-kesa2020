@@ -26,15 +26,16 @@ def run():
             cv.putText(
                 img, "{} score: {}".format(detection["label"],
                                            round(detection["score"], 3)),
-                (int(left), int(top - 5)), cv.QT_FONT_NORMAL, 1,
-                (255, 0, 255), 1, cv.LINE_AA)
-            cv.rectangle(img, (int(left), int(top)),
-                         (int(right), int(bottom)), (125, 255, 51),
+                (int(left), int(top - 5)), cv.QT_FONT_NORMAL, 1, (255, 0, 255),
+                1, cv.LINE_AA)
+            cv.rectangle(img, (int(left), int(top)), (int(right), int(bottom)),
+                         (125, 255, 51),
                          thickness=2)
 
         # Display the result
         cv.imshow('img', img)
         cv.waitKey(1)
+
 
 if __name__ == "__main__":
     run()
