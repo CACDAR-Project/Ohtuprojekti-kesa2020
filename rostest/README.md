@@ -6,8 +6,8 @@ Instructions for running the nodes using a local installation of ROS. This is ma
 
 [Setup ROS catkin workspace](https://wiki.ros.org/catkin/Tutorials/create_a_workspace), `git clone` this repository to `catkin_ws/src/` and build the catkin workspace by running 'catkin_make' in the catkin_ws directory.
 ```
-cd catkin_ws/src/
-git clone https://github.com/Konenako/Ohtuprojekti-kesa2020.git
+cd ~/catkin_ws/src/
+git clone git@github.com:Konenako/Ohtuprojekti-kesa2020.git
 cd ..
 catkin_make
 ```
@@ -48,8 +48,7 @@ Running the printer node to view the detection results.
 ```
 rosrun rostest printer.py
 ```
-
-
+Running the input node to send messages to object detector
 ## Docker
 
 Building the image
