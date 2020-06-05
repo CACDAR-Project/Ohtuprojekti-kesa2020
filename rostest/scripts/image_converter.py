@@ -13,10 +13,6 @@ class ImageConverter:
         return msg
 
     def msg_to_cv2(self, msg: image) -> np.ndarray:
-        # Get dimensions for reshaping the image 
-        x = msg.height
-        y = msg.width
-
         # Convert the channels from bytes to uint8 arrays and reconstruct the shape
         red2 = np.frombuffer(msg.red, dtype=np.uint8)
         red2 = np.reshape(red2, newshape=(msg.height, msg.width))
