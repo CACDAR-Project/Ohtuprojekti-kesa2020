@@ -12,10 +12,19 @@ jobs:
     - checkout
     - run: sudo chown -R circleci:circleci /usr/local/bin
     - run: sudo chown -R circleci:circleci /usr/local/lib/python3.7/site-packages
+    - restore_cache:
+        keys:
+          - konenako-{{ .Branch }}-{{ checksum "pyproject.toml" }}
+          - konenako-{{ .Branch }}-
+          - konenako-
     - run:
         command: |
           curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
           poetry install
+    - save_cache:
+        paths:
+          - ~/.cache/pypoetry/virtualenvs
+        key: konenako-{{ .Branch }}-{{ checksum "pyproject.toml" }}
     - run:
         command: |      
           poetry run yapf -rd .
