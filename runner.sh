@@ -61,6 +61,3 @@ gnome-terminal --geometry 60x16+0+0 --title="OBJECTS DETECTION" -- /bin/bash -c 
 gnome-terminal --geometry 60x16+0+359 --title="PRINTER" -- /bin/bash -c 'source '${pwd}'/catkin_ws/devel/setup.bash; cd '${pwd}'/catkin_ws/src; rosrun rostest printer.py; exec bash' &
 gnome-terminal --geometry 60x16+625+0 --title="INPUT" -- /bin/bash -c 'source '${pwd}'/catkin_ws/devel/setup.bash; cd '${pwd}'/catkin_ws/src; rosrun rostest input.py; exec bash' &
 gnome-terminal --geometry 60x16+625+359 --title="CAMERA" -- /bin/bash -c 'source '${pwd}'/catkin_ws/devel/setup.bash; cd '${pwd}'/catkin_ws/src; rosrun rostest camera.py; exec bash'
-
-
-
