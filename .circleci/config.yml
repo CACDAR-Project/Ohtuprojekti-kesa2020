@@ -10,6 +10,9 @@ jobs:
       - image: circleci/python:3.7.7
     steps:
     - checkout
+    - add_ssh_keys:
+      fingerprints:
+        - "3a:fd:8a:69:40:1b:3c:76:30:3e:da:a5:a7:c6:8d:c6"
     - run: sudo apt install tree
     - run: tree
     - run: git status
@@ -18,7 +21,7 @@ jobs:
     - run: git config --global user.email "app@circleci.com"
     - run: git config --global user.name "CircleCI"
     - run: git add .
-    - run: git commit -m "CircleCI commit [ci skip]"
+    - run: git commit -m "CircleCI commit to '${CIRCLE_BRANCH}' [ci skip]"
     - run: echo ${CIRCLE_BRANCH}
     - run: git push --set-upstream origin ${CIRCLE_BRANCH}
     - run: sudo chown -R circleci:circleci /usr/local/bin
