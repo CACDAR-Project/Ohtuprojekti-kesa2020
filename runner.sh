@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ros_distro=$(rosversion -d)
-src_folder='rostest'
+src_folder=rostest
 bold=$(tput bold)
 normal=$(tput sgr0)
 pwd=$(pwd)
@@ -23,7 +23,7 @@ fi
 
 if [ -d ${pwd}"/catkin_ws" ]
 then
-    echo 'Folder '${bold}'catkin_ws'${normal}' deleted!'
+    echo 'Folder '${bold}${pwd}'/catkin_ws'${normal}' deleted!'
     rm -r catkin_ws
 fi
 
@@ -37,19 +37,24 @@ fi
 mkdir -p ${pwd}/catkin_ws/src
 cp -r ${pwd}/${src_folder}/* ${pwd}/catkin_ws/src
 
+
+
 echo 'Using '${ros_distro}'.'
 source /opt/ros/${ros_distro}/setup.bash
 
+
+
 poetry remove tensorflow
 
-cd ${pwd}/catkin_ws
-catkin_make
+catkin_make -C ${pwd}/catkin_ws
 
 poetry add tensorflow==1.14.0
 
-source ${pwd}/devel/setup.bash
+gnome-terminal --geometry 80x24+0+488 --title="OBJECTS DETECTION" -- /bin/bash -c 'echo '${pwd}'; source '${pwd}'/catkin_ws/devel/setup.bash; cd '${pwd}'/catkin_ws/src; rosrun rostest main.py; exec bash' &
+gnome-terminal --geometry 80x24+0+488 --title="INPUT" -- /bin/bash -c 'echo '${pwd}'; source '${pwd}'/catkin_ws/devel/setup.bash; cd '${pwd}'/catkin_ws/src; rosrun rostest input.py; exec bash' &
+gnome-terminal --geometry 80x24+0+488 --title="PRINTER" -- /bin/bash -c 'echo '${pwd}'; source '${pwd}'/catkin_ws/devel/setup.bash; cd '${pwd}'/catkin_ws/src; rosrun rostest printer.py; exec bash'
 
-gnome-terminal --geometry 80x24+0+0 --title="ROSCORE" -- /bin/sh -c 'cd '${pwd}' && roscore'
-gnome-terminal --geometry 80x24+0+488 --title="ROSTEST" -- /bin/sh -c 'cd '${pwd}' && poetry shell && source /devel/setup.bash && cd src && rosrun rostest main.py' &
-gnome-terminal --geometry 80x24+734+0 --title="MASTER" -- /bin/sh -c 'cd '${pwd}'/src && docker attach master' &
-gnome-terminal --geometry 80x24+734+488 --title="ROSPRINTER" -- /bin/sh -c 'cd '${pwd}'/src && docker attach rosprinter' &
+echo ${pwd}'/devel/setup.bash'
+
+source ${pwd}/devel/setup.bash
+roscore
