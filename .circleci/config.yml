@@ -11,8 +11,8 @@ jobs:
     steps:
     - checkout
     - add_ssh_keys:
-      fingerprints:
-        - "3a:fd:8a:69:40:1b:3c:76:30:3e:da:a5:a7:c6:8d:c6"
+        fingerprints:
+          - "3a:fd:8a:69:40:1b:3c:76:30:3e:da:a5:a7:c6:8d:c6"
     - run: sudo apt install tree
     - run: tree
     - run: git status
