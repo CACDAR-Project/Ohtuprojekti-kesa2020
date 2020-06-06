@@ -47,7 +47,7 @@ source /opt/ros/${ros_distro}/setup.bash
 echo 'Removing tensorflow 1.14.0 because it requires package enum34 which prevents catkin_make'
 poetry remove tensorflow > /dev/null 2>&1
 
-echo 'Creating catkin_workspace with catkin_make to '${pwd}'/catkin_ws'
+echo 'Creating catkin workspace with catkin_make to '${pwd}'/catkin_ws'
 catkin_make -C ${pwd}/catkin_ws > /dev/null 2>&1
 
 echo 'Adding tensorflow 1.14.0 because it is needed'
