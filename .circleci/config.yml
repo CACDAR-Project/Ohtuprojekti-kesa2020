@@ -34,6 +34,7 @@ jobs:
               echo 'YAPF FAILED!'
           else
               echo 'YAPF SUCCEEDED!'
+              return 0
           fi
     - run:
         command: |
