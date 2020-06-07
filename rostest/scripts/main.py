@@ -17,7 +17,7 @@ period = 1.0 / run_frequency
 detector = ObjectDetector("ssd_mobilenet_v1_1_metadata_1.tflite",
                           "mscoco_complete_labels")
 converter = ImageConverter()
-pub = rospy.Publisher("observations", observation, queue_size=50)
+pub = rospy.Publisher("observations",observation, queue_size=50)
 
 
 def print_input(input):
