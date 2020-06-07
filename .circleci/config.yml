@@ -32,10 +32,8 @@ jobs:
           YAPF_FAIL=$(poetry run yapf -rd .);
           if [ "$YAPF_FAIL" != "" ]; then
               echo 'YAPF FAILED!'
-              exit 0
           else
               echo 'YAPF SUCCEEDED!'
-              exit 0
           fi
     - run:
         command: |
