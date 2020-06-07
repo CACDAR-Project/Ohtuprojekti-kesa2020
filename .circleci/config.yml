@@ -32,9 +32,8 @@ jobs:
           YAPF_FAIL=$(poetry run yapf -rd .);
           if [ "$YAPF_FAIL" != "" ]; then
               echo 'YAPF FAILED!'
-          else
-              echo 'YAPF SUCCEEDED!'
           fi
+          echo 'YAPF SUCCEEDED!'
     - run:
         command: |
           sudo apt-get update
