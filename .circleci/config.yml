@@ -34,6 +34,7 @@ jobs:
               echo 'YAPF FAILED!'
           fi
           echo 'YAPF SUCCEEDED!'
+          exit 0
     - run:
         command: |
           sudo apt-get update
