@@ -12,18 +12,7 @@ jobs:
     - checkout
     - add_ssh_keys:
         fingerprints:
-          - "3a:fd:8a:69:40:1b:3c:76:30:3e:da:a5:a7:c6:8d:c6"
-    - run: sudo apt install tree
-    - run: tree
-    - run: git status
-    - run: touch testfile
-    - run: git status
-    - run: git config --global user.email "app@circleci.com"
-    - run: git config --global user.name "CircleCI"
-    - run: git add .
-    - run: git commit -m "CircleCI commit to '${CIRCLE_BRANCH}' [ci skip]"
-    - run: echo ${CIRCLE_BRANCH}
-    - run: git push --set-upstream origin ${CIRCLE_BRANCH}
+          - "3a:fd:8a:69:40:1b:3c:76:30:3e:da:a5:a7:c6:8d:c6"     
     - run: sudo chown -R circleci:circleci /usr/local/bin
     - run: sudo chown -R circleci:circleci /usr/local/lib/python3.7/site-packages
     - restore_cache:
@@ -39,9 +28,17 @@ jobs:
         paths:
           - ~/.cache/pypoetry/virtualenvs
         key: konenako-{{ .Branch }}-{{ checksum "pyproject.toml" }}
-    - run:
-        command: |      
-          poetry run yapf -rd .
+    - run: |      
+          if [ $(poetry run yapf -rd .) = 1 ]; then
+              echo 'YAPF FAILED!'
+              poetry run yapf -ri .
+              git config --global user.email "app@circleci.com"
+              git config --global user.name "CircleCI"
+              git add .
+              echo "export COMMIT_MESSAGE=\"$(git log --format=oneline -n 1 $CIRCLE_SHA1)\"" >> ~/.bashrc
+              git commit -m "${COMMIT_MESSAGE} formatted by CircleCI" -m "[ci skip]"
+              git push --set-upstream origin ${CIRCLE_BRANCH}
+          fi
     - run:
         command: |
           sudo apt-get update
@@ -52,4 +49,5 @@ jobs:
           poetry run coverage run -m unittest discover
           poetry run coverage xml
     - codecov/upload:
-          file: "rostest/coverage.xml"
+        file: "rostest/coverage.xml"
+ 
