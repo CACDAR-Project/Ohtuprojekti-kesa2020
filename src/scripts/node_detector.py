@@ -42,7 +42,7 @@ def run():
 
 
 def detect(img):
-    ###start_time = time.time()
+    start_time = time.time()
     # Converting the image back from ros Image message to a numpy ndarray
     img = converter.msg_to_cv2(img)
     # Resizing could be better to do before sending the message, to save a little bandwidth
@@ -58,9 +58,9 @@ def detect(img):
                             detection["bbox"]["bottom"],
                             detection["bbox"]["left"])))
 
-    ###time_to_sleep = period - (time.time() - start_time)
-    ###if time_to_sleep > 0:
-    ###    time.sleep(time_to_sleep)
+    time_to_sleep = period - (time.time() - start_time)
+    if time_to_sleep > 0:
+        time.sleep(time_to_sleep)
     return
 
 
