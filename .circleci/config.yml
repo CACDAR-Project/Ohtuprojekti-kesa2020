@@ -30,6 +30,9 @@ jobs:
         key: konenako-{{ .Branch }}-{{ checksum "pyproject.toml" }}
     - run: |      
           YAPF_FAIL=$(poetry run yapf -rd .);
+          if [ "$YAPF_FAIL" != "" ]; then
+              echo 'YAPF FAILED!'
+          fi
     - run:
         command: |
           sudo apt-get update
