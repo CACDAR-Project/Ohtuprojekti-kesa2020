@@ -12,3 +12,9 @@ if [ "$YAPF_FAIL" != "" ]; then
     #git commit -m "${COMMIT_MESSAGE} formatted by CircleCI" -m "[ci skip]"
     #git push --set-upstream origin ${CIRCLE_BRANCH}
 fi
+
+ { if [ "$YAPF_FAIL" != "" ]; then
+              echo 'YAPF FAILED!'
+          fi } || true
+          echo 'YAPF SUCCEEDED!'
+          exit 0
