@@ -11,8 +11,8 @@ jobs:
     steps:
     - checkout
     - add_ssh_keys:
-      fingerprints:
-        - "3a:fd:8a:69:40:1b:3c:76:30:3e:da:a5:a7:c6:8d:c6"
+        fingerprints:
+          - "3a:fd:8a:69:40:1b:3c:76:30:3e:da:a5:a7:c6:8d:c6"
     - run: sudo apt install tree
     - run: tree
     - run: git status
@@ -39,8 +39,9 @@ jobs:
         paths:
           - ~/.cache/pypoetry/virtualenvs
         key: konenako-{{ .Branch }}-{{ checksum "pyproject.toml" }}
-    - run: |      
-          YAPF_FAIL=$(poetry run yapf -rd .);
+    - run:
+        command: |      
+          poetry run yapf -rd .
     - run:
         command: |
           sudo apt-get update
@@ -51,5 +52,4 @@ jobs:
           poetry run coverage run -m unittest discover
           poetry run coverage xml
     - codecov/upload:
-        file: "rostest/coverage.xml"
- 
+          file: "rostest/coverage.xml"
