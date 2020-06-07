@@ -29,7 +29,7 @@ jobs:
           - ~/.cache/pypoetry/virtualenvs
         key: konenako-{{ .Branch }}-{{ checksum "pyproject.toml" }}
     - run: |      
-          if [ $(poetry run yapf -rd .) = 1 ]; then
+          if [ [$(poetry run yapf -rd .) = 1] ]; then
               echo 'YAPF FAILED!'
               poetry run yapf -ri .
               git config --global user.email "app@circleci.com"
