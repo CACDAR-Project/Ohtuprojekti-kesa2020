@@ -1,6 +1,6 @@
 import unittest
 import cv2
-from scripts.object_detector import ObjectDetector
+from scripts.detector.object_detector import ObjectDetector
 
 
 class Detector(unittest.TestCase):

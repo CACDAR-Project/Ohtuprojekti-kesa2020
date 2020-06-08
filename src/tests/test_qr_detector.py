@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 import cv2 as cv
-from scripts.qr_detector import QrDetector
+from scripts.detector.qr_detector import QrDetector
 
 
 class QRCodeDetector(unittest.TestCase):
