@@ -71,5 +71,22 @@ services:
     tty: true
     stdin_open: true
 
+  rosqrnode:
+    container_name: "rosqrnode"
+    networks:
+      - rosnet
+    depends_on:
+      - master
+    build:
+      context: .
+      target: rosqrnode
+    environment:
+      - "ROS_HOSTNAME=rosqrnode"
+      - "ROS_MASTER_URI=http://master:11311"
+    logging:
+      driver: none
+    tty: true
+    stdin_open: true
+
 networks:
   rosnet:
