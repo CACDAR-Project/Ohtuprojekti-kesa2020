@@ -39,16 +39,26 @@ For the ROS nodes to communicate, the master node must be running on the system.
 roscore
 ```
 
-Running the object detection node.
+Running the object detection node. Printer node is required to view the results.
 ```
 rosrun rostest main.py
+```
+
+Running the QR code reader node. Printer node is required to view the results.
+```
+rosrun rostest qr_node.py
 ```
 
 Running the printer node to view the detection results.
 ```
 rosrun rostest printer.py
 ```
-Running the input node to send messages to object detector
+
+Running the input node to send messages and commands to object detector and QR nodes for development purposes.
+```
+rosrun rostest input.py
+```
+
 ## Docker
 
 Building the image
