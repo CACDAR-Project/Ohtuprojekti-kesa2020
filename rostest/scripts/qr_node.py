@@ -2,7 +2,7 @@
 import rospy
 import time
 import image_converter
-from qr_detector import QrDetector
+import qr_detector
 from std_msgs.msg import String
 from rostest.msg import image, qr_observation, polygon, boundingbox, point64
 from rostest.srv import new_frequency, new_frequencyResponse
@@ -22,7 +22,6 @@ class QRReader:
 
     def __init__(self, on: bool = False):
         self.detect_on = on
-        self.detector = QrDetector()
 
         # Results are published as qr_observation.msg ROS messages.
         self.pub = rospy.Publisher("qr_results", qr_observation, queue_size=50)
@@ -45,7 +44,7 @@ class QRReader:
         img = image_converter.msg_to_cv2(msg)
 
         # Detect QR codes with qr_detector.py
-        observations = self.detector.detect(img)
+        observations = qr_detector.detect(img)
         for o in observations:
             obs = qr_observation(
                 str(o["data"]),
