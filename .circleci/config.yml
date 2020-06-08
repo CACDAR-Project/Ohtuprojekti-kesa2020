@@ -29,8 +29,22 @@ jobs:
           - ~/.cache/pypoetry/virtualenvs
         key: konenako-{{ .Branch }}-{{ checksum "pyproject.toml" }}
     - run:
-        command: |      
-          poetry run yapf -rd .
+        command: |
+          YAPF_FAIL=$(poetry run yapf -rd .|wc -l|tr -s ' ');
+          if [ $YAPF_FAIL -ne 0 ]; then
+              echo 'YAPF FAILED'
+              run: git status
+              yapf -ri .
+              git status
+              git config --global user.email "app@circleci.com"
+              git config --global user.name "CircleCI"
+              git add .
+              git commit -m "CircleCI commit to '${CIRCLE_BRANCH}' [ci skip]"
+              echo ${CIRCLE_BRANCH}
+              git push --set-upstream origin ${CIRCLE_BRANCH}
+          else
+              echo 'YAPF PASSED'
+          fi
     - run:
         command: |
           sudo apt-get update
@@ -40,15 +54,6 @@ jobs:
           cd rostest
           poetry run coverage run -m unittest discover
           poetry run coverage xml
-    - run:
-        command: |
-          YAPF_FAIL=$(poetry run yapf -rd .|wc -l|tr -s ' ');
-          if [ $YAPF_FAIL -ne 0 ]; then
-              echo 'YAPF FAILED'
-              echo 'run yapf -ri . jne tähän?'
-          else
-              echo 'YAPF PASSED'
-          fi
-    
+
     - codecov/upload:
           file: "rostest/coverage.xml"
