@@ -8,6 +8,7 @@ from image_converter import ImageConverter
 source = "/dev/video0"
 #source = "test.mp4"
 
+
 def run():
     rospy.init_node("camera")
     converter = ImageConverter()
