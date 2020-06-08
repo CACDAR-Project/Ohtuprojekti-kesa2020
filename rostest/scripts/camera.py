@@ -5,8 +5,8 @@ from numpy import ndarray
 from rostest.msg import image
 from image_converter import ImageConverter
 
-source = "/dev/video0"
-#source = "test.mp4"
+#source = "/dev/video0"
+source = "test.mp4"
 
 
 def run():
