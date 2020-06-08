@@ -1,7 +1,7 @@
 #!/usr/bin/env python3.7
 import rospy
 import time
-from image_converter import ImageConverter
+import image_converter
 from qr_detector import QrDetector
 from std_msgs.msg import String
 from rostest.msg import image, qr_observation, polygon, boundingbox, point64
@@ -22,7 +22,6 @@ class QRReader:
 
     def __init__(self, on: bool = False):
         self.detect_on = on
-        self.converter = ImageConverter()
         self.detector = QrDetector()
 
         # Results are published as qr_observation.msg ROS messages.
@@ -43,7 +42,7 @@ class QRReader:
             return
 
         # Convert image from Image message to numpy ndarray
-        img = self.converter.msg_to_cv2(msg)
+        img = image_converter.msg_to_cv2(msg)
 
         # Detect QR codes with qr_detector.py
         observations = self.detector.detect(img)

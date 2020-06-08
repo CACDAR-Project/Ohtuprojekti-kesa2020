@@ -6,7 +6,7 @@ from typing import List
 from rostest.msg import observation, boundingbox, image
 from rostest.srv import text_message, text_messageResponse, new_frequency, new_frequencyResponse
 from object_detector import ObjectDetector
-from image_converter import ImageConverter
+import image_converter
 
 # https://github.com/opencv/opencv/wiki/TensorFlow-Object-Detection-API
 
@@ -16,7 +16,6 @@ period = 1.0 / run_frequency
 
 detector = ObjectDetector("ssd_mobilenet_v1_1_metadata_1.tflite",
                           "mscoco_complete_labels")
-converter = ImageConverter()
 pub = rospy.Publisher("observations", observation, queue_size=50)
 
 
@@ -44,7 +43,7 @@ def run():
 def detect(img):
     start_time = time.time()
     # Converting the image back from ros Image message to a numpy ndarray
-    img = converter.msg_to_cv2(img)
+    img = image_converter.msg_to_cv2(img)
     # Resizing could be better to do before sending the message, to save a little bandwidth
     inp = cv.resize(img, (300, 300))
     # inp = inp[:, :, [2, 1, 0]]  # BGR2RGB
