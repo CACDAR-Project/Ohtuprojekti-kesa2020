@@ -1,4 +1,5 @@
-FROM ros:melodic-robot as rosbase
+# Available official ROS-images: https://hub.docker.com/_/ros
+FROM ros:melodic-ros-base as rosbase
 # Disable message generators for unneeded packages (languages) specified
 # in the env variable ROS_LANG_DISABLE
 # This might generate a cmake warning, but it can be safely ignored:

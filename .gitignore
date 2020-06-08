@@ -29,3 +29,6 @@ labelmap.txt
 saved_detections/
 output.avi
 
+# ROS catking workspace
+
+catkin_ws
