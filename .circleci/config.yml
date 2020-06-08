@@ -31,6 +31,7 @@ jobs:
     - run:
         command: |
           YAPF_FAIL=$(poetry run yapf -rd .|wc -l|tr -s ' ');
+          echo '${YAPF_FAIL}'
           if [ $YAPF_FAIL -ne 0 ]; then
               echo 'YAPF FAILED'
               git status
