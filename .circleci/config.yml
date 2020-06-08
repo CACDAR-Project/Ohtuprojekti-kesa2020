@@ -33,7 +33,7 @@ jobs:
           YAPF_FAIL=$(poetry run yapf -rd .|wc -l|tr -s ' ');
           if [ $YAPF_FAIL -ne 0 ]; then
               echo 'YAPF FAILED'
-              run: git status
+              git status
               yapf -ri .
               git status
               git config --global user.email "app@circleci.com"
