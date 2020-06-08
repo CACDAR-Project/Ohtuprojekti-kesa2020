@@ -30,18 +30,14 @@ class QRReader:
         observations = self.detector.detect(img)
         # temporary
         for o in observations:
-            obs = qr_observation(str(o["data"]), 
-                    boundingbox(o["bbox"]["top"], 
-                                o["bbox"]["right"], 
-                                o["bbox"]["bottom"], 
-                                o["bbox"]["left"]
-                                ), 
-                    polygon(o["polygon"][0]["x"], o["polygon"][0]["y"],
-                            o["polygon"][1]["x"], o["polygon"][1]["y"], 
-                            o["polygon"][2]["x"], o["polygon"][2]["y"], 
-                            o["polygon"][3]["x"], o["polygon"][3]["y"]  
-                                )
-                    )
+            obs = qr_observation(
+                str(o["data"]),
+                boundingbox(o["bbox"]["top"], o["bbox"]["right"],
+                            o["bbox"]["bottom"], o["bbox"]["left"]),
+                polygon(o["polygon"][0]["x"], o["polygon"][0]["y"],
+                        o["polygon"][1]["x"], o["polygon"][1]["y"],
+                        o["polygon"][2]["x"], o["polygon"][2]["y"],
+                        o["polygon"][3]["x"], o["polygon"][3]["y"]))
             self.pub.publish(obs)
 
 
