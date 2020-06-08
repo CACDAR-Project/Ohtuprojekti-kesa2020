@@ -30,9 +30,9 @@ jobs:
         key: konenako-{{ .Branch }}-{{ checksum "pyproject.toml" }}
     - run:
         command: |
-          YAPF_FAIL=$(poetry run yapf -rd .|wc -l|tr -s ' ');
-          echo '${YAPF_FAIL}'
-          if [ $YAPF_FAIL -ne 0 ]; then
+          YAPF_CHANGES_NUM=$(poetry run yapf -rd .|wc -l|tr -s ' ')
+          echo '${YAPF_CHANGES_NUM}'
+          if [ "$YAPF_CHANGES_NUM" -ne 0 ]; then
               echo 'YAPF FAILED'
               git status
               yapf -ri .
