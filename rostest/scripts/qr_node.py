@@ -50,11 +50,12 @@ class QRReader:
                 str(o["data"]),
                 boundingbox(o["bbox"]["top"], o["bbox"]["right"],
                             o["bbox"]["bottom"], o["bbox"]["left"]),
-                polygon(len(o["polygon"]), 
-                    [point64(o["polygon"][0]["x"], o["polygon"][0]["y"]),
+                polygon(len(o["polygon"]), [
+                    point64(o["polygon"][0]["x"], o["polygon"][0]["y"]),
                     point64(o["polygon"][1]["x"], o["polygon"][1]["y"]),
                     point64(o["polygon"][2]["x"], o["polygon"][2]["y"]),
-                    point64(o["polygon"][3]["x"], o["polygon"][3]["y"])]))
+                    point64(o["polygon"][3]["x"], o["polygon"][3]["y"])
+                ]))
             self.pub.publish(obs)
 
         time_to_sleep = qr_period - (time.time() - start_time)

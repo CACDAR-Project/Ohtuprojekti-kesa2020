@@ -11,6 +11,7 @@ def cv2_to_msg(img: np.ndarray) -> image:
     msg = image(red, green, blue, img.shape[0], img.shape[1])
     return msg
 
+
 def msg_to_cv2(msg: image) -> np.ndarray:
     # Convert the channels from bytes to uint8 arrays and reconstruct the shape
     red2 = np.frombuffer(msg.red, dtype=np.uint8)
