@@ -4,7 +4,7 @@ FROM ros:melodic-robot as rosbase
 # This might generate a cmake warning, but it can be safely ignored:
 # http://wiki.ros.org/ROS/EnvironmentVariables#ROS_LANG_DISABLE
 # http://wiki.ros.org/message_generation
-#ENV ROS_LANG_DISABLE genlisp:geneus:gennodejs
+ENV ROS_LANG_DISABLE genlisp:geneus:gennodejs
 RUN apt-get update \
  && apt-get -y install \
  python3.7 \
