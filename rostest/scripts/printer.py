@@ -9,7 +9,7 @@ def printer(obs):
 
 
 def qr_printer(obs):
-    print(obs.data)
+    print(obs)
 
 
 def run():
