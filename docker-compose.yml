@@ -20,7 +20,6 @@ services:
       - "ROS_HOSTNAME=rostest"
       - "ROS_MASTER_URI=http://master:11311"
     tty: True
-    privileged: True
 
   rosinput:
     container_name: "rosinput"
@@ -70,6 +69,7 @@ services:
       driver: none
     tty: true
     stdin_open: true
+    privileged: True
 
 networks:
   rosnet:
