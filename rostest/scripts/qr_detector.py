@@ -10,7 +10,6 @@ class QrDetector:
 
         results = zbar.decode(img, symbols=[ZBarSymbol.QRCODE])
         observations = []
-        print(len(results))
         for r in results:
             observations.append({
                 "data":

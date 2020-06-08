@@ -7,15 +7,14 @@ from rostest.msg import image, qr_observation, polygon, boundingbox
 
 
 class QRReader:
-    detect_on: bool
-
     def __init__(self, on: bool = False):
         self.detect_on = on
         self.converter = ImageConverter()
         self.detector = QrDetector()
-        # the String message type should be replaced by own implementation
-        # for QR code results.
+
+        # Results are published as qr_observation.msg ROS messages.
         self.pub = rospy.Publisher("qr_results", qr_observation, queue_size=50)
+
         # Camera feed is read from ros messages
         self.input_sub = rospy.Subscriber("camera_feed", image, self.detect)
 
@@ -27,8 +26,8 @@ class QRReader:
         # Convert image from Image message to numpy ndarray
         img = self.converter.msg_to_cv2(msg)
 
+        # Detect QR codes with qr_detector.py
         observations = self.detector.detect(img)
-        # temporary
         for o in observations:
             obs = qr_observation(
                 str(o["data"]),
