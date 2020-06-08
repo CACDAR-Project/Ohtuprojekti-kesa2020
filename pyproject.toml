@@ -11,11 +11,11 @@ authors = [""]
 [tool.poetry.dependencies]
 python = "~3.7"
 opencv-contrib-python = "4.1.0.25"
+tensorflow = "1.14.0"
 matplotlib = "3.2.1"
 rospkg = "1.2.6"
 catkin-pkg = "0.4.20"
 pyzbar = "0.1.7"
-tensorflow = "1.14.0"
 
 [tool.poetry.dev-dependencies]
 yapf = "0.30.0"
