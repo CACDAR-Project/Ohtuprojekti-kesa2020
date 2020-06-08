@@ -1,4 +1,5 @@
-FROM ros:melodic-robot as rosbase
+# Available official ROS-images: https://hub.docker.com/_/ros
+FROM ros:melodic-ros-base as rosbase
 RUN apt-get update \
  && apt-get -y install \
  python3.7 \
