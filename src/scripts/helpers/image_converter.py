@@ -1,5 +1,5 @@
 import numpy as np
-from rostest.msg import image
+from konenako.msg import image
 import cv2
 
 

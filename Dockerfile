@@ -32,13 +32,13 @@ RUN /bin/bash -c "source /opt/ros/melodic/setup.bash && catkin_make"
 
 # Can we omit the sourcing from these layers?
 FROM rosbase as rosdetector
-CMD cd /catkin_ws/src/ohtu && poetry run /bin/bash -c 'source /opt/ros/melodic/setup.bash && source ../../devel/setup.bash && cd src && rosrun rostest node_detector.py'
+CMD cd /catkin_ws/src/ohtu && poetry run /bin/bash -c 'source /opt/ros/melodic/setup.bash && source ../../devel/setup.bash && cd src && rosrun konenako node_detector.py'
 
 FROM rosbase as rosinput
-CMD cd /catkin_ws/src/ohtu && poetry run /bin/bash -c 'source /opt/ros/melodic/setup.bash && source ../../devel/setup.bash && cd src && rosrun rostest node_input.py'
+CMD cd /catkin_ws/src/ohtu && poetry run /bin/bash -c 'source /opt/ros/melodic/setup.bash && source ../../devel/setup.bash && cd src && rosrun konenako node_input.py'
 
 FROM rosbase as rosprinter
-CMD cd /catkin_ws/src/ohtu && poetry run /bin/bash -c 'source /opt/ros/melodic/setup.bash && source ../../devel/setup.bash && cd src && rosrun rostest node_printer.py'
+CMD cd /catkin_ws/src/ohtu && poetry run /bin/bash -c 'source /opt/ros/melodic/setup.bash && source ../../devel/setup.bash && cd src && rosrun konenako node_printer.py'
 
 FROM rosbase as roscamera
-CMD cd /catkin_ws/src/ohtu && poetry run /bin/bash -c 'source /opt/ros/melodic/setup.bash && source ../../devel/setup.bash && cd src && rosrun rostest node_camera.py'
+CMD cd /catkin_ws/src/ohtu && poetry run /bin/bash -c 'source /opt/ros/melodic/setup.bash && source ../../devel/setup.bash && cd src && rosrun konenako node_camera.py'

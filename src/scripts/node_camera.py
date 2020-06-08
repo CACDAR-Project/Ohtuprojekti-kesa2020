@@ -2,7 +2,7 @@
 import cv2 as cv
 import rospy
 from numpy import ndarray
-from rostest.msg import image
+from konenako.msg import image
 from helpers.image_converter import ImageConverter
 
 

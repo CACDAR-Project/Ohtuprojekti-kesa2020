@@ -1,5 +1,5 @@
 #!/usr/bin/env python3.7
-from rostest.srv import text_message, text_messageResponse, new_frequency, new_frequencyResponse
+from konenako.srv import text_message, text_messageResponse, new_frequency, new_frequencyResponse
 import rospy
 
 # https://github.com/ros/ros_tutorials/blob/noetic-devel/rospy_tutorials/005_add_two_ints/add_two_ints_client

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3.7
-from rostest.msg import observation
+from konenako.msg import observation
 import rospy
 
 
