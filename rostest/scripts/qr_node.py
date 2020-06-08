@@ -11,6 +11,7 @@ from rostest.srv import new_frequency, new_frequencyResponse
 qr_run_frequency = 10
 qr_period = 1.0 / qr_run_frequency
 
+
 class QRReader:
     def change_frequency(self, new_frequency):
         global qr_run_frequency
@@ -32,9 +33,7 @@ class QRReader:
 
         # ROS service for changing detection frequency.
         frequency_service = rospy.Service('qr_frequency', new_frequency,
-                                      self.change_frequency)
-
-
+                                          self.change_frequency)
 
     def detect(self, msg: image):
         # For tracking the frequency
@@ -58,7 +57,7 @@ class QRReader:
                         o["polygon"][2]["x"], o["polygon"][2]["y"],
                         o["polygon"][3]["x"], o["polygon"][3]["y"]))
             self.pub.publish(obs)
-        
+
         time_to_sleep = qr_period - (time.time() - start_time)
         if time_to_sleep > 0:
             time.sleep(time_to_sleep)

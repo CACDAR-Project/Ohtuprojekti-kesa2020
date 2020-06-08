@@ -34,10 +34,9 @@ def run():
     while not rospy.is_shutdown():
         print(
             "Give command.\n1 for sending message, 2 for changing object detection frequency, "
-            + "3 for changing QR code detection frequency:"
-        )
+            + "3 for changing QR code detection frequency:")
         inp = input()
-        
+
         # Catch errors if a node is not running
         try:
             if inp == "1":
