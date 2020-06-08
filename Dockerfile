@@ -5,6 +5,8 @@ RUN apt-get update \
  python3.7-dev \
  python3-pip \
  python3.7-venv \
+ # Should be replaced with a pip dependency if possible. 
+ libzbar-dev \
  && rm -rf /var/lib/apt/lists/*
 # These can be added to apt-get install, if needed: python-cv-bridge and ros-melodic-cv-bridge
 
