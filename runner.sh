@@ -1,16 +1,10 @@
-#!/bin/sh
+#!/bin/bash
 
 bold=$(tput bold)
 normal=$(tput sgr0)
 ros_distro=$(rosversion -d)
 src_folder=rostest
 pwd=$(pwd)
-
-if [ "$BASH_VERSION" = "" ];
-then
-  echo 'Run with '${bold}'bash runner.sh'${normal}
-  exit
-fi
 
 if [[ "$VIRTUAL_ENV" != "" ]]
 then
