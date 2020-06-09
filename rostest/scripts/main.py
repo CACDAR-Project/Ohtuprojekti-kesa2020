@@ -1,4 +1,8 @@
 #!/usr/bin/env python3.7
+"""
+Read an image stream from a ROS topic, detect objects in the frames using a TensorFlow 
+Lite model and publish the results in a topic.
+"""
 import cv2 as cv
 import rospy
 import time
@@ -25,6 +29,12 @@ def print_input(input):
 
 
 def change_frequency(new_frequency):
+    """
+    Set a new frequency for the object detection.
+
+    :param new_frequency: the new frequency in hz
+    :returns: ROS service message new_frequencyResponse
+    """
     global run_frequency
     global period
     run_frequency = new_frequency.data
@@ -42,7 +52,7 @@ def run():
 
 def detect(img):
     start_time = time.time()
-    # Converting the image back from ros Image message to a numpy ndarray
+    # Convert the image back from an image message to a numpy ndarray.
     img = image_converter.msg_to_cv2(img)
     # Resizing could be better to do before sending the message, to save a little bandwidth
     inp = cv.resize(img, (300, 300))
