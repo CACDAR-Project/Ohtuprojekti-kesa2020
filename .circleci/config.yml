@@ -37,7 +37,7 @@ jobs:
           if ! poetry run yapf -rd .; then
               echo 'YAPF FAILED'
               git status
-              poetry yapf -ri .
+              poetry run yapf -ri .
               git status
               git config --global user.email "app@circleci.com"
               git config --global user.name "CircleCI"
