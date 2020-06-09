@@ -2,6 +2,9 @@
 
 bold=$(tput bold)
 normal=$(tput sgr0)
+ros_distro=$(rosversion -d)
+src_folder=src
+pwd=$(pwd)
 
 if [ "$BASH_VERSION" = "" ];
 then
@@ -14,10 +17,6 @@ then
   echo 'We are not in venv! Remember to '${bold}'poetry install'${normal}' and '${bold}'poetry shell'${normal}'.'
   exit
 fi
-
-ros_distro=$(rosversion -d)
-src_folder=rostest
-pwd=$(pwd)
 
 echo 'Using '${ros_distro}' distribution'
 echo 'Working directory is '${pwd}''
@@ -59,5 +58,5 @@ source ${pwd}/devel/setup.bash
 roscore &
 gnome-terminal --geometry 60x16+0+0 --title="OBJECTS DETECTION" -- /bin/bash -c 'source '${pwd}'/catkin_ws/devel/setup.bash; cd '${pwd}'/catkin_ws/src; rosrun konenako node_detector.py; exec bash' &
 gnome-terminal --geometry 60x16+0+359 --title="PRINTER" -- /bin/bash -c 'source '${pwd}'/catkin_ws/devel/setup.bash; cd '${pwd}'/catkin_ws/src; rosrun konenako node_printer.py; exec bash' &
-gnome-terminal --geometry 60x16+625+0 --title="INPUT" -- /bin/bash -c 'source '${pwd}'/catkin_ws/devel/setup.bash; cd '${pwd}'/catkin_ws/src; rosrun konenako node_input.py; exec bash' &
-gnome-terminal --geometry 60x16+625+359 --title="CAMERA" -- /bin/bash -c 'source '${pwd}'/catkin_ws/devel/setup.bash; cd '${pwd}'/catkin_ws/src; rosrun konenako node_camera.py; exec bash'
+gnome-terminal --geometry 60x16+625+359 --title="CAMERA" -- /bin/bash -c 'source '${pwd}'/catkin_ws/devel/setup.bash; cd '${pwd}'/catkin_ws/src; rosrun konenako node_camera.py; exec bash' &
+gnome-terminal --geometry 60x16+625+0 --title="INPUT" -- /bin/bash -c 'source '${pwd}'/catkin_ws/devel/setup.bash; cd '${pwd}'/catkin_ws/src; rosrun konenako node_input.py; exec bash'
