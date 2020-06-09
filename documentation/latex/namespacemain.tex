@@ -7,7 +7,9 @@ def \hyperlink{namespacemain_a0fe3fdb168f80f23bd787b6a6645d063}{print\+\_\+input
 \item 
 def \hyperlink{namespacemain_a191dcce5a995145c51a8935645d7de97}{change\+\_\+frequency} (new\+\_\+frequency)
 \item 
-def \hyperlink{namespacemain_a1fa92828a6a055fa38390012ffdd2b87}{run}
+def \hyperlink{namespacemain_a036aad8f2646851dd9488dda7d35c981}{run} ()
+\item 
+def \hyperlink{namespacemain_a03e14590002fed6ffd6ac75bfeb3403e}{detect} (img)
 \end{DoxyCompactItemize}
 \subsection*{Variables}
 \begin{DoxyCompactItemize}
@@ -16,7 +18,9 @@ int \hyperlink{namespacemain_a57172d55d7c1b86fc48bcbc6c3783efb}{run\+\_\+frequen
 \item 
 float \hyperlink{namespacemain_a9ec7279618de6ff9195552f460584339}{period} = 1.\+0 / \hyperlink{namespacemain_a57172d55d7c1b86fc48bcbc6c3783efb}{run\+\_\+frequency}
 \item 
-string \hyperlink{namespacemain_a75667a1170a74674aa6f7fa04dca3f51}{source} = \char`\"{}test.\+mp4\char`\"{}
+\hyperlink{namespacemain_a245786520a72f57bea29a2e43f964e8e}{detector}
+\item 
+\hyperlink{namespacemain_a23ee90a24cfdad17960b8fcc6a299545}{pub} = rospy.\+Publisher(\char`\"{}observations\char`\"{}, observation, queue\+\_\+size=50)
 \end{DoxyCompactItemize}
 
 
@@ -27,36 +31,53 @@ string \hyperlink{namespacemain_a75667a1170a74674aa6f7fa04dca3f51}{source} = \ch
 \subsubsection{\texorpdfstring{change\+\_\+frequency()}{change\_frequency()}}
 {\footnotesize\ttfamily def main.\+change\+\_\+frequency (\begin{DoxyParamCaption}\item[{}]{new\+\_\+frequency }\end{DoxyParamCaption})}
 
+\mbox{\Hypertarget{namespacemain_a03e14590002fed6ffd6ac75bfeb3403e}\label{namespacemain_a03e14590002fed6ffd6ac75bfeb3403e}} 
+\index{main@{main}!detect@{detect}}
+\index{detect@{detect}!main@{main}}
+\subsubsection{\texorpdfstring{detect()}{detect()}}
+{\footnotesize\ttfamily def main.\+detect (\begin{DoxyParamCaption}\item[{}]{img }\end{DoxyParamCaption})}
+
 \mbox{\Hypertarget{namespacemain_a0fe3fdb168f80f23bd787b6a6645d063}\label{namespacemain_a0fe3fdb168f80f23bd787b6a6645d063}} 
 \index{main@{main}!print\+\_\+input@{print\+\_\+input}}
 \index{print\+\_\+input@{print\+\_\+input}!main@{main}}
 \subsubsection{\texorpdfstring{print\+\_\+input()}{print\_input()}}
 {\footnotesize\ttfamily def main.\+print\+\_\+input (\begin{DoxyParamCaption}\item[{}]{input }\end{DoxyParamCaption})}
 
-\mbox{\Hypertarget{namespacemain_a1fa92828a6a055fa38390012ffdd2b87}\label{namespacemain_a1fa92828a6a055fa38390012ffdd2b87}} 
+\mbox{\Hypertarget{namespacemain_a036aad8f2646851dd9488dda7d35c981}\label{namespacemain_a036aad8f2646851dd9488dda7d35c981}} 
 \index{main@{main}!run@{run}}
 \index{run@{run}!main@{main}}
 \subsubsection{\texorpdfstring{run()}{run()}}
-{\footnotesize\ttfamily def main.\+run (\begin{DoxyParamCaption}\item[{}]{showgui }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily def main.\+run (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
 
 
 
 \subsection{Variable Documentation}
+\mbox{\Hypertarget{namespacemain_a245786520a72f57bea29a2e43f964e8e}\label{namespacemain_a245786520a72f57bea29a2e43f964e8e}} 
+\index{main@{main}!detector@{detector}}
+\index{detector@{detector}!main@{main}}
+\subsubsection{\texorpdfstring{detector}{detector}}
+{\footnotesize\ttfamily main.\+detector}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}
+1 =  ObjectDetector(\textcolor{stringliteral}{"ssd\_mobilenet\_v1\_1\_metadata\_1.tflite"},
+2                           \textcolor{stringliteral}{"mscoco\_complete\_labels"})
+\end{DoxyCode}
 \mbox{\Hypertarget{namespacemain_a9ec7279618de6ff9195552f460584339}\label{namespacemain_a9ec7279618de6ff9195552f460584339}} 
 \index{main@{main}!period@{period}}
 \index{period@{period}!main@{main}}
 \subsubsection{\texorpdfstring{period}{period}}
 {\footnotesize\ttfamily float main.\+period = 1.\+0 / \hyperlink{namespacemain_a57172d55d7c1b86fc48bcbc6c3783efb}{run\+\_\+frequency}}
 
+\mbox{\Hypertarget{namespacemain_a23ee90a24cfdad17960b8fcc6a299545}\label{namespacemain_a23ee90a24cfdad17960b8fcc6a299545}} 
+\index{main@{main}!pub@{pub}}
+\index{pub@{pub}!main@{main}}
+\subsubsection{\texorpdfstring{pub}{pub}}
+{\footnotesize\ttfamily main.\+pub = rospy.\+Publisher(\char`\"{}observations\char`\"{}, observation, queue\+\_\+size=50)}
+
 \mbox{\Hypertarget{namespacemain_a57172d55d7c1b86fc48bcbc6c3783efb}\label{namespacemain_a57172d55d7c1b86fc48bcbc6c3783efb}} 
 \index{main@{main}!run\+\_\+frequency@{run\+\_\+frequency}}
 \index{run\+\_\+frequency@{run\+\_\+frequency}!main@{main}}
 \subsubsection{\texorpdfstring{run\+\_\+frequency}{run\_frequency}}
 {\footnotesize\ttfamily int main.\+run\+\_\+frequency = 1}
-
-\mbox{\Hypertarget{namespacemain_a75667a1170a74674aa6f7fa04dca3f51}\label{namespacemain_a75667a1170a74674aa6f7fa04dca3f51}} 
-\index{main@{main}!source@{source}}
-\index{source@{source}!main@{main}}
-\subsubsection{\texorpdfstring{source}{source}}
-{\footnotesize\ttfamily string main.\+source = \char`\"{}test.\+mp4\char`\"{}}
 

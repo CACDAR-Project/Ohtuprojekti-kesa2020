@@ -72,8 +72,10 @@ Functions</h2></td></tr>
 <tr class="separator:a0fe3fdb168f80f23bd787b6a6645d063"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a191dcce5a995145c51a8935645d7de97"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacemain.html#a191dcce5a995145c51a8935645d7de97">change_frequency</a> (new_frequency)</td></tr>
 <tr class="separator:a191dcce5a995145c51a8935645d7de97"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1fa92828a6a055fa38390012ffdd2b87"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacemain.html#a1fa92828a6a055fa38390012ffdd2b87">run</a></td></tr>
-<tr class="separator:a1fa92828a6a055fa38390012ffdd2b87"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a036aad8f2646851dd9488dda7d35c981"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacemain.html#a036aad8f2646851dd9488dda7d35c981">run</a> ()</td></tr>
+<tr class="separator:a036aad8f2646851dd9488dda7d35c981"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a03e14590002fed6ffd6ac75bfeb3403e"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacemain.html#a03e14590002fed6ffd6ac75bfeb3403e">detect</a> (img)</td></tr>
+<tr class="separator:a03e14590002fed6ffd6ac75bfeb3403e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
@@ -81,8 +83,10 @@ Variables</h2></td></tr>
 <tr class="separator:a57172d55d7c1b86fc48bcbc6c3783efb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9ec7279618de6ff9195552f460584339"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacemain.html#a9ec7279618de6ff9195552f460584339">period</a> = 1.0 / <a class="el" href="namespacemain.html#a57172d55d7c1b86fc48bcbc6c3783efb">run_frequency</a></td></tr>
 <tr class="separator:a9ec7279618de6ff9195552f460584339"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a75667a1170a74674aa6f7fa04dca3f51"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacemain.html#a75667a1170a74674aa6f7fa04dca3f51">source</a> = &quot;test.mp4&quot;</td></tr>
-<tr class="separator:a75667a1170a74674aa6f7fa04dca3f51"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a245786520a72f57bea29a2e43f964e8e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacemain.html#a245786520a72f57bea29a2e43f964e8e">detector</a></td></tr>
+<tr class="separator:a245786520a72f57bea29a2e43f964e8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a23ee90a24cfdad17960b8fcc6a299545"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacemain.html#a23ee90a24cfdad17960b8fcc6a299545">pub</a> = rospy.Publisher(&quot;observations&quot;, observation, queue_size=50)</td></tr>
+<tr class="separator:a23ee90a24cfdad17960b8fcc6a299545"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="a191dcce5a995145c51a8935645d7de97"></a>
@@ -96,6 +100,24 @@ Variables</h2></td></tr>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname"><em>new_frequency</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a03e14590002fed6ffd6ac75bfeb3403e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a03e14590002fed6ffd6ac75bfeb3403e">&#9670;&nbsp;</a></span>detect()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def main.detect </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>img</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -121,8 +143,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a1fa92828a6a055fa38390012ffdd2b87"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1fa92828a6a055fa38390012ffdd2b87">&#9670;&nbsp;</a></span>run()</h2>
+<a id="a036aad8f2646851dd9488dda7d35c981"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a036aad8f2646851dd9488dda7d35c981">&#9670;&nbsp;</a></span>run()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -130,8 +152,7 @@ Variables</h2></td></tr>
         <tr>
           <td class="memname">def main.run </td>
           <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>showgui</em></td><td>)</td>
+          <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -140,6 +161,20 @@ Variables</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Variable Documentation</h2>
+<a id="a245786520a72f57bea29a2e43f964e8e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a245786520a72f57bea29a2e43f964e8e">&#9670;&nbsp;</a></span>detector</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">main.detector</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;=  ObjectDetector(<span class="stringliteral">&quot;ssd_mobilenet_v1_1_metadata_1.tflite&quot;</span>,</div><div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;                          <span class="stringliteral">&quot;mscoco_complete_labels&quot;</span>)</div></div><!-- fragment -->
+</div>
+</div>
 <a id="a9ec7279618de6ff9195552f460584339"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9ec7279618de6ff9195552f460584339">&#9670;&nbsp;</a></span>period</h2>
 
@@ -154,6 +189,20 @@ Variables</h2></td></tr>
 
 </div>
 </div>
+<a id="a23ee90a24cfdad17960b8fcc6a299545"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a23ee90a24cfdad17960b8fcc6a299545">&#9670;&nbsp;</a></span>pub</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">main.pub = rospy.Publisher(&quot;observations&quot;, observation, queue_size=50)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a57172d55d7c1b86fc48bcbc6c3783efb"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a57172d55d7c1b86fc48bcbc6c3783efb">&#9670;&nbsp;</a></span>run_frequency</h2>
 
@@ -162,20 +211,6 @@ Variables</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">int main.run_frequency = 1</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a75667a1170a74674aa6f7fa04dca3f51"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a75667a1170a74674aa6f7fa04dca3f51">&#9670;&nbsp;</a></span>source</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">string main.source = &quot;test.mp4&quot;</td>
         </tr>
       </table>
 </div><div class="memdoc">

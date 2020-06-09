@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['print_5finput',['print_input',['../namespacemain.html#a0fe3fdb168f80f23bd787b6a6645d063',1,'main']]],
-  ['printer',['printer',['../namespaceprinter.html#a3eb27980abedac28745fb43f61bfe198',1,'printer']]]
+  ['load_5flabels',['load_labels',['../classobject__detector_1_1ObjectDetector.html#aaad9724f89d4803c10c0ab346c6b9121',1,'object_detector::ObjectDetector']]],
+  ['load_5fmodel',['load_model',['../classobject__detector_1_1ObjectDetector.html#a230551f06d7906793bfa1e44654fdefe',1,'object_detector::ObjectDetector']]]
 ];

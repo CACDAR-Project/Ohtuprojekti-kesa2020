@@ -1,6 +1,8 @@
 var searchData=
 [
-  ['readme_2emd',['README.md',['../README_8md.html',1,'']]],
-  ['run',['run',['../namespaceinput.html#acf8fe4c0bb6a777022f311c22f311770',1,'input.run()'],['../namespacemain.html#a1fa92828a6a055fa38390012ffdd2b87',1,'main.run()'],['../namespaceprinter.html#abd8f2589552090a9b3b5f2cd1f941b8b',1,'printer.run()']]],
-  ['run_5ffrequency',['run_frequency',['../namespacemain.html#a57172d55d7c1b86fc48bcbc6c3783efb',1,'main']]]
+  ['period',['period',['../namespacemain.html#a9ec7279618de6ff9195552f460584339',1,'main']]],
+  ['print_5finput',['print_input',['../namespacemain.html#a0fe3fdb168f80f23bd787b6a6645d063',1,'main']]],
+  ['printer',['printer',['../namespaceprinter.html',1,'printer'],['../namespaceprinter.html#a3eb27980abedac28745fb43f61bfe198',1,'printer.printer()']]],
+  ['printer_2epy',['printer.py',['../printer_8py.html',1,'']]],
+  ['pub',['pub',['../classqr__node_1_1QRReader.html#a92f0f6e040949958ea00baa779d28f33',1,'qr_node.QRReader.pub()'],['../namespacemain.html#a23ee90a24cfdad17960b8fcc6a299545',1,'main.pub()']]]
 ];

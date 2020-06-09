@@ -4,7 +4,6 @@ import rospy
 
 # https://github.com/ros/ros_tutorials/blob/noetic-devel/rospy_tutorials/005_add_two_ints/add_two_ints_client
 
-
 message_receiver = None
 frequency_changer = None
 qr_frequency_changer = None

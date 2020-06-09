@@ -1,7 +1,9 @@
 var searchData=
 [
-  ['period',['period',['../namespacemain.html#a9ec7279618de6ff9195552f460584339',1,'main']]],
-  ['print_5finput',['print_input',['../namespacemain.html#a0fe3fdb168f80f23bd787b6a6645d063',1,'main']]],
-  ['printer',['printer',['../namespaceprinter.html',1,'printer'],['../namespaceprinter.html#a3eb27980abedac28745fb43f61bfe198',1,'printer.printer()']]],
-  ['printer_2epy',['printer.py',['../printer_8py.html',1,'']]]
+  ['object_5fdetection',['object_detection',['../namespaceobject__detection.html',1,'']]],
+  ['object_5fdetection_2epy',['object_detection.py',['../object__detection_8py.html',1,'']]],
+  ['object_5fdetector',['object_detector',['../namespaceobject__detector.html',1,'']]],
+  ['object_5fdetector_2epy',['object_detector.py',['../object__detector_8py.html',1,'']]],
+  ['objectdetector',['ObjectDetector',['../classobject__detector_1_1ObjectDetector.html',1,'object_detector']]],
+  ['output_5fdetails',['output_details',['../classobject__detector_1_1ObjectDetector.html#a167991814c90ee1c872fad8ac9a0b6ec',1,'object_detector::ObjectDetector']]]
 ];

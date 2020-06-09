@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['input',['input',['../namespaceinput.html',1,'']]]
+  ['camera',['camera',['../namespacecamera.html',1,'']]]
 ];

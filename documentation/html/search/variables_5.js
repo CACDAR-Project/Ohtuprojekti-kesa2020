@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['source',['source',['../namespacemain.html#a75667a1170a74674aa6f7fa04dca3f51',1,'main']]]
+  ['output_5fdetails',['output_details',['../classobject__detector_1_1ObjectDetector.html#a167991814c90ee1c872fad8ac9a0b6ec',1,'object_detector::ObjectDetector']]]
 ];

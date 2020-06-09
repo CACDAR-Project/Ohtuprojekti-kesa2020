@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['test_5fdetect_5fcow_5fbanana',['test_detect_cow_banana',['../classtests_1_1test__object__detector_1_1Detector.html#afa15ba2941421016d69736377f867233',1,'tests::test_object_detector::Detector']]]
+  ['print_5finput',['print_input',['../namespacemain.html#a0fe3fdb168f80f23bd787b6a6645d063',1,'main']]],
+  ['printer',['printer',['../namespaceprinter.html#a3eb27980abedac28745fb43f61bfe198',1,'printer']]]
 ];
