@@ -46,7 +46,7 @@ def detect(img):
     img = image_converter.msg_to_cv2(img)
     # Resizing could be better to do before sending the message, to save a little bandwidth
     inp = cv.resize(img, (300, 300))
-    # inp = inp[:, :, [2, 1, 0]]  # BGR2RGB
+    inp = inp[:, :, [2, 1, 0]]  # BGR2RGB
 
     for detection in detector.detect(img):
         pub.publish(
