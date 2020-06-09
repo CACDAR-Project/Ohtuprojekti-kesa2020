@@ -42,8 +42,8 @@ jobs:
               git config --global user.email "app@circleci.com"
               git config --global user.name "CircleCI"
               git add .
-              echo "export COMMIT_MESSAGE=\"$(git log --format=oneline -n 1 $CIRCLE_SHA1)\"" >> ~/.bashrc
-              git commit -m "${COMMIT_MESSAGE} formatted by CircleCI" -m "[ci skip]"
+              #echo "export COMMIT_MESSAGE=\"$(git log --format=oneline -n 1 $CIRCLE_SHA1)\"" >> ~/.bashrc
+              git commit -m "\"$(git log --format=oneline -n 1 $CIRCLE_SHA1)\" formatted by CircleCI" -m "[ci skip]"
               echo ${CIRCLE_BRANCH}
               git push --set-upstream origin ${CIRCLE_BRANCH}
           else
