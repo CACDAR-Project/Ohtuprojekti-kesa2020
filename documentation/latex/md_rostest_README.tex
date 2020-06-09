@@ -1,0 +1,66 @@
+Setup R\+OS catkin workspace, {\ttfamily git clone} to {\ttfamily catkin\+\_\+ws/src/} and build the catkin workspace.
+
+{\ttfamily poetry shell} 
+\begin{DoxyCode}
+source ../../devel/setup.bash
+cd rostest
+rosrun rostest main.py
+\end{DoxyCode}
+
+
+\subsection*{Docker}
+
+Building the image
+
+{\ttfamily sudo docker build -\/-\/tag rostest\+:1.\+0 .}
+
+Create network for communicating with roscore
+
+{\ttfamily sudo docker network create rosnet}
+
+Start up roscore 
+\begin{DoxyCode}
+sudo docker run -it --rm \(\backslash\)
+--net rosnet \(\backslash\)
+--name master \(\backslash\)
+ros:melodic-ros-core \(\backslash\)
+roscore
+\end{DoxyCode}
+ Start up rostest node in another console 
+\begin{DoxyCode}
+sudo docker run -it --rm \(\backslash\)
+    --net rosnet \(\backslash\)
+    --name rostest \(\backslash\)
+    --env ROS\_HOSTNAME=rostest \(\backslash\)
+    --env ROS\_MASTER\_URI=http://master:11311 \(\backslash\)
+    rostest:1.0
+\end{DoxyCode}
+ Attaching camera devices to the container can be done by adding parameters to node container startup
+
+{\ttfamily -\/-\/device} argument, for example {\ttfamily -\/-\/device /dev/video0}
+
+\subsubsection*{Docker compose}
+
+Alternatively the above can be done with docker compose, with the following on the root directory of the project.
+
+{\ttfamily docker-\/compose build}
+
+{\ttfamily docker-\/compose up}
+
+For sending messages to rostest.\+py attach to input container with another terminal\+:
+
+{\ttfamily sudo docker attach rosinput}
+
+For seeing recieved messages in separate terminal use\+:
+
+{\ttfamily sudo docker attach rostest}
+
+For seeing recieved information about the objects use\+:
+
+{\ttfamily sudo docker attach rosprinter}
+
+Attaching devices like webcams \href{https://docs.docker.com/compose/compose-file/#devices}{\tt https\+://docs.\+docker.\+com/compose/compose-\/file/\#devices}
+
+\subsection*{Versions}
+
+Tested to work on Docker version 19.\+03.\+8-\/ce and Docker-\/compose version 1.\+25.\+5 
