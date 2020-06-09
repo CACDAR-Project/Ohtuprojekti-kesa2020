@@ -13,7 +13,17 @@ qr_period = 1.0 / qr_run_frequency
 
 
 class QRReader:
+    """
+    Read an image stream from a ROS topic, detect and decode QR codes from the frames and 
+    publish results in another topic. 
+    """
     def change_frequency(self, new_frequency):
+        """
+        Set a new frequency for the QR detection.
+
+        :param new_frequency: the new frequency in hz
+        :returns: ROS service message new_frequencyResponse
+        """
         global qr_run_frequency
         global qr_period
         qr_run_frequency = new_frequency.data
@@ -34,6 +44,10 @@ class QRReader:
                                           self.change_frequency)
 
     def detect(self, msg: image):
+        """
+        Process the image using qr_detector.py, publish each QR code's data and
+        position as a qr_observation ROS message.
+        """
         # For tracking the frequency
         start_time = time.time()
         # Only run the detection if it is turned on
@@ -46,6 +60,7 @@ class QRReader:
         # Detect QR codes with qr_detector.py
         observations = qr_detector.detect(img)
         for o in observations:
+            # Create a qr_observation message that can be published.
             obs = qr_observation(
                 str(o["data"]),
                 boundingbox(o["bbox"]["top"], o["bbox"]["right"],
