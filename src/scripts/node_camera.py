@@ -4,7 +4,7 @@ import rospy
 from numpy import ndarray
 
 from konenako.msg import image
-from helpers.image_converter import cv2_to _msg
+from helpers.image_converter import cv2_to_msg
 
 #source = "/dev/video0"
 source = "test.mp4"

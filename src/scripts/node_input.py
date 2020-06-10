@@ -55,12 +55,11 @@ def init():
     rospy.init_node("input")
     print("Waiting for services")
 
-
     rospy.wait_for_service('inputs')
     print("Input service found")
     rospy.wait_for_service('frequency')
     print("Frequency service found")
-    
+
     #=======
     # rospy.wait_for_service('inputs')
     # rospy.wait_for_service('frequency')

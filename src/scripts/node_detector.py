@@ -9,7 +9,6 @@ from konenako.srv import text_message, text_messageResponse, new_frequency, new_
 from detector.object_detector import ObjectDetector
 from helpers.image_converter import msg_to_cv2
 
-
 # https://github.com/opencv/opencv/wiki/TensorFlow-Object-Detection-API
 
 #frequency in hertz
