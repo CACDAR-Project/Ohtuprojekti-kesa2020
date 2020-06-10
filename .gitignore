@@ -31,3 +31,5 @@ output.avi
 # doc folders
 
 doc/
+documentation/html
+documentation/latex
