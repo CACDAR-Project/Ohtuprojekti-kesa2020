@@ -84,7 +84,13 @@ or `poetry run <command>` to run a single command in the environment
 Some libraries must be separately installed, current list:
  * zbar/libzbar0 
 
-# Formatting
+
+## Versions
+
+Tested to work on Docker version 19.03.8-ce, Docker-compose version 1.25.5 and poetry 1.0.5.
+
+
+## Formatting
 
 Run [yapf](https://github.com/google/yapf/) before commits `poetry run yapf -ri .`  
 Use `poetry run yapf -rd .` to print diff of changes if needed.
