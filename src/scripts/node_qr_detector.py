@@ -55,7 +55,7 @@ class QRReader:
         frequency_service = rospy.Service(
             "{}/frequency".format(rospy.get_name()), new_frequency,
             self.change_frequency)
-        
+
     ## Process the image using qr_detector.py, publish each QR code's data and
     #  position qs a qr_observation ROS message.
     #

@@ -30,10 +30,6 @@ class ObjectNode:
     last_detect = 0
     detect_lock = threading.Lock()
 
-    def print_input(self, input):
-        print(f"Received a message from another node: {input.message}")
-        return text_messageResponse("We received you message!")
-
     ## Set a new frequency for the object detection.
     #  @param new_frequency The new frequency in hz as a new_frequency.srv message.
     #  @return Confirmation string as a new_frequencyResponse.srv message.
