@@ -2,7 +2,7 @@
 
 ## Documentation
 
-[Backlog](https://docs.google.com/spreadsheets/d/1jyyo4Vl1vxXgr6DDcG-a-Rb9Xx-2B-TYjd2KzZyrj3M)
+[Backlog](https://github.com/Konenako/Ohtuprojekti-kesa2020/projects)
 
 ### Documentation for classes, files etc.    
 
