@@ -6,8 +6,8 @@ from numpy import ndarray
 from konenako.msg import image
 from helpers.image_converter import cv2_to_msg
 
-#source = "/dev/video0"
-source = "test.mp4"
+source = "/dev/video0"
+#source = "test.mp4"
 
 
 def run():
