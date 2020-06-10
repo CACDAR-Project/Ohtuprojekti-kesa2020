@@ -41,29 +41,34 @@ roscore
 
 Running the object detection node. Printer node is required to view the results.
 ```
-rosrun rostest main.py
+rosrun konenako node_detector.py
 ```
 
 Running the QR code reader node. Printer node is required to view the results.
 ```
-rosrun rostest qr_node.py
+rosrun konenako node_qr.py
 ```
 
 Running the printer node to view the detection results.
 ```
-rosrun rostest printer.py
+rosrun konenako node_printer.py
 ```
 
 Running the input node to send messages and commands to object detector and QR nodes for development purposes.
 ```
-rosrun rostest input.py
+rosrun konenako node_input.py
 ```
+
+Running the camera node
+```
+rosrun konenako node_camera.py
+
 
 ## Docker
 
 Building the image
 
-`sudo docker build --tag rostest:1.0 .`
+`sudo docker build --tag konenako:1.0 .`
 
 Create network for communicating with roscore
 
@@ -81,7 +86,7 @@ Start up rostest node in another console
 ```
 sudo docker run -it --rm \
     --net rosnet \
-    --name rostest \
+    --name master \
     --env ROS_HOSTNAME=rostest \
     --env ROS_MASTER_URI=http://master:11311 \
     rostest:1.0
