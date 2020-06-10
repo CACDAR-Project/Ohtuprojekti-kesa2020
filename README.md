@@ -67,9 +67,9 @@ Currently available nodes, their source files and functions:
 
 |Node    | File     | Function  |
 | ------ | -------- | --------- |
-|roscamera|node_camera.py|Publish a video feed to a topic|
-|rosdetector|node_detector.py|Run a TF model on a video feed|
-|rosqrnode|node_qr_reader.py|Run QR detection on a video feed|
+|camera|node_camera.py|Publish a video feed to a topic|
+|object_detector|node_object_detector.py|Run a TF model on a video feed|
+|qr_detector|node_qr_detector.py|Run QR detection on a video feed|
 |rosprinter|node_printer.py|Display the result feed of all nodes|
 |rosinput|node_input.py|Send commands to nodes|
 
