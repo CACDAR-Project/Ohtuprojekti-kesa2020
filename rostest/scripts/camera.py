@@ -6,8 +6,8 @@ from rostest.msg import image
 # from image_converter import cv2_to_msg
 import image_converter
 
-source = "/dev/video0"
-#source = "test.mp4"
+#source = "/dev/video0"
+source = "test.mp4"
 
 
 def run():
