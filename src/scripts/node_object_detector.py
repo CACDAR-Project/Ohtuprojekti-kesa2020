@@ -36,9 +36,12 @@ class ObjectNode:
 
     def run(self):
         self.detect_on = True
-        self.pub = rospy.Publisher("{}/observations".format(rospy.get_name()), observation, queue_size=50)
-        frequency_service = rospy.Service("{}/frequency".format(rospy.get_name()), new_frequency,
-                                          self.change_frequency)
+        self.pub = rospy.Publisher("{}/observations".format(rospy.get_name()),
+                                   observation,
+                                   queue_size=50)
+        frequency_service = rospy.Service(
+            "{}/frequency".format(rospy.get_name()), new_frequency,
+            self.change_frequency)
         # Image feed topic
         rospy.Subscriber("camera/images", image, self.receive_img)
 
