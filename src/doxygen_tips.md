@@ -60,9 +60,9 @@ You can use tags in Python files, and Doxygen will list them under [Related Page
 \## \@bug Lets fix this  
 
 Some useful tags:  
-+    @bug  
-+    @todo  
-+    @test   
++    \@bug  
++    \@todo  
++    \@test   
 
 You can run doxygen in root with    
 
