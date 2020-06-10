@@ -4,6 +4,10 @@
 
 [Backlog](https://github.com/Konenako/Ohtuprojekti-kesa2020/projects)
 
+[ROS nodes API](https://docs.google.com/document/d/1ZX2D-lR2-JPhgsHoDeP2K5ocj3jB0FU43SoIwdkePvU)
+
+[ROS nodes structure](https://docs.google.com/drawings/d/1a4bOr0Cu2g_0QJ_u3QxHUjvKshzWlyNOfwyI5jS2Bu8)
+
 ## Running nodes in Docker with script file
 
 `./docker_runner.sh`
