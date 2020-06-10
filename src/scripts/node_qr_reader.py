@@ -4,8 +4,8 @@ import time
 from helpers.image_converter import msg_to_cv2
 import detector.qr_detector as qr_detector
 from std_msgs.msg import String
-from rostest.msg import image, qr_observation, polygon, boundingbox, point64
-from rostest.srv import new_frequency, new_frequencyResponse
+from konenako.msg import image, qr_observation, polygon, boundingbox, point64
+from konenako.srv import new_frequency, new_frequencyResponse
 
 # Frequency in hertz
 qr_run_frequency = 10
