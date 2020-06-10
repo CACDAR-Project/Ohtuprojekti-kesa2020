@@ -27,10 +27,6 @@ class ObjectNode:
     last_detect = 0
     detect_lock = threading.Lock()
 
-    def print_input(self, input):
-        print(f"Received a message from another node: {input.message}")
-        return text_messageResponse("We received you message!")
-
     def change_frequency(self, new_frequency):
         with self.frequency_change_lock:
             self.run_frequency = new_frequency.data
@@ -41,8 +37,6 @@ class ObjectNode:
 
     def run(self):
         self.detect_on = True
-        message_service = rospy.Service('inputs', text_message,
-                                        self.print_input)
         frequency_service = rospy.Service('frequency', new_frequency,
                                           self.change_frequency)
         # Image feed topic
