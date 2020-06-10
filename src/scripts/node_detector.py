@@ -1,4 +1,6 @@
 #!/usr/bin/env python3.7
+## @package scripts
+
 import cv2 as cv
 import rospy
 import time
@@ -13,9 +15,11 @@ from helpers.image_converter import msg_to_cv2
 # https://github.com/opencv/opencv/wiki/TensorFlow-Object-Detection-API
 
 
+#  Read an image stream from a ROS topic, detect objects i nthe frames using a Tensorflow
+#  Lite model and publish the results in a topic.
 class ObjectNode:
 
-    #frequency in hertz
+    # frequency in hertz
     run_frequency = 1
     period = 1.0 / run_frequency
 
@@ -31,6 +35,9 @@ class ObjectNode:
         print(f"Received a message from another node: {input.message}")
         return text_messageResponse("We received you message!")
 
+    ## Set a new frequency for the object detection.
+    #  @param new_frequency The new frequency in hz as a new_frequency.srv message.
+    #  @return Confirmation string as a new_frequencyResponse.srv message.
     def change_frequency(self, new_frequency):
         with self.frequency_change_lock:
             self.run_frequency = new_frequency.data
@@ -59,7 +66,7 @@ class ObjectNode:
         # For tracking the frequency
         self.last_detect = time.time()
         period = self.period
-        # Converting the image back from ros Image message to a numpy ndarray
+        # Convert the image back from an image message to a numpy ndarray
         img = msg_to_cv2(img)
 
         for detection in self.detector.detect(img):

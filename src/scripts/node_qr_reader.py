@@ -1,4 +1,6 @@
 #!/usr/bin/env python3.7
+## @package scripts
+
 import rospy
 import threading
 import time
@@ -8,7 +10,8 @@ from std_msgs.msg import String
 from konenako.msg import image, qr_observation, polygon, boundingbox, point64
 from konenako.srv import new_frequency, new_frequencyResponse
 
-
+## Read an image stream from a ROS topic, detect and decode QR codes from the frames and 
+#  publish the results in a topic.
 class QRReader:
     # Frequency in hertz
     qr_run_frequency = 10
@@ -49,6 +52,10 @@ class QRReader:
         frequency_service = rospy.Service('qr_frequency', new_frequency,
                                           self.change_frequency)
 
+    ## Process the image using qr_detector.py, publish each QR code's data and
+    #  position qs a qr_observation ROS message.
+    #
+    #  @param msg image.msg ROS message of the frame to process.
     def detect(self, msg: image):
         # For tracking the frequency
         self.last_detect = time.time()
@@ -59,6 +66,7 @@ class QRReader:
 
         # Detect QR codes with qr_detector.py
         observations = qr_detector.detect(img)
+        # Publish each QR code to a topic.
         for o in observations:
             obs = qr_observation(
                 str(o["data"]),
