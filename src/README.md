@@ -1,20 +1,10 @@
-## Usage
+## Instructions for running nodes in Docker containers.
 
-Setup ROS catkin workspace, `git clone` to `catkin_ws/src/` and build the catkin workspace.
-
-
-`poetry shell`
-```
-source ../../devel/setup.bash
-cd rostest
-rosrun rostest main.py
-```
-
-## Docker
+### Running individual nodes
 
 Building the image
 
-`sudo docker build --tag rostest:1.0 .`
+`sudo docker build --tag konenako:1.0 .`
 
 Create network for communicating with roscore
 
@@ -32,7 +22,7 @@ Start up rostest node in another console
 ```
 sudo docker run -it --rm \
     --net rosnet \
-    --name rostest \
+    --name master \
     --env ROS_HOSTNAME=rostest \
     --env ROS_MASTER_URI=http://master:11311 \
     rostest:1.0
@@ -41,9 +31,9 @@ Attaching camera devices to the container can be done by adding parameters to no
 
 `--device` argument, for example `--device /dev/video0`
 
-### Docker compose
+### Running multiple nodes with docker-compose
 
-Alternatively the above can be done with docker compose, with the following on the root directory of the project.
+Alternatively the above can be done with docker-compose, with the following on the root directory of the project.
 
 `docker-compose build`
 
@@ -67,4 +57,4 @@ https://docs.docker.com/compose/compose-file/#devices
 
 ## Versions
 
-Tested to work on Docker version 19.03.8-ce and Docker-compose version 1.25.5
+Tested to work on Docker version 19.03.8-ce, Docker-compose version 1.25.5 and poetry 1.0.5.
