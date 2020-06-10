@@ -3,7 +3,7 @@
 bold=$(tput bold)
 normal=$(tput sgr0)
 ros_distro=$(rosversion -d)
-src_folder=rostest
+src_folder=src
 pwd=$(pwd)
 
 if [[ "$VIRTUAL_ENV" != "" ]]
@@ -47,7 +47,9 @@ echo 'Installing poetry dependencies'
 poetry install > /dev/null 2>&1
 
 roscore > /dev/null 2>&1 &
-gnome-terminal --geometry 60x16+0+0 --title="OBJECTS DETECTION" -- /bin/bash -c 'source '${pwd}'/catkin_ws/devel/setup.bash; cd '${pwd}'/catkin_ws/src; poetry run rosrun rostest main.py; exec bash' &
-gnome-terminal --geometry 60x16+0+359 --title="PRINTER" -- /bin/bash -c 'source '${pwd}'/catkin_ws/devel/setup.bash; cd '${pwd}'/catkin_ws/src; poetry run rosrun rostest printer.py; exec bash' &
-gnome-terminal --geometry 60x16+625+359 --title="CAMERA" -- /bin/bash -c 'source '${pwd}'/catkin_ws/devel/setup.bash; cd '${pwd}'/catkin_ws/src; poetry run rosrun rostest camera.py; exec bash' &
-gnome-terminal --geometry 60x16+625+0 --title="INPUT" -- /bin/bash -c 'source '${pwd}'/catkin_ws/devel/setup.bash; cd '${pwd}'/catkin_ws/src; poetry run rosrun rostest input.py; exec bash'
+gnome-terminal --geometry 60x16+0+0 --title="OBJECTS DETECTION" -- /bin/bash -c 'source '${pwd}'/catkin_ws/devel/setup.bash; cd '${pwd}'/catkin_ws/src; poetry run rosrun konenako node_detector.py;' &
+gnome-terminal --geometry 60x16+0+359 --title="PRINTER" -- /bin/bash -c 'source '${pwd}'/catkin_ws/devel/setup.bash; cd '${pwd}'/catkin_ws/src; poetry run rosrun konenako node_printer.py;' &
+gnome-terminal --geometry 60x16+625+359 --title="CAMERA" -- /bin/bash -c 'source '${pwd}'/catkin_ws/devel/setup.bash; cd '${pwd}'/catkin_ws/src; poetry run rosrun konenako node_camera.py;' &
+gnome-terminal --geometry 60x16+625+0 --title="INPUT" -- /bin/bash -c 'source '${pwd}'/catkin_ws/devel/setup.bash; cd '${pwd}'/catkin_ws/src; poetry run rosrun konenako node_input.py;' &
+gnome-terminal --geometry 60x16+0+690 --title="QR" -- /bin/bash -c 'source '${pwd}'/catkin_ws/devel/setup.bash; cd '${pwd}'/catkin_ws/src; poetry run rosrun konenako node_qr_reader.py;'
+
