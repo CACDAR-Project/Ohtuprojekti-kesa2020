@@ -1,13 +1,12 @@
 import numpy as np
 import cv2 as cv
-from scripts.qr_detector import QrDetector
+import scripts.qr_detector as detector
 
 # poetry run python -m scripts.demo.qr from rostest/
 
 
 def run():
     cam = cv.VideoCapture("scripts/demo/data/qr.mp4")
-    detector = QrDetector()
     while cam.grab():
         img = cam.retrieve()[1]
         height = img.shape[0]

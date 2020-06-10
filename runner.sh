@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 bold=$(tput bold)
 normal=$(tput sgr0)
@@ -6,15 +6,9 @@ ros_distro=$(rosversion -d)
 src_folder=src
 pwd=$(pwd)
 
-if [ "$BASH_VERSION" = "" ];
+if [[ "$VIRTUAL_ENV" != "" ]]
 then
-  echo 'Run with '${bold}'bash runner.sh'${normal}
-  exit
-fi
-
-if [[ "$VIRTUAL_ENV" = "" ]]
-then
-  echo 'We are not in venv! Remember to '${bold}'poetry install'${normal}' and '${bold}'poetry shell'${normal}'.'
+  echo 'You are in venv! Quit venv with '${bold}'exit'${normal}' or '${bold}'Ctrl+D'${normal}'.'
   exit
 fi
 
@@ -43,20 +37,24 @@ cp -r ${pwd}/${src_folder}/* ${pwd}/catkin_ws/src
 echo 'Sourcing /opt/ros/'${ros_distro}'/setup.bash'
 source /opt/ros/${ros_distro}/setup.bash
 
-echo 'Removing tensorflow 1.14.0 because it requires package enum34 which prevents catkin_make'
-poetry remove tensorflow > /dev/null 2>&1
-
 echo 'Creating catkin workspace with catkin_make to '${pwd}'/catkin_ws'
 catkin_make -C ${pwd}/catkin_ws > /dev/null 2>&1
 
-echo 'Adding tensorflow 1.14.0 because it is needed'
-poetry add tensorflow==1.14.0 > /dev/null 2>&1
+echo 'Sourcing '${pwd}'/catkin_ws/devel/setup.bash'
+source ${pwd}/catkin_ws/devel/setup.bash
 
-echo 'Sourcing '${pwd}'/devel/setup.bash'
-source ${pwd}/devel/setup.bash
+echo 'Installing poetry dependencies'
+poetry install > /dev/null 2>&1
 
-roscore &
-gnome-terminal --geometry 60x16+0+0 --title="OBJECTS DETECTION" -- /bin/bash -c 'source '${pwd}'/catkin_ws/devel/setup.bash; cd '${pwd}'/catkin_ws/src; rosrun konenako node_detector.py; exec bash' &
-gnome-terminal --geometry 60x16+0+359 --title="PRINTER" -- /bin/bash -c 'source '${pwd}'/catkin_ws/devel/setup.bash; cd '${pwd}'/catkin_ws/src; rosrun konenako node_printer.py; exec bash' &
-gnome-terminal --geometry 60x16+625+359 --title="CAMERA" -- /bin/bash -c 'source '${pwd}'/catkin_ws/devel/setup.bash; cd '${pwd}'/catkin_ws/src; rosrun konenako node_camera.py; exec bash' &
-gnome-terminal --geometry 60x16+625+0 --title="INPUT" -- /bin/bash -c 'source '${pwd}'/catkin_ws/devel/setup.bash; cd '${pwd}'/catkin_ws/src; rosrun konenako node_input.py; exec bash'
+#roscore &
+roscore > /dev/null 2>&1 &
+gnome-terminal --geometry 60x16+0+0 --title="OBJECTS DETECTION" -- /bin/bash -c 'source '${pwd}'/catkin_ws/devel/setup.bash; cd '${pwd}'/catkin_ws/src; poetry run rosrun konenako node_detector.py; exec bash' &
+gnome-terminal --geometry 60x16+0+359 --title="PRINTER" -- /bin/bash -c 'source '${pwd}'/catkin_ws/devel/setup.bash; cd '${pwd}'/catkin_ws/src; poetry run rosrun konenako node_printer.py; exec bash' &
+gnome-terminal --geometry 60x16+625+359 --title="CAMERA" -- /bin/bash -c 'source '${pwd}'/catkin_ws/devel/setup.bash; cd '${pwd}'/catkin_ws/src; poetry run rosrun konenako node_camera.py; exec bash' &
+gnome-terminal --geometry 60x16+625+0 --title="INPUT" -- /bin/bash -c 'source '${pwd}'/catkin_ws/devel/setup.bash; cd '${pwd}'/catkin_ws/src; poetry run rosrun konenako node_input.py; exec bash'
+
+#roscore > /dev/null 2>&1 &
+#gnome-terminal --geometry 60x16+0+0 --title="OBJECTS DETECTION" -- /bin/bash -c 'source '${pwd}'/catkin_ws/devel/setup.bash; cd '${pwd}'/catkin_ws/src; poetry run rosrun rostest main.py; exec bash' &
+#gnome-terminal --geometry 60x16+0+359 --title="PRINTER" -- /bin/bash -c 'source '${pwd}'/catkin_ws/devel/setup.bash; cd '${pwd}'/catkin_ws/src; poetry run rosrun rostest printer.py; exec bash' &
+#gnome-terminal --geometry 60x16+625+359 --title="CAMERA" -- /bin/bash -c 'source '${pwd}'/catkin_ws/devel/setup.bash; cd '${pwd}'/catkin_ws/src; poetry run rosrun rostest camera.py; exec bash' &
+#gnome-terminal --geometry 60x16+625+0 --title="INPUT" -- /bin/bash -c 'source '${pwd}'/catkin_ws/devel/setup.bash; cd '${pwd}'/catkin_ws/src; poetry run rosrun rostest input.py; exec bash'

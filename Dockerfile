@@ -12,6 +12,8 @@ RUN apt-get update \
  python3.7-dev \
  python3-pip \
  python3.7-venv \
+ # Should be replaced with a pip dependency if possible. 
+ libzbar-dev \
  && rm -rf /var/lib/apt/lists/*
 # These can be added to apt-get install, if needed: python-cv-bridge and ros-melodic-cv-bridge
 
@@ -43,3 +45,6 @@ CMD cd /catkin_ws/src/ohtu && poetry run /bin/bash -c 'source /opt/ros/melodic/s
 
 FROM rosbase as roscamera
 CMD cd /catkin_ws/src/ohtu && poetry run /bin/bash -c 'source /opt/ros/melodic/setup.bash && source ../../devel/setup.bash && cd src && rosrun konenako node_camera.py'
+
+#FROM rosbase as rosqrnode
+#CMD cd /catkin_ws/src/ohtu && poetry run /bin/bash -c 'source /opt/ros/melodic/setup.bash && source ../../devel/setup.bash && cd src && rosrun konenako qr_node.py'
