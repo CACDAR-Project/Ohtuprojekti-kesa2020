@@ -10,6 +10,7 @@ from std_msgs.msg import String
 from konenako.msg import image, qr_observation, polygon, boundingbox, point64
 from konenako.srv import new_frequency, new_frequencyResponse
 
+
 ## Read an image stream from a ROS topic, detect and decode QR codes from the frames and 
 #  publish the results in a topic.
 class QRReader:
