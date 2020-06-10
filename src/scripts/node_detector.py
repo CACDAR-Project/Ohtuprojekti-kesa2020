@@ -2,6 +2,7 @@
 import cv2 as cv
 import rospy
 import time
+import threading
 from typing import List
 
 from konenako.msg import observation, boundingbox, image
@@ -11,60 +12,77 @@ from helpers.image_converter import msg_to_cv2
 
 # https://github.com/opencv/opencv/wiki/TensorFlow-Object-Detection-API
 
-#frequency in hertz
-run_frequency = 1
-period = 1.0 / run_frequency
 
-detector = ObjectDetector("ssd_mobilenet_v1_1_metadata_1.tflite",
-                          "mscoco_complete_labels")
-pub = rospy.Publisher("observations", observation, queue_size=50)
+class ObjectNode:
 
-
-def print_input(input):
-    print(f"Received a message from another node: {input.message}")
-    return text_messageResponse("We received you message!")
-
-
-def change_frequency(new_frequency):
-    global run_frequency
-    global period
-    run_frequency = new_frequency.data
+    #frequency in hertz
+    run_frequency = 1
     period = 1.0 / run_frequency
-    return new_frequencyResponse("We received you frequency!")
 
+    detector = ObjectDetector("ssd_mobilenet_v1_1_metadata_1.tflite",
+                              "mscoco_complete_labels")
+    pub = rospy.Publisher("observations", observation, queue_size=50)
 
-def run():
-    message_service = rospy.Service('inputs', text_message, print_input)
-    frequency_service = rospy.Service('frequency', new_frequency,
-                                      change_frequency)
-    # Image feed topic
-    rospy.Subscriber("camera_feed", image, detect)
+    frequency_change_lock = threading.Lock()
+    last_detect = 0
+    detect_lock = threading.Lock()
 
+    def print_input(self, input):
+        print(f"Received a message from another node: {input.message}")
+        return text_messageResponse("We received you message!")
 
-def detect(img):
-    start_time = time.time()
-    # Converting the image back from ros Image message to a numpy ndarray
-    img = msg_to_cv2(img)
-    # Resizing could be better to do before sending the message, to save a little bandwidth
-    inp = cv.resize(img, (300, 300))
-    inp = inp[:, :, [2, 1, 0]]  # BGR2RGB
+    def change_frequency(self, new_frequency):
+        with self.frequency_change_lock:
+            self.run_frequency = new_frequency.data
+            self.period = 1.0 / self.run_frequency
+            return new_frequencyResponse(
+                "Object detector freq set to {}, period {}".format(
+                    self.run_frequency, self.period))
 
-    for detection in detector.detect(img):
-        pub.publish(
-            observation(
-                detection["class_id"], detection["label"], detection["score"],
-                boundingbox(detection["bbox"]["top"],
-                            detection["bbox"]["right"],
-                            detection["bbox"]["bottom"],
-                            detection["bbox"]["left"])))
+    def run(self):
+        self.detect_on = True
+        message_service = rospy.Service('inputs', text_message,
+                                        self.print_input)
+        frequency_service = rospy.Service('frequency', new_frequency,
+                                          self.change_frequency)
+        # Image feed topic
+        rospy.Subscriber("camera_feed", image, self.receive_img)
 
-    time_to_sleep = period - (time.time() - start_time)
-    if time_to_sleep > 0:
-        time.sleep(time_to_sleep)
-    return
+    def receive_img(self, msg: image):
+        # Detect from this image, if not already detecting from another image and within period time constraints
+        if self.detect_on and (
+                time.time() - self.last_detect
+        ) > self.period and self.detect_lock.acquire(False):
+            self.detect(msg)
+
+    def detect(self, img):
+        # For tracking the frequency
+        self.last_detect = time.time()
+        period = self.period
+        # Converting the image back from ros Image message to a numpy ndarray
+        img = msg_to_cv2(img)
+
+        for detection in self.detector.detect(img):
+            self.pub.publish(
+                observation(
+                    detection["class_id"], detection["label"],
+                    detection["score"],
+                    boundingbox(detection["bbox"]["top"],
+                                detection["bbox"]["right"],
+                                detection["bbox"]["bottom"],
+                                detection["bbox"]["left"])))
+
+        processing_time = time.time() - self.last_detect
+        if processing_time > period:
+            print("Detecting objects took {}, while the period was set to {}!".
+                  format(processing_time,
+                         period))  # TODO: Announce "warnings" to topic
+
+        # Ready to detect the next image
+        self.detect_lock.release()
 
 
 if __name__ == "__main__":
     rospy.init_node("Testnode")
-    run()
+    ObjectNode().run()
     rospy.spin()
