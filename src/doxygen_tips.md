@@ -38,6 +38,20 @@ Doxygen finds comments written in the following style (leave out the \\):
 This example and further information can be found at:
 https://www.doxygen.nl/manual/docblocks.html#pythonblocks
 
+### Commands
+Some useful commands...
++   \@author
++   \@brief
+    + A one-line description
++   \@copydetails <module etc.>
+    + Copy details of another function, class or module
++   \@date
++   \@mainpage
++   \@page <label> <title>
++   \@param <var> <description>
++   \@ref <label> <text>
+    + Make a reference link to another part of the documentation with label and text.
++   \@version    
 
 ### Tags
 
@@ -48,7 +62,6 @@ You can use tags in Python files, and Doxygen will list them under [Related Page
 Some useful tags:  
 +    @bug  
 +    @todo  
-+    @warning
 +    @test   
 
 You can run doxygen in root with    
