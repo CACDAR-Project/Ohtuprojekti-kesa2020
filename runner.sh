@@ -51,5 +51,5 @@ gnome-terminal --geometry 60x16+0+0 --title="OBJECTS DETECTION" -- /bin/bash -c 
 gnome-terminal --geometry 60x16+0+359 --title="PRINTER" -- /bin/bash -c 'source '${pwd}'/catkin_ws/devel/setup.bash; cd '${pwd}'/catkin_ws/src; poetry run rosrun konenako node_printer.py; exec bash' &
 gnome-terminal --geometry 60x16+625+359 --title="CAMERA" -- /bin/bash -c 'source '${pwd}'/catkin_ws/devel/setup.bash; cd '${pwd}'/catkin_ws/src; poetry run rosrun konenako node_camera.py; exec bash' &
 gnome-terminal --geometry 60x16+625+0 --title="INPUT" -- /bin/bash -c 'source '${pwd}'/catkin_ws/devel/setup.bash; cd '${pwd}'/catkin_ws/src; poetry run rosrun konenako node_input.py; exec bash' &
-gnome-terminal --geometry 60x16+1250+0 --title="QR" -- /bin/bash -c 'source '${pwd}'/catkin_ws/devel/setup.bash; cd '${pwd}'/catkin_ws/src; poetry run rosrun konenako node_qr_reader.py; exec bash'
+gnome-terminal --geometry 60x16+0+700 --title="QR" -- /bin/bash -c 'source '${pwd}'/catkin_ws/devel/setup.bash; cd '${pwd}'/catkin_ws/src; poetry run rosrun konenako node_qr_reader.py; exec bash'
 
