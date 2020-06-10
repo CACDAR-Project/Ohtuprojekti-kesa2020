@@ -34,7 +34,7 @@ RUN /bin/bash -c "source /opt/ros/melodic/setup.bash && catkin_make"
 
 
 # Can we omit the sourcing from these layers?
-FROM rosbase as rosdetector
+FROM rosbase as rosobjectdetector
 CMD cd /catkin_ws/src/ohtu && poetry run /bin/bash -c 'source /opt/ros/melodic/setup.bash && source ../../devel/setup.bash && cd src && rosrun konenako node_object_detector.py'
 
 FROM rosbase as rosinput
@@ -46,5 +46,5 @@ CMD cd /catkin_ws/src/ohtu && poetry run /bin/bash -c 'source /opt/ros/melodic/s
 FROM rosbase as roscamera
 CMD cd /catkin_ws/src/ohtu && poetry run /bin/bash -c 'source /opt/ros/melodic/setup.bash && source ../../devel/setup.bash && cd src && rosrun konenako node_camera.py'
 
-FROM rosbase as rosqrnode
+FROM rosbase as rosqrdetector
 CMD cd /catkin_ws/src/ohtu && poetry run /bin/bash -c 'source /opt/ros/melodic/setup.bash && source ../../devel/setup.bash && cd src && rosrun konenako node_qr_detector.py'
