@@ -1,8 +1,13 @@
 [![CircleCI](https://circleci.com/gh/Konenako/Ohtuprojekti-kesa2020.svg?style=svg)](https://circleci.com/gh/Konenako/Ohtuprojekti-kesa2020) [![codecov](https://codecov.io/gh/Konenako/Ohtuprojekti-kesa2020/branch/master/graph/badge.svg)](https://codecov.io/gh/Konenako/Ohtuprojekti-kesa2020) [![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
 
+
 ## Documentation
 
 [Backlog](https://github.com/Konenako/Ohtuprojekti-kesa2020/projects)
+
+[ROS nodes API](https://docs.google.com/document/d/1ZX2D-lR2-JPhgsHoDeP2K5ocj3jB0FU43SoIwdkePvU)
+
+[ROS nodes structure](https://docs.google.com/drawings/d/1a4bOr0Cu2g_0QJ_u3QxHUjvKshzWlyNOfwyI5jS2Bu8)
 
 ### Documentation for classes, files etc.    
 
@@ -70,9 +75,9 @@ Currently available nodes, their source files and functions:
 
 |Node    | File     | Function  |
 | ------ | -------- | --------- |
-|roscamera|node_camera.py|Publish a video feed to a topic|
-|rosdetector|node_detector.py|Run a TF model on a video feed|
-|rosqrnode|node_qr_reader.py|Run QR detection on a video feed|
+|camera|node_camera.py|Publish a video feed to a topic|
+|object_detector|node_object_detector.py|Run a TF model on a video feed|
+|qr_detector|node_qr_detector.py|Run QR detection on a video feed|
 |rosprinter|node_printer.py|Display the result feed of all nodes|
 |rosinput|node_input.py|Send commands to nodes|
 

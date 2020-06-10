@@ -39,15 +39,18 @@ class QRReader:
         self.detect_on = on
 
         # Results are published as qr_observation.msg ROS messages.
-        self.pub = rospy.Publisher("qr_results", qr_observation, queue_size=50)
+        self.pub = rospy.Publisher("{}/observations".format(rospy.get_name()),
+                                   qr_observation,
+                                   queue_size=50)
 
         # Camera feed is read from ros messages
-        self.input_sub = rospy.Subscriber("camera_feed", image,
+        self.input_sub = rospy.Subscriber("camera/images", image,
                                           self.receive_img)
 
         # ROS service for changing detection frequency.
-        frequency_service = rospy.Service('qr_frequency', new_frequency,
-                                          self.change_frequency)
+        frequency_service = rospy.Service(
+            "{}/frequency".format(rospy.get_name()), new_frequency,
+            self.change_frequency)
 
     def detect(self, msg: image):
         # For tracking the frequency
@@ -83,6 +86,6 @@ class QRReader:
 
 
 if __name__ == "__main__":
+    rospy.init_node("qr_detector")
     qr_reader = QRReader(True)
-    rospy.init_node("qr_node")
     rospy.spin()
