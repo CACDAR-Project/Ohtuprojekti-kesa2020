@@ -25,7 +25,6 @@ class ObjectNode:
 
     detector = ObjectDetector("ssd_mobilenet_v1_1_metadata_1.tflite",
                               "mscoco_complete_labels")
-    pub = rospy.Publisher("observations", observation, queue_size=50)
 
     frequency_change_lock = threading.Lock()
     last_detect = 0
@@ -48,12 +47,14 @@ class ObjectNode:
 
     def run(self):
         self.detect_on = True
-        message_service = rospy.Service('inputs', text_message,
-                                        self.print_input)
-        frequency_service = rospy.Service('frequency', new_frequency,
-                                          self.change_frequency)
+        self.pub = rospy.Publisher("{}/observations".format(rospy.get_name()),
+                                   observation,
+                                   queue_size=50)
+        frequency_service = rospy.Service(
+            "{}/frequency".format(rospy.get_name()), new_frequency,
+            self.change_frequency)
         # Image feed topic
-        rospy.Subscriber("camera_feed", image, self.receive_img)
+        rospy.Subscriber("camera/images", image, self.receive_img)
 
     def receive_img(self, msg: image):
         # Detect from this image, if not already detecting from another image and within period time constraints
@@ -90,6 +91,6 @@ class ObjectNode:
 
 
 if __name__ == "__main__":
-    rospy.init_node("Testnode")
+    rospy.init_node("object_detector")
     ObjectNode().run()
     rospy.spin()
