@@ -4,7 +4,7 @@ import rospy
 from numpy import ndarray
 
 from konenako.msg import image
-import helpers.image_converter
+from helpers.image_converter import cv2_to _msg
 
 #source = "/dev/video0"
 source = "test.mp4"
@@ -19,7 +19,7 @@ def run():
     while cam.grab():
         img = cam.retrieve()[1]
         # Converting the image from numpy ndarray to an image message
-        msg = image_converter.cv2_to_msg(img)
+        msg = cv2_to_msg(img)
         pub.publish(msg)
 
 

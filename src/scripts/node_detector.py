@@ -7,7 +7,7 @@ from typing import List
 from konenako.msg import observation, boundingbox, image
 from konenako.srv import text_message, text_messageResponse, new_frequency, new_frequencyResponse
 from detector.object_detector import ObjectDetector
-import helpers.image_converter
+from helpers.image_converter import msg_to_cv2
 
 
 # https://github.com/opencv/opencv/wiki/TensorFlow-Object-Detection-API
@@ -45,7 +45,7 @@ def run():
 def detect(img):
     start_time = time.time()
     # Converting the image back from ros Image message to a numpy ndarray
-    img = image_converter.msg_to_cv2(img)
+    img = msg_to_cv2(img)
     # Resizing could be better to do before sending the message, to save a little bandwidth
     inp = cv.resize(img, (300, 300))
     inp = inp[:, :, [2, 1, 0]]  # BGR2RGB
