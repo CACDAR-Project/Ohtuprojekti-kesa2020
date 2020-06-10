@@ -46,5 +46,5 @@ CMD cd /catkin_ws/src/ohtu && poetry run /bin/bash -c 'source /opt/ros/melodic/s
 FROM rosbase as roscamera
 CMD cd /catkin_ws/src/ohtu && poetry run /bin/bash -c 'source /opt/ros/melodic/setup.bash && source ../../devel/setup.bash && cd src && rosrun konenako node_camera.py'
 
-#FROM rosbase as rosqrnode
-#CMD cd /catkin_ws/src/ohtu && poetry run /bin/bash -c 'source /opt/ros/melodic/setup.bash && source ../../devel/setup.bash && cd src && rosrun konenako qr_node.py'
+FROM rosbase as rosqrnode
+CMD cd /catkin_ws/src/ohtu && poetry run /bin/bash -c 'source /opt/ros/melodic/setup.bash && source ../../devel/setup.bash && cd src && rosrun konenako node_qr_reader.py'

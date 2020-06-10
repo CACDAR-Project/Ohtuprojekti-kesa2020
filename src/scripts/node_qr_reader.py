@@ -1,8 +1,8 @@
 #!/usr/bin/env python3.7
 import rospy
 import time
-import image_converter
-import qr_detector
+from helpers.image_converter import msg_to_cv2
+import detector.qr_detector as qr_detector
 from std_msgs.msg import String
 from rostest.msg import image, qr_observation, polygon, boundingbox, point64
 from rostest.srv import new_frequency, new_frequencyResponse
@@ -41,7 +41,7 @@ class QRReader:
             return
 
         # Convert image from Image message to numpy ndarray
-        img = image_converter.msg_to_cv2(msg)
+        img = msg_to_cv2(msg)
 
         # Detect QR codes with qr_detector.py
         observations = qr_detector.detect(img)
