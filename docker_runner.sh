@@ -1,35 +1,50 @@
 #!/bin/sh
 
 pwd=$(pwd)
+running_conts_amount=$(docker ps -q|wc -l)
 
 # Check for open containers and if they exist, kill them
-if [ $(docker ps -q | wc -l) -ne 0 ]; then
+if [ $running_conts_amount -ne 0 ]; then
+    echo "There was $running_conts_amount containers running."
+    echo "Attempting to kill containers with the following IDs:"
     docker kill $(docker ps -q)
-else
-    echo "No containers running, continuing.."
+    if [ $(docker ps -q|wc -l) -ne 0 ]; then
+        echo ""
+        echo "Could not kill all of the containers, exiting.."
+        exit 1
+    else
+        echo "All containers killed"
+    fi
+    echo ""
 fi
 
+echo "No containers running, continuing.."
+echo ""
+
+
 docker-compose build
-if [ $? -ne 0 ]; then
+retval=$?
+if [ $retval -ne 0 ]; then
     echo "Errors running docker-compose build, exiting."
-    exit
+    exit $retval
 fi
 
 docker-compose up -d
-if [ $? -ne 0 ]; then
-    echo "Errors running docker-compose up, exiting"
-    exit
+retval=$?
+if [ $retval -ne 0 ]; then
+    echo "Errors running docker-compose up, exiting."
+    exit $retval
 fi
 
 
 # Open new terminal windows and which attach to different containers
-gnome-terminal --geometry 80x24+0+0 --title="ROSINPUT" -- /bin/sh -c 'docker attach rosinput' &
-gnome-terminal --geometry 80x24+0+488 --title="ROSTEST" -- /bin/sh -c 'docker attach rostest' &
-gnome-terminal --geometry 80x24+734+0 --title="MASTER" -- /bin/sh -c 'docker attach master' &
-gnome-terminal --geometry 80x24+734+488 --title="ROSPRINTER" -- /bin/sh -c 'docker attach rosprinter' &
+gnome-terminal --geometry 60x16+0+0 --title="ROSINPUT" -- /bin/sh -c 'docker attach rosinput' &
+gnome-terminal --geometry 60x16+0+359 --title="ROSDETECTOR" -- /bin/sh -c 'docker attach rosdetector' &
+gnome-terminal --geometry 60x16+625+0 --title="MASTER" -- /bin/sh -c 'docker attach master' &
+gnome-terminal --geometry 60x16+625+359 --title="ROSPRINTER" -- /bin/sh -c 'docker attach rosprinter' &
 
 # Open window which can be used to close all containers
-gnome-terminal --geometry 80x24+0+976 --title="All containers" -- /bin/sh -c 'cd '${pwd}'; docker-compose up'
+gnome-terminal --geometry 60x16+0+680 --title="All containers" -- /bin/sh -c 'cd '${pwd}'; docker-compose up'
 
 
 #To a avoid using sudo with docker add yourself to docker group:

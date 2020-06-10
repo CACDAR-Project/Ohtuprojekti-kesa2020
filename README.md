@@ -2,13 +2,19 @@
 
 ## Documentation
 
-[Backlog](https://docs.google.com/spreadsheets/d/1jyyo4Vl1vxXgr6DDcG-a-Rb9Xx-2B-TYjd2KzZyrj3M)
+[Backlog](https://github.com/Konenako/Ohtuprojekti-kesa2020/projects)
 
-## Running Docker with script file
+## Running nodes in Docker with script file
 
 `./docker_runner.sh`
 
 Kills containers that are open, builds and runs containers and attaches new terminals to them.
+
+## Running nodes locally with script file
+
+`./runner.sh`
+
+Deletes `catkin_ws`-folder creates catkin workspace and opens nodes in new gnome terminals.
 
 
 ## Commands for virtual environment
@@ -20,6 +26,10 @@ Kills containers that are open, builds and runs containers and attaches new term
 #### Activate virtual environment
 `poetry shell`
 or `poetry run <command>` to run a single command in the environment
+
+#### Additional dependencies
+Some libraries must be separately installed, current list:
+ * zbar/libzbar0 
 
 # Formatting
 
