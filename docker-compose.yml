@@ -7,17 +7,17 @@ services:
     image: ros:melodic-ros-core
     command: roscore
 
-  rostest:
-    container_name: "rostest"
+  rosdetector:
+    container_name: "rosdetector"
     networks:
       - rosnet
     depends_on:
       - master
     build: 
       context: .
-      target: rostest
+      target: rosdetector
     environment:
-      - "ROS_HOSTNAME=rostest"
+      - "ROS_HOSTNAME=rosdetector"
       - "ROS_MASTER_URI=http://master:11311"
     tty: True
 
