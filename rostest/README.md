@@ -30,38 +30,29 @@ source ../../devel/setup.bash
 
 ### Running nodes
 
-All the instructions in this section presume you are in the poetry shell, have sourced the setup.bash file and are in the rostest directory (catkin_ws/src/Ohtuprojekti-kesa2020/rostest/).
+All the instructions in this section presume you are in the poetry shell, have sourced the setup.bash file and are in the src  directory (catkin_ws/src/Ohtuprojekti-kesa2020/src/).
 
 
-For the ROS nodes to communicate, the master node must be running on the system.
+For the ROS nodes to communicate, roscore must be running on the system.
 
 ```
 roscore
 ```
 
-Running the object detection node. Printer node is required to view the results.
+All the other nodes can be started using rosrun to run the respective python file.
 ```
-rosrun konenako node_detector.py
-```
-
-Running the QR code reader node. Printer node is required to view the results.
-```
-rosrun konenako node_qr.py
+rosrun konenako node_xxx.py
 ```
 
-Running the printer node to view the detection results.
-```
-rosrun konenako node_printer.py
-```
+Currently available nodes, their source files and functions:
 
-Running the input node to send messages and commands to object detector and QR nodes for development purposes.
-```
-rosrun konenako node_input.py
-```
-
-Running the camera node
-```
-rosrun konenako node_camera.py
+|Node    | File     | Function  |
+| ------ | -------- | --------- |
+|roscamera|node_camera.py|Publish a video feed to a topic|
+|rosdetector|node_detector.py|Run a TF model on a video feed|
+|rosqrnode|node_qr_reader.py|Run QR detection on a video feed|
+|rosprinter|node_printer.py|Display the result feed of all nodes|
+|rosinput|node_input.py|Send commands to nodes|
 
 
 ## Docker
