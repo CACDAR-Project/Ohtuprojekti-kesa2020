@@ -55,7 +55,7 @@ jobs:
           sudo apt-get install -y libzbar0
     - run: 
         command: |
-          cd rostest
+          cd src
           poetry run coverage run -m unittest discover
           poetry run coverage xml
 
