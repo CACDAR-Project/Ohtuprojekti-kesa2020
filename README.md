@@ -20,7 +20,7 @@ We also provide ready configured Dockerfiles for both x86-64 and armv7 architect
 ### Definition of Done
 * All code should be formatted with yapf
 * All code should be clearly commented
-   * Every module and class should have an "docstring", formatted in [Doxygen style](https://www.doxygen.nl/manual/docblocks.html#pythonblocks), [Hints and tips for doxygen](https://docs.google.com/document/d/1dO_enSIPJnerTgj0mP3ikSAUP4uKJe4mQp6P-w6SBbI/edit#heading=h.3dfaehlwii74)
+   * Every module and class should have an "docstring", formatted in [Doxygen style](https://www.doxygen.nl/manual/docblocks.html#pythonblocks), [Hints and tips for doxygen in Finnish](https://docs.google.com/document/d/1dO_enSIPJnerTgj0mP3ikSAUP4uKJe4mQp6P-w6SBbI/edit#heading=h.3dfaehlwii74)
    * All non trivial code should be commented with the same style
    * [Type hinting](https://docs.python.org/3.7/library/typing.html) should be used
 * All CircleCI tests should pass before merging to master
