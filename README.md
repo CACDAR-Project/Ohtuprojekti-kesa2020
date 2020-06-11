@@ -14,7 +14,7 @@
 You can run auto-documentation on root with    
 `doxygen`    
 
-The documentation can be found in the documentation-folder and viewed on your browser at ../documentation/html/index.html
+The documentation can be found in the documentation-folder and viewed on your browser at ./documentation/html/index.html
 
 ## Running nodes in Docker with script file
 
