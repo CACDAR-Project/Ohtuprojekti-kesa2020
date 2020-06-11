@@ -7,7 +7,7 @@ The goal is to implement computer vision as microservices utilizing the [Robot O
 
 Currently we provide one ROS package named 'konenako', which is implemented in the [src](https://github.com/Konenako/Ohtuprojekti-kesa2020/tree/master/src)-folder. This package provides several [ROS nodes](#nodes) that can be run individually.
 
-We also provide ready configured Dockerfiles for both x86-64 and armv7 architectures, so you can easily build every node into an own docker-image. For arm-architectures we also provide pre-compiled docker images trough [Docker Hub](https://hub.docker.com/r/ohtukonenako/ohtuprojekti_kesa2020), that are tested to work on a Raspberry PI 3 B+ based robot.
+We also provide already configured Dockerfiles for both x86-64 and armv7 architectures, so you can easily build every node into its own docker-image. For Arm architectures we also provide precompiled docker images through [Docker Hub](https://hub.docker.com/r/ohtukonenako/ohtuprojekti_kesa2020), which are tested to work on a Raspberry PI 3B+ based [TurtleBot3](http://www.robotis.us/turtlebot-3/) robot.
 
 ## Documentation
 
@@ -18,13 +18,13 @@ We also provide ready configured Dockerfiles for both x86-64 and armv7 architect
 [ROS nodes structure](https://docs.google.com/drawings/d/1a4bOr0Cu2g_0QJ_u3QxHUjvKshzWlyNOfwyI5jS2Bu8)
 
 ### Definition of Done
-* All code should be formatted with yapf
+* All code should be formatted with yapf to follow [PEP8](https://www.python.org/dev/peps/pep-0008/#introduction)
 * All code should be clearly commented
    * Every module and class should have an "docstring", formatted in [Doxygen style](https://www.doxygen.nl/manual/docblocks.html#pythonblocks), [Hints and tips for doxygen in Finnish](https://docs.google.com/document/d/1dO_enSIPJnerTgj0mP3ikSAUP4uKJe4mQp6P-w6SBbI/edit#heading=h.3dfaehlwii74)
    * All non trivial code should be commented with the same style
    * [Type hinting](https://docs.python.org/3.7/library/typing.html) should be used
-* All CircleCI tests should pass before merging to master
-* Pull requests needs at least 2 approvals before merging to master
+* All CircleCI tests must pass before merging to master
+* Pull requests need at least 2 approvals before merging to master
 * Documentation should be updated whenever any functionality is changed or added
 
 ### Repository structure
