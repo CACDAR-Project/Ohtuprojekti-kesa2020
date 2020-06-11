@@ -27,7 +27,8 @@ class QRReader:
     def toggle_detection(self, toggle):
         if self.detect_on == toggle.state:
             return toggleResponse(
-                "QR detection was already toggled to {}".format(self.detect_on))
+                "QR detection was already toggled to {}".format(
+                    self.detect_on))
         if not toggle.state:
             # Unsubscribe from camera feed when not detecting
             self.input_sub.unregister()
@@ -35,8 +36,8 @@ class QRReader:
             self.input_sub = rospy.Subscriber("camera/images", image,
                                               self.receive_img)
         self.detect_on = toggle.state
-        return toggleResponse(
-            "QR detection toggled to {}".format(self.detect_on))
+        return toggleResponse("QR detection toggled to {}".format(
+            self.detect_on))
 
     def change_frequency(self, new_frequency):
         with self.frequency_change_lock:
@@ -48,9 +49,8 @@ class QRReader:
 
     def receive_img(self, msg: image):
         # Detect from this image, if not already detecting from another image and within period time constraints
-        if (
-                time.time() - self.last_detect
-        ) > self.qr_period and self.detect_lock.acquire(False):
+        if (time.time() - self.last_detect
+            ) > self.qr_period and self.detect_lock.acquire(False):
             self.detect(msg)
 
     def __init__(self, state: bool = False):
@@ -71,7 +71,8 @@ class QRReader:
             "{}/frequency".format(rospy.get_name()), new_frequency,
             self.change_frequency)
 
-        rospy.Service("{}/toggle".format(rospy.get_name()), toggle, self.toggle_detection)
+        rospy.Service("{}/toggle".format(rospy.get_name()), toggle,
+                      self.toggle_detection)
 
     ## Process the image using qr_detector.py, publish each QR code's data and
     #  position qs a qr_observation ROS message.

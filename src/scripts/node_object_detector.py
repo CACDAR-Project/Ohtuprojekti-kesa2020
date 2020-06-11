@@ -44,7 +44,8 @@ class ObjectNode:
     def toggle_detection(self, toggle):
         if self.detect_on == toggle.state:
             return toggleResponse(
-                "Object detection was already toggled to {}".format(self.detect_on))
+                "Object detection was already toggled to {}".format(
+                    self.detect_on))
         if not toggle.state:
             # Unsubscribe from camera feed when not detecting
             self.input_sub.unregister()
@@ -52,8 +53,8 @@ class ObjectNode:
             self.input_sub = rospy.Subscriber("camera/images", image,
                                               self.receive_img)
         self.detect_on = toggle.state
-        return toggleResponse(
-            "Object detection toggled to {}".format(self.detect_on))
+        return toggleResponse("Object detection toggled to {}".format(
+            self.detect_on))
 
     def __init__(self, state: bool = False):
         self.detect_on = state
@@ -65,15 +66,16 @@ class ObjectNode:
             self.change_frequency)
         # Image feed topic
         if self.detect_on:
-            self.input_sub = rospy.Subscriber("camera/images", image, self.receive_img)
+            self.input_sub = rospy.Subscriber("camera/images", image,
+                                              self.receive_img)
 
-        rospy.Service("{}/toggle".format(rospy.get_name()), toggle, self.toggle_detection)
+        rospy.Service("{}/toggle".format(rospy.get_name()), toggle,
+                      self.toggle_detection)
 
     def receive_img(self, msg: image):
         # Detect from this image, if not already detecting from another image and within period time constraints
-        if (
-                time.time() - self.last_detect
-        ) > self.period and self.detect_lock.acquire(False):
+        if (time.time() - self.last_detect
+            ) > self.period and self.detect_lock.acquire(False):
             self.detect(msg)
 
     def detect(self, img):
