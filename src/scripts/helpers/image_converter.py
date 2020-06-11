@@ -6,12 +6,14 @@ import numpy as np
 from konenako.msg import image
 import cv2
 
+
 ## Convert numpy array image to ROS image message
 #  @param image as numpy array
 #  @return ROS image message
 def cv2_to_msg(img: np.ndarray) -> image:
     # ROS messages need one-dimensional lists as arguments
     return image(img.tobytes(), img.shape[0], img.shape[1])
+
 
 ## Convert ROS image message to numpy array image
 #  @param ROS image message

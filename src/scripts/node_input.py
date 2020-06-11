@@ -13,12 +13,14 @@ frequency_changer = None
 ## Service for sending new frequency to qr detector.
 qr_frequency_changer = None
 
+
 ## Sends message with message_receiver and prints response
 def send_message():
     print("Give message!")
     inp = input()
     response = message_receiver(inp)
     print("Received response: " + response.response)
+
 
 ## Sends new frequency with frequency_changer and prints response
 def send_frequency():
@@ -27,12 +29,14 @@ def send_frequency():
     response = frequency_changer(inp)
     print("Received response: " + response.response)
 
+
 ## Sends new frequency with qr_frequency_changer and prints response
 def send_qr_frequency():
     print("Give frequency!")
     inp = int(input())
     response = qr_frequency_changer(inp)
     print("Received response: " + response.response)
+
 
 ## Function running in loop waiting for command to send message
 def run():
@@ -54,6 +58,7 @@ def run():
                 print("Command not recognized!")
         except Exception as ex:
             print("Got exception:", ex)
+
 
 ## Initialized variables containing services
 def init():

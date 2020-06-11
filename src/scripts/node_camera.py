@@ -10,10 +10,12 @@ from helpers.image_converter import cv2_to_msg
 
 ##Global variable containing path to video, picture or camera device
 source = "/dev/video0"
+
 #source = "test.mp4"
 
+
 ## Main function for camera node.
-#  Creates topic named "node_name/images" where image/video source 
+#  Creates topic named "node_name/images" where image/video source
 #  is being published as a image message.
 def run():
     rospy.init_node("camera")
@@ -28,6 +30,7 @@ def run():
         # Converting the image from numpy ndarray to an image message
         msg = cv2_to_msg(img)
         pub.publish(msg)
+
 
 if __name__ == "__main__":
     run()
