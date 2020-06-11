@@ -13,6 +13,10 @@ We also provide ready configured Dockerfiles for both x86-64 and armv7 architect
 
 [Backlog](https://github.com/Konenako/Ohtuprojekti-kesa2020/projects)
 
+[ROS nodes API](https://docs.google.com/document/d/1ZX2D-lR2-JPhgsHoDeP2K5ocj3jB0FU43SoIwdkePvU)
+
+[ROS nodes structure](https://docs.google.com/drawings/d/1a4bOr0Cu2g_0QJ_u3QxHUjvKshzWlyNOfwyI5jS2Bu8)
+
 ### Repository structure
 ```bash
 .
@@ -23,7 +27,8 @@ We also provide ready configured Dockerfiles for both x86-64 and armv7 architect
 │   ├── resources                   - Different resources used in the ROS-package or nodes (SUBJECT TO CHANGE)
 │   ├── scripts                     - Nodes are placed here as executable python-files
 │   │   ├── detector                - Python packages can be placed here
-│   │   ├── helpers
+│   │   ├── ...
+│   │   ├── <package_n>
 │   │   ├── node_camera.py          - node executables are prefixed with the name "node_"
 │   │   ├── node_<..>.py
 │   │   └── node_qr_reader.py
@@ -93,9 +98,9 @@ Currently available nodes, their source files and functions:
 
 |Node    | File     | Function  |
 | ------ | -------- | --------- |
-|roscamera|node_camera.py|Publish a video feed to a topic|
-|rosdetector|node_detector.py|Run a TF model on a video feed|
-|rosqrnode|node_qr_reader.py|Run QR detection on a video feed|
+|camera|node_camera.py|Publish a video feed to a topic|
+|object_detector|node_object_detector.py|Run a TF model on a video feed|
+|qr_detector|node_qr_detector.py|Run QR detection on a video feed|
 |rosprinter|node_printer.py|Display the result feed of all nodes|
 |rosinput|node_input.py|Send commands to nodes|
 

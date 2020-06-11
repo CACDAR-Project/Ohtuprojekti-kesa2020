@@ -1,4 +1,6 @@
 #!/usr/bin/env python3.7
+## @package scripts
+
 import cv2 as cv
 import rospy
 import time
@@ -13,24 +15,24 @@ from helpers.image_converter import msg_to_cv2
 # https://github.com/opencv/opencv/wiki/TensorFlow-Object-Detection-API
 
 
+#  Read an image stream from a ROS topic, detect objects i nthe frames using a Tensorflow
+#  Lite model and publish the results in a topic.
 class ObjectNode:
 
-    #frequency in hertz
+    # frequency in hertz
     run_frequency = 1
     period = 1.0 / run_frequency
 
     detector = ObjectDetector("ssd_mobilenet_v1_1_metadata_1.tflite",
                               "mscoco_complete_labels")
-    pub = rospy.Publisher("observations", observation, queue_size=50)
 
     frequency_change_lock = threading.Lock()
     last_detect = 0
     detect_lock = threading.Lock()
 
-    def print_input(self, input):
-        print(f"Received a message from another node: {input.message}")
-        return text_messageResponse("We received you message!")
-
+    ## Set a new frequency for the object detection.
+    #  @param new_frequency The new frequency in hz as a new_frequency.srv message.
+    #  @return Confirmation string as a new_frequencyResponse.srv message.
     def change_frequency(self, new_frequency):
         with self.frequency_change_lock:
             self.run_frequency = new_frequency.data
@@ -41,12 +43,14 @@ class ObjectNode:
 
     def run(self):
         self.detect_on = True
-        message_service = rospy.Service('inputs', text_message,
-                                        self.print_input)
-        frequency_service = rospy.Service('frequency', new_frequency,
-                                          self.change_frequency)
+        self.pub = rospy.Publisher("{}/observations".format(rospy.get_name()),
+                                   observation,
+                                   queue_size=50)
+        frequency_service = rospy.Service(
+            "{}/frequency".format(rospy.get_name()), new_frequency,
+            self.change_frequency)
         # Image feed topic
-        rospy.Subscriber("camera_feed", image, self.receive_img)
+        rospy.Subscriber("camera/images", image, self.receive_img)
 
     def receive_img(self, msg: image):
         # Detect from this image, if not already detecting from another image and within period time constraints
@@ -59,7 +63,7 @@ class ObjectNode:
         # For tracking the frequency
         self.last_detect = time.time()
         period = self.period
-        # Converting the image back from ros Image message to a numpy ndarray
+        # Convert the image back from an image message to a numpy ndarray
         img = msg_to_cv2(img)
 
         for detection in self.detector.detect(img):
@@ -83,6 +87,6 @@ class ObjectNode:
 
 
 if __name__ == "__main__":
-    rospy.init_node("Testnode")
+    rospy.init_node("object_detector")
     ObjectNode().run()
     rospy.spin()
