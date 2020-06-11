@@ -14,7 +14,7 @@ RUN rm -r /var/lib/apt/lists/*
 RUN printf '[global]\nextra-index-url=https://www.piwheels.org/simple' >> /etc/pip.conf
 RUN python3.7 -m pip install --upgrade pip
 RUN python3.7 -m pip install poetry
-RUN python3.7 -m pip install --upgrade keyrings.alt 
+RUN python3.7 -m pip install --upgrade keyrings.alt
 RUN mkdir -p /catkin_ws/src/ohtu
 WORKDIR /catkin_ws/src/ohtu
 COPY pyproject.toml /catkin_ws/src/ohtu/

@@ -1,5 +1,6 @@
 [![CircleCI](https://circleci.com/gh/Konenako/Ohtuprojekti-kesa2020.svg?style=svg)](https://circleci.com/gh/Konenako/Ohtuprojekti-kesa2020) [![codecov](https://codecov.io/gh/Konenako/Ohtuprojekti-kesa2020/branch/master/graph/badge.svg)](https://codecov.io/gh/Konenako/Ohtuprojekti-kesa2020) [![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
 
+
 ## Documentation
 
 [Backlog](https://github.com/Konenako/Ohtuprojekti-kesa2020/projects)
@@ -7,6 +8,13 @@
 [ROS nodes API](https://docs.google.com/document/d/1ZX2D-lR2-JPhgsHoDeP2K5ocj3jB0FU43SoIwdkePvU)
 
 [ROS nodes structure](https://docs.google.com/drawings/d/1a4bOr0Cu2g_0QJ_u3QxHUjvKshzWlyNOfwyI5jS2Bu8)
+
+### Documentation for classes, files etc.    
+
+You can run auto-documentation on root with    
+`doxygen`    
+
+The documentation can be found in the documentation-folder and viewed on your browser at ../documentation/html/index.html
 
 ## Running nodes in Docker with script file
 
