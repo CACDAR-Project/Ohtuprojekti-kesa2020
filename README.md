@@ -9,6 +9,7 @@ Currently we provide one ROS package named 'konenako', which is implemented in t
 
 We also provide already configured Dockerfiles for both x86-64 and armv7 architectures, so you can easily build every node into its own docker-image. For Arm architectures we also provide precompiled docker images through [Docker Hub](https://hub.docker.com/r/ohtukonenako/ohtuprojekti_kesa2020), which are tested to work on a Raspberry PI 3B+ based [TurtleBot3](http://www.robotis.us/turtlebot-3/) robot.
 
+
 ## Documentation
 
 [Backlog](https://github.com/Konenako/Ohtuprojekti-kesa2020/projects)
@@ -26,6 +27,13 @@ We also provide already configured Dockerfiles for both x86-64 and armv7 archite
 * All CircleCI tests must pass before merging to master
 * Pull requests need at least 2 approvals before merging to master
 * Documentation should be updated whenever any functionality is changed or added
+
+### Generating documentation for classes, files etc.    
+
+You can run auto-documentation on root with    
+`doxygen`    
+
+The documentation can be found in the documentation-folder and viewed on your browser at ./documentation/html/index.html
 
 ### Repository structure
 ```bash
