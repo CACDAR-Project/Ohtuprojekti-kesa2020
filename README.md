@@ -1,4 +1,13 @@
-[![CircleCI](https://circleci.com/gh/Konenako/Ohtuprojekti-kesa2020.svg?style=svg)](https://circleci.com/gh/Konenako/Ohtuprojekti-kesa2020) [![codecov](https://codecov.io/gh/Konenako/Ohtuprojekti-kesa2020/branch/master/graph/badge.svg)](https://codecov.io/gh/Konenako/Ohtuprojekti-kesa2020) [![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
+# Konenako
+Ohjelmistotuotantoprojekti kesä 2020: Robotin konenäkö mikropalveluna  
+[![CircleCI](https://circleci.com/gh/Konenako/Ohtuprojekti-kesa2020.svg?style=svg)](https://circleci.com/gh/Konenako/Ohtuprojekti-kesa2020) [![codecov](https://codecov.io/gh/Konenako/Ohtuprojekti-kesa2020/branch/master/graph/badge.svg)](https://codecov.io/gh/Konenako/Ohtuprojekti-kesa2020) [![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)  
+This repository contains the work for the University of Helsinki course called *Ohjelmistotuotantoprojekti, kesä 2020*.  
+
+The goal is to implement computer vision as microservices utilizing the [Robot Operating System (ROS)](https://www.ros.org/) framework.  
+
+Currently we provide one ROS package named 'konenako', which is implemented in the [src](https://github.com/Konenako/Ohtuprojekti-kesa2020/tree/master/src)-folder. This package provides several [ROS nodes](#nodes) that can be run individually.
+
+We also provide already configured Dockerfiles for both x86-64 and armv7 architectures, so you can easily build every node into its own docker-image. For Arm architectures we also provide precompiled docker images through [Docker Hub](https://hub.docker.com/r/ohtukonenako/ohtuprojekti_kesa2020), which are tested to work on a Raspberry PI 3B+ based [TurtleBot3](http://www.robotis.us/turtlebot-3/) robot.
 
 
 ## Documentation
@@ -9,28 +18,59 @@
 
 [ROS nodes structure](https://docs.google.com/drawings/d/1a4bOr0Cu2g_0QJ_u3QxHUjvKshzWlyNOfwyI5jS2Bu8)
 
-### Documentation for classes, files etc.    
+### Definition of Done
+* All code should be formatted with yapf to follow [PEP8](https://www.python.org/dev/peps/pep-0008/#introduction)
+* All code should be clearly commented
+   * Every module and class should have an "docstring", formatted in [Doxygen style](https://www.doxygen.nl/manual/docblocks.html#pythonblocks), [Hints and tips for doxygen in Finnish](https://docs.google.com/document/d/1dO_enSIPJnerTgj0mP3ikSAUP4uKJe4mQp6P-w6SBbI/edit#heading=h.3dfaehlwii74)
+   * All non trivial code should be commented with the same style
+   * [Type hinting](https://docs.python.org/3.7/library/typing.html) should be used
+* All CircleCI tests must pass before merging to master
+* Pull requests need at least 2 approvals before merging to master
+* Documentation should be updated whenever any functionality is changed or added
+
+### Generating documentation for classes, files etc.    
 
 You can run auto-documentation on root with    
 `doxygen`    
 
 The documentation can be found in the documentation-folder and viewed on your browser at ./documentation/html/index.html
 
-## Running nodes in Docker with script file
+### Repository structure
+```bash
+.
+├── documentation
+├── src                             - ROS-package directory
+│   ├── models                      - Models should be moved here (SUBJECT TO CHANGE)
+│   ├── msg                         - ROS messages specifications
+│   ├── resources                   - Different resources used in the ROS-package or nodes (SUBJECT TO CHANGE)
+│   ├── scripts                     - Nodes are placed here as executable python-files
+│   │   ├── detector                - Python packages can be placed here
+│   │   ├── ...
+│   │   ├── <package_n>
+│   │   ├── node_camera.py          - node executables are prefixed with the name "node_"
+│   │   ├── node_<..>.py
+│   │   └── node_qr_reader.py
+│   ├── srv                         - ROS services specifications 
+│   └── tests                       - Python unittests
+```
+
+## Running the application
+
+### Running nodes in Docker with script file
 
 `./docker_runner.sh`
 
 Kills containers that are open, builds and runs containers and attaches new terminals to them.
 
-## Running nodes locally with script file
+### Running nodes locally with script file
 
 `./runner.sh`
 
 Deletes `catkin_ws`-folder creates catkin workspace and opens nodes in new gnome terminals.
 
-## Running individual nodes locally
+### Running individual nodes locally
 
-### Setup
+#### Setup
 
 [Setup ROS catkin workspace](https://wiki.ros.org/catkin/Tutorials/create_a_workspace), `git clone` this repository to `catkin_ws/src/` and build the catkin workspace by running 'catkin_make'.
 ```
@@ -55,7 +95,7 @@ Source the catkin workspace (must be done after entering the virtual environment
 source ../../devel/setup.bash
 ```
 
-### Running nodes
+#### Running nodes
 
 All the instructions in this section presume you are in the poetry shell, have sourced the setup.bash file and are in the repository's src directory (catkin_ws/src/Ohtuprojekti-kesa2020/src/).
 
@@ -71,6 +111,7 @@ All the other nodes can be started using rosrun to run the respective python fil
 rosrun konenako node_xxx.py
 ```
 
+<a name="nodes"></a>
 Currently available nodes, their source files and functions:
 
 |Node    | File     | Function  |
@@ -82,7 +123,7 @@ Currently available nodes, their source files and functions:
 |rosinput|node_input.py|Send commands to nodes|
 
 
-## Commands for virtual environment
+### Commands for virtual environment
 [poetry](https://github.com/python-poetry/poetry) is used for managing dependencies
 
 #### Creating virtual environment for development
