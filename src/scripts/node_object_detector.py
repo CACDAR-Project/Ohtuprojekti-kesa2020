@@ -50,7 +50,7 @@ class ObjectNode:
             "{}/frequency".format(rospy.get_name()), new_frequency,
             self.change_frequency)
         # Image feed topic
-        rospy.Subscriber("camera/images", image, self.receive_img)
+        rospy.Subscriber("camera/images",image,self.receive_img)
 
     def receive_img(self, msg: image):
         # Detect from this image, if not already detecting from another image and within period time constraints
