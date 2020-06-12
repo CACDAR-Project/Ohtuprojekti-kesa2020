@@ -28,10 +28,11 @@ RUN python3.7 -m pip install --upgrade pip \
  && poetry install
 
 # We need to create our own directory here, since docker COPY srcdic destdir actually works like COPY srcdir/* destdir
-COPY . /catkin_ws/src/ohtu/
+COPY src/ /catkin_ws/src/ohtu/src/
 WORKDIR /catkin_ws
 RUN /bin/bash -c "source /opt/ros/melodic/setup.bash && catkin_make"
 
+COPY test.launch /catkin_ws/src/ohtu/
 
 # Can we omit the sourcing from these layers?
 FROM rosbase as rosobjectdetector
