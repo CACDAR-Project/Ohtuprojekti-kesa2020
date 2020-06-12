@@ -71,7 +71,7 @@ class ObjectNode:
             self.detect(msg)
 
     ## Builds observation messages and publishes them.
-    #  Prints warning if time between detections grows too large
+    #  Prints a warning if time between detections grows too large.
     #  @todo Announce "warnings" to a topic
     def detect(self, img: image):
         # For tracking the frequency
