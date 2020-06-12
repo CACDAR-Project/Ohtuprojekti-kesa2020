@@ -77,8 +77,8 @@ class QRReader:
 
         # Warnings are published when processing takes longer than the given period
         self.warning = rospy.Publisher("{}/warnings".format(rospy.get_name()),
-                                   warning,
-                                   queue_size=50)
+                                       warning,
+                                       queue_size=50)
 
     ## Process the image using qr_detector.py, publish each QR code's data and
     #  position qs a qr_observation ROS message.
@@ -110,7 +110,10 @@ class QRReader:
 
         processing_time = time.time() - self.last_detect
         if processing_time > period:
-            self.warning.publish(warning("Detecting QR-code took {}, while the period was set to {}!".format(processing_time, period)))
+            self.warning.publish(
+                warning(
+                    "Detecting QR-code took {}, while the period was set to {}!"
+                    .format(processing_time, period)))
 
         # Ready to detect the next image
         self.detect_lock.release()
