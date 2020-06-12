@@ -32,6 +32,7 @@ COPY src/ /catkin_ws/src/ohtu/src/
 WORKDIR /catkin_ws
 RUN /bin/bash -c "source /opt/ros/melodic/setup.bash && catkin_make"
 
+COPY test.launch /catkin_ws/src/ohtu/
 
 # Can we omit the sourcing from these layers?
 FROM rosbase as rosobjectdetector

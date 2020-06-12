@@ -1,0 +1,8 @@
+<launch>
+	<group ns="konenako">
+		<node name="camera" pkg="konenako" type="node_camera.py" />
+		<node name="object_detector" pkg="konenako" type="node_object_detector.py" />
+		<node name="qr_detector" pkg="konenako" type="node_qr_detector.py" />
+	</group>
+</launch>
+

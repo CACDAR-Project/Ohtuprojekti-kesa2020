@@ -56,6 +56,26 @@ The documentation can be found in the documentation-folder and viewed on your br
 
 ## Running the application
 
+### Running with roslaunch
+```sudo docker build -t konenako .```
+```
+sudo docker run -it --rm \
+--net rosnet \
+--name master \
+ros:melodic-ros-core \
+roscore
+```
+```
+sudo docker run -it --rm \
+    --net rosnet \
+    --name asd \
+    --env ROS_HOSTNAME=asd \
+    --env ROS_MASTER_URI=http://master:11311 \
+    -t konenako bash -c "cd src/ohtu && poetry run /bin/bash -c 'source ../../devel/setup.bash && ROS_HOME=/catkin_ws/src/ohtu/src roslaunch test.launch'"
+```
+
+
+
 ### Running nodes in Docker with script file
 
 `./docker_runner.sh`
