@@ -8,7 +8,7 @@ from helpers.image_converter import msg_to_cv2
 import detector.qr_detector as qr_detector
 from std_msgs.msg import String
 from konenako.msg import image, qr_observation, polygon, boundingbox, point64
-from konenako.srv import new_frequency, new_frequencyResponse
+from konenako.srv import new_frequency, new_frequencyResponse, toggle, toggleResponse
 
 
 ## Read an image stream from a ROS topic, detect and decode QR codes from the frames and
@@ -24,6 +24,21 @@ class QRReader:
 
     frequency_change_lock = threading.Lock()
 
+    def toggle_detection(self, toggle):
+        if self.detect_on == toggle.state:
+            return toggleResponse(
+                "QR detection was already toggled to {}".format(
+                    self.detect_on))
+        if not toggle.state:
+            # Unsubscribe from camera feed when not detecting
+            self.input_sub.unregister()
+        else:
+            self.input_sub = rospy.Subscriber("camera/images", image,
+                                              self.receive_img)
+        self.detect_on = toggle.state
+        return toggleResponse("QR detection toggled to {}".format(
+            self.detect_on))
+
     def change_frequency(self, new_frequency):
         with self.frequency_change_lock:
             self.qr_run_frequency = new_frequency.data
@@ -34,13 +49,12 @@ class QRReader:
 
     def receive_img(self, msg: image):
         # Detect from this image, if not already detecting from another image and within period time constraints
-        if self.detect_on and (
-                time.time() - self.last_detect
-        ) > self.qr_period and self.detect_lock.acquire(False):
+        if (time.time() - self.last_detect
+            ) > self.qr_period and self.detect_lock.acquire(False):
             self.detect(msg)
 
-    def __init__(self, on: bool = False):
-        self.detect_on = on
+    def __init__(self, state: bool = False):
+        self.detect_on = state
 
         # Results are published as qr_observation.msg ROS messages.
         self.pub = rospy.Publisher("{}/observations".format(rospy.get_name()),
@@ -48,13 +62,17 @@ class QRReader:
                                    queue_size=50)
 
         # Camera feed is read from ros messages
-        self.input_sub = rospy.Subscriber("camera/images", image,
-                                          self.receive_img)
+        if self.detect_on:
+            self.input_sub = rospy.Subscriber("camera/images", image,
+                                              self.receive_img)
 
         # ROS service for changing detection frequency.
         frequency_service = rospy.Service(
             "{}/frequency".format(rospy.get_name()), new_frequency,
             self.change_frequency)
+
+        rospy.Service("{}/toggle".format(rospy.get_name()), toggle,
+                      self.toggle_detection)
 
     ## Process the image using qr_detector.py, publish each QR code's data and
     #  position qs a qr_observation ROS message.

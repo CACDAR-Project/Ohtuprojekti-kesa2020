@@ -61,6 +61,7 @@ add_service_files(
   FILES
   text_message.srv
   new_frequency.srv
+  toggle.srv
 )
 
 ## Generate actions in the 'action' folder
