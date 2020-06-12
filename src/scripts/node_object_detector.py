@@ -63,7 +63,7 @@ class ObjectNode:
         rospy.Subscriber("camera/images", image, self.receive_img)
 
     ## Detects image, if not already detecting from another
-    #  image and within period time constraints
+    #  image and enough time has passed since the previous detection.
     def receive_img(self, msg: image):
         if self.detect_on and (
                 time.time() - self.last_detect
