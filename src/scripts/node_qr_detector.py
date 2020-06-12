@@ -15,9 +15,6 @@ from konenako.srv import new_frequency, new_frequencyResponse, toggle, toggleRes
 ## Read an image stream from a ROS topic, detect and decode QR codes from the frames and
 #  publish the results in a topic.
 class QRReader:
-    # Frequency in hertz
-    qr_run_frequency = 10
-    qr_period = 1.0 / qr_run_frequency
 
     last_detect = 0  # Last time detect() was called
     detect_lock = threading.Lock(
@@ -55,7 +52,11 @@ class QRReader:
             self.detect(msg)
 
     def __init__(self, state: bool = False):
-        self.detect_on = state
+        # Attempt to get configuration parameters from the ROS parameter server
+        self.detect_on = rospy.get_param("detect_on", True)
+        # Frequency in hertz
+        self.qr_run_frequency = rospy.get_param("frequency", 10)
+        self.qr_period = 1.0 / self.qr_run_frequency
 
         # Results are published as qr_observation.msg ROS messages.
         self.pub = rospy.Publisher("{}/observations".format(rospy.get_name()),
