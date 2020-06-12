@@ -1,39 +1,48 @@
 #!/usr/bin/env python3.7
-## @package scripts
+
+## Provides functionality for detecting objects from images and publish observations to a topic
+#  https://github.com/opencv/opencv/wiki/TensorFlow-Object-Detection-API
+#  @package scripts
 
 import cv2 as cv
 import rospy
 import time
 import threading
 from typing import List
-
 from konenako.msg import observation, boundingbox, image
 from konenako.srv import text_message, text_messageResponse, new_frequency, new_frequencyResponse, toggle, toggleResponse
 from detector.object_detector import ObjectDetector
 from helpers.image_converter import msg_to_cv2
 
-# https://github.com/opencv/opencv/wiki/TensorFlow-Object-Detection-API
 
-
-#  Read an image stream from a ROS topic, detect objects i nthe frames using a Tensorflow
-#  Lite model and publish the results in a topic.
+## Class for detecting objects in images.
+#  Reads an image stream from a ROS topic, detects objects in the
+#  frames using a Tensorflow Lite model and publishes the results in a topic.
 class ObjectNode:
 
-    # frequency in hertz
+    ## Frequency in hertz
     run_frequency = 1
+    ## Minimum time it takes for one loop
     period = 1.0 / run_frequency
 
+    ## Helper class used for detecting objects
     detector = ObjectDetector("ssd_mobilenet_v1_1_metadata_1.tflite",
                               "mscoco_complete_labels")
 
+    ## Lock used to ensure thread safety when changing frequency
     frequency_change_lock = threading.Lock()
+
+    ## Class variable containing time of last detection. Used and modified in several functions.
     last_detect = 0
+
+    ## Lock used to ensure that detections are not being done simultaneously.
     detect_lock = threading.Lock()
 
     ## Set a new frequency for the object detection.
     #  @param new_frequency The new frequency in hz as a new_frequency.srv message.
     #  @return Confirmation string as a new_frequencyResponse.srv message.
-    def change_frequency(self, new_frequency):
+    def change_frequency(
+            self, new_frequency: new_frequency) -> new_frequencyResponse:
         with self.frequency_change_lock:
             self.run_frequency = new_frequency.data
             self.period = 1.0 / self.run_frequency
@@ -56,6 +65,7 @@ class ObjectNode:
         return toggleResponse("Object detection toggled to {}".format(
             self.detect_on))
 
+    ## Initializes topics and services and sets class variable detect_on to true
     def __init__(self, state: bool = False):
         self.detect_on = state
         self.pub = rospy.Publisher("{}/observations".format(rospy.get_name()),
@@ -72,13 +82,18 @@ class ObjectNode:
         rospy.Service("{}/toggle".format(rospy.get_name()), toggle,
                       self.toggle_detection)
 
+    ## Detects image, if not already detecting from another
+    #  image and enough time has passed since the previous detection.
     def receive_img(self, msg: image):
         # Detect from this image, if not already detecting from another image and within period time constraints
         if (time.time() - self.last_detect
             ) > self.period and self.detect_lock.acquire(False):
             self.detect(msg)
 
-    def detect(self, img):
+    ## Builds observation messages and publishes them.
+    #  Prints a warning if time between detections grows too large.
+    #  @todo Announce "warnings" to a topic
+    def detect(self, img: image):
         # For tracking the frequency
         self.last_detect = time.time()
         period = self.period
@@ -86,6 +101,7 @@ class ObjectNode:
         img = msg_to_cv2(img)
 
         for detection in self.detector.detect(img):
+
             self.pub.publish(
                 observation(
                     detection["class_id"], detection["label"],
@@ -98,8 +114,7 @@ class ObjectNode:
         processing_time = time.time() - self.last_detect
         if processing_time > period:
             print("Detecting objects took {}, while the period was set to {}!".
-                  format(processing_time,
-                         period))  # TODO: Announce "warnings" to topic
+                  format(processing_time, period))
 
         # Ready to detect the next image
         self.detect_lock.release()

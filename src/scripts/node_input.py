@@ -1,14 +1,22 @@
 #!/usr/bin/env python3.7
+
+## Provides functionality to send messages to different nodes using a terminal
+#  @package scripts
+
 from konenako.srv import text_message, text_messageResponse, new_frequency, new_frequencyResponse
 import rospy
 
 # https://github.com/ros/ros_tutorials/blob/noetic-devel/rospy_tutorials/005_add_two_ints/add_two_ints_client
 
+## Service for sending a text message.
 message_receiver = None
+## Service for sending a new frequency to object detector.
 frequency_changer = None
+## Service for sending a new frequency to QR detector.
 qr_frequency_changer = None
 
 
+## Sends a message with message_receiver and prints the received response.
 def send_message():
     print("Give message!")
     inp = input()
@@ -16,6 +24,7 @@ def send_message():
     print("Received response: " + response.response)
 
 
+## Sends a new frequency with frequency_changer and prints the received response.
 def send_frequency():
     print("Give frequency!")
     inp = int(input())
@@ -23,6 +32,7 @@ def send_frequency():
     print("Received response: " + response.response)
 
 
+## Sends a new frequency with qr_frequency_changer and prints the received response.
 def send_qr_frequency():
     print("Give frequency!")
     inp = int(input())
@@ -30,6 +40,7 @@ def send_qr_frequency():
     print("Received response: " + response.response)
 
 
+## Function running in loop waiting for command to send message
 def run():
     while not rospy.is_shutdown():
         print(
@@ -51,6 +62,7 @@ def run():
             print("Got exception:", ex)
 
 
+## Initialized variables containing services
 def init():
     rospy.init_node("input")
     print("Waiting for services")
@@ -59,12 +71,6 @@ def init():
     print("Input service found")
     rospy.wait_for_service('frequency')
     print("Frequency service found")
-
-    #=======
-    # rospy.wait_for_service('inputs')
-    # rospy.wait_for_service('frequency')
-    #print("Service founds")
-    #>>>>>>> master:rostest/scripts/input.py
 
     global message_receiver
     global frequency_changer
