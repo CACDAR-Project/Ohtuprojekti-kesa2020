@@ -35,7 +35,7 @@ class ObjectNode:
     ## Class variable containing time of last detection. Used and modified in several functions.
     last_detect = 0
 
-    ## Lock used to ensure that detections are not being done too often
+    ## Lock used to ensure that detections are not being done simultaneously.
     detect_lock = threading.Lock()
 
     ## Set a new frequency for the object detection.
