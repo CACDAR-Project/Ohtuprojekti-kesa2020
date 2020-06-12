@@ -60,4 +60,4 @@ jobs:
           poetry run coverage xml
 
     - codecov/upload:
-          file: "rostest/coverage.xml"
+          file: "src/coverage.xml"
