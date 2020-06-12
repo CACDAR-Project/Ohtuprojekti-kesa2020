@@ -64,7 +64,7 @@ class ObjectNode:
         self.detect_on = toggle.state
         return toggleResponse("Object detection toggled to {}".format(
             self.detect_on))
-   
+
     ## Initializes topics and services and sets class variable detect_on to true
     def __init__(self, state: bool = False):
         self.detect_on = state
