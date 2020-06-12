@@ -19,11 +19,6 @@ from helpers.image_converter import msg_to_cv2
 #  Reads an image stream from a ROS topic, detects objects in the
 #  frames using a Tensorflow Lite model and publishes the results in a topic.
 class ObjectNode:
-
-
-
-
-
     ## Lock used to ensure thread safety when changing frequency
     frequency_change_lock = threading.Lock()
 
@@ -64,6 +59,10 @@ class ObjectNode:
     def __init__(self):
         # Attempt to get configuration parameters from the ROS parameter server
         self.detect_on = rospy.get_param("detect_on", True)
+        if not rospy.has_param("model_file"):
+            raise Exception("A model file must be specified as a ROS parameter")
+        if not rospy.has_param("label_file"):
+            raise Exception("A label file must be specified as a ROS parameter")
         self.model_file = rospy.get_param("model_file")
         self.label_file = rospy.get_param("label_file")
         ## Frequency in hertz

@@ -11,9 +11,9 @@ from konenako.msg import image
 from helpers.image_converter import cv2_to_msg
 
 ## Variable containing path to video, picture or camera device
-source = "/dev/video0"
+# source = "/dev/video0"
 
-#source = "test.mp4"
+source = "test.mp4"
 
 
 ## Main function for camera node.
