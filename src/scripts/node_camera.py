@@ -10,7 +10,7 @@ from numpy import ndarray
 from konenako.msg import image
 from helpers.image_converter import cv2_to_msg
 
-##Global variable containing path to video, picture or camera device
+## Variable containing path to video, picture or camera device
 source = "/dev/video0"
 
 #source = "test.mp4"
