@@ -1,6 +1,6 @@
 #!/usr/bin/env python3.7
 
-## Provides functionality for detecting objects from images and publis observations to a topic
+## Provides functionality for detecting objects from images and publish observations to a topic
 #  https://github.com/opencv/opencv/wiki/TensorFlow-Object-Detection-API
 #  @package scripts
 
@@ -25,11 +25,11 @@ class ObjectNode:
     ## Minimum time it takes for one loop
     period = 1.0 / run_frequency
 
-    ## Helper class used for detecting objcets
+    ## Helper class used for detecting objects
     detector = ObjectDetector("ssd_mobilenet_v1_1_metadata_1.tflite",
                               "mscoco_complete_labels")
 
-    ## Lock used to ensure thread safety when changing frequnecy
+    ## Lock used to ensure thread safety when changing frequency
     frequency_change_lock = threading.Lock()
 
     ## Class variable containing time of last detection. Used and modified in several functions.
