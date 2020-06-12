@@ -19,16 +19,6 @@ from helpers.image_converter import msg_to_cv2
 #  Reads an image stream from a ROS topic, detects objects in the
 #  frames using a Tensorflow Lite model and publishes the results in a topic.
 class ObjectNode:
-
-    ## Frequency in hertz
-    run_frequency = 1
-    ## Minimum time it takes for one loop
-    period = 1.0 / run_frequency
-
-    ## Helper class used for detecting objects
-    detector = ObjectDetector("ssd_mobilenet_v1_1_metadata_1.tflite",
-                              "mscoco_complete_labels")
-
     ## Lock used to ensure thread safety when changing frequency
     frequency_change_lock = threading.Lock()
 
@@ -66,8 +56,25 @@ class ObjectNode:
             self.detect_on))
 
     ## Initializes topics and services and sets class variable detect_on to true
-    def __init__(self, state: bool = False):
-        self.detect_on = state
+    def __init__(self):
+        # Attempt to get configuration parameters from the ROS parameter server
+        self.detect_on = rospy.get_param("detect_on", True)
+        if not rospy.has_param("model_file"):
+            raise Exception(
+                "A model file must be specified as a ROS parameter")
+        if not rospy.has_param("label_file"):
+            raise Exception(
+                "A label file must be specified as a ROS parameter")
+        self.model_file = rospy.get_param("model_file")
+        self.label_file = rospy.get_param("label_file")
+        ## Frequency in hertz
+        self.run_frequency = rospy.get_param("frequency", 1)
+
+        ## Minimum time it takes for one loop
+        self.period = 1.0 / self.run_frequency
+        ## Helper class used for detecting objects
+        self.detector = ObjectDetector(self.model_file, self.label_file)
+
         self.pub = rospy.Publisher("{}/observations".format(rospy.get_name()),
                                    observation,
                                    queue_size=50)
@@ -122,5 +129,5 @@ class ObjectNode:
 
 if __name__ == "__main__":
     rospy.init_node("object_detector")
-    ObjectNode(True)
+    ObjectNode()
     rospy.spin()
