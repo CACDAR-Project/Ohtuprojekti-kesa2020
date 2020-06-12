@@ -29,7 +29,6 @@ saved_detections/
 output.avi
 
 # ROS catking workspace
-
 catkin_ws
 
 # doc folders
@@ -37,4 +36,3 @@ catkin_ws
 doc/
 documentation/html
 documentation/latex
-

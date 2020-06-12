@@ -29,11 +29,11 @@ jobs:
           - ~/.cache/pypoetry/virtualenvs
         key: konenako-{{ .Branch }}-{{ checksum "pyproject.toml" }}
     - run:
-        name: Check code is yapf formatted
+        name: Check that code is yapf formatted
         command: |
           poetry run yapf -rd .
     - run:
-        name: Yapf formatting
+        name: Yapf formatting & commit changes
         when: on_fail 
         command: |
               poetry run yapf -ri .
