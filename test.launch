@@ -3,9 +3,10 @@
 		<node name="camera" pkg="konenako" type="node_camera.py" />
 		<node name="object_detector" pkg="konenako" type="node_object_detector.py" />
 		<node name="qr_detector" pkg="konenako" type="node_qr_detector.py" />
-		<node name="printer" pkg="konenako" type="node_printer.py" />
+		<node name="printer" pkg="konenako" type="node_printer.py" output="screen" />
 		<param name="label_file" type="str" value="mscoco_complete_labels" />
 		<param name="model_file" type="str" value="ssd_mobilenet_v1_1_metadata_1.tflite" />
+		<param name="video_source" type="str" value="test.mp4" />
 	</group>
 </launch>
 
