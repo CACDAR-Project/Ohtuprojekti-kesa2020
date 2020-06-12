@@ -8,13 +8,13 @@ import rospy
 
 # https://github.com/ros/ros_tutorials/blob/noetic-devel/rospy_tutorials/005_add_two_ints/add_two_ints_client
 
-
 ## Service for sending a new frequency to object detector.
 frequency_changer = None
 ## Service for sending a new frequency to QR detector.
 qr_frequency_changer = None
 ## Service for toggling object detection on/off
 object_detection_toggler = None
+
 
 ## Sends a new frequency with frequency_changer and prints the received response.
 def send_frequency():
@@ -31,6 +31,7 @@ def send_qr_frequency():
     response = qr_frequency_changer(inp)
     print("Received response: " + response.response)
 
+
 ## Sends on or off command for object detector
 def send_OD_toggle():
     print("Give something for on, empty for off!")
@@ -43,11 +44,10 @@ def send_OD_toggle():
 ## Function running in loop waiting for command to send message
 def run():
     while not rospy.is_shutdown():
-        print(
-            "Give command.\n"
-            + "1 for changing object detection frequency,\n"
-            + "2 for changing QR code detection frequency,\n" 
-            + "3 for toggling object detection on or off:")
+        print("Give command.\n" +
+              "1 for changing object detection frequency,\n" +
+              "2 for changing QR code detection frequency,\n" +
+              "3 for toggling object detection on or off:")
         inp = input()
 
         # Catch errors if a node is not running
@@ -76,14 +76,16 @@ def init():
     rospy.wait_for_service('/object_detector/toggle')
     print("Object detection toggle service found")
 
-    
     global frequency_changer
     global qr_frequency_changer
     global object_detection_toggler
 
-    frequency_changer = rospy.ServiceProxy('/object_detector/frequency', new_frequency)
-    qr_frequency_changer = rospy.ServiceProxy('/qr_detector/frequency', new_frequency)
-    object_detection_toggler = rospy.ServiceProxy('/object_detector/toggle', toggle)
+    frequency_changer = rospy.ServiceProxy('/object_detector/frequency',
+                                           new_frequency)
+    qr_frequency_changer = rospy.ServiceProxy('/qr_detector/frequency',
+                                              new_frequency)
+    object_detection_toggler = rospy.ServiceProxy('/object_detector/toggle',
+                                                  toggle)
 
 
 if __name__ == "__main__":
