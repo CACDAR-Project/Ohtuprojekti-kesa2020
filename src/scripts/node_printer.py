@@ -1,12 +1,13 @@
 #!/usr/bin/env python3.7
 
 ## Prints messages that are being published to observation topics
-#  @package scripts  
+#  @package scripts
 
 from konenako.msg import observation, qr_observation
 from std_msgs.msg import String
 
 import rospy
+
 
 ## Subscribes to topics and leaves node to spin
 def run():
