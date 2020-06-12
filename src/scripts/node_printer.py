@@ -15,7 +15,7 @@ def run():
 
     rospy.init_node("printer")
     rospy.Subscriber("object_detector/observations", observation, print)
-    rospy.Subscriber("qr_detector/observation", qr_observation, print)
+    rospy.Subscriber("qr_detector/observations", qr_observation, print)
 
     rospy.spin()
 
