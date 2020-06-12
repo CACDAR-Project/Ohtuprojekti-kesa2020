@@ -1,5 +1,7 @@
 #!/usr/bin/env python3.7
-## @package scripts
+
+## Publishes image stream to defined topic
+#  @package scripts
 
 import cv2 as cv
 import rospy

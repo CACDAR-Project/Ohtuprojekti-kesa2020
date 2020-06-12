@@ -1,6 +1,8 @@
 #!/usr/bin/env python3.7
-## @package scripts
-# https://github.com/opencv/opencv/wiki/TensorFlow-Object-Detection-API
+
+## Provides functionality for detecting objects from images and publis observations to a topic
+#  https://github.com/opencv/opencv/wiki/TensorFlow-Object-Detection-API
+#  @package scripts
 
 import cv2 as cv
 import rospy
@@ -50,7 +52,6 @@ class ObjectNode:
 
     ## Initializes topics and services and sets class variable detect_on to true
     def run(self):
-        print(type(self))
         self.detect_on = True
         self.pub = rospy.Publisher("{}/observations".format(rospy.get_name()),
                                    observation,

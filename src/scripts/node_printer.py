@@ -1,25 +1,20 @@
 #!/usr/bin/env python3.7
 
+## Prints messages that are being published to observation topics
+#  @package scripts  
+
 from konenako.msg import observation, qr_observation
 from std_msgs.msg import String
 
 import rospy
 
-
-def printer(obs):
-    print(obs)
-
-
-def qr_printer(obs):
-    print(obs)
-
-
+## Subscribes to topics and leaves node to spin
 def run():
     print("Printer running")
 
     rospy.init_node("printer")
-    rospy.Subscriber("object_detector/observations", observation, printer)
-    rospy.Subscriber("qr_detector/observation", qr_observation, qr_printer)
+    rospy.Subscriber("object_detector/observations", observation, print)
+    rospy.Subscriber("qr_detector/observation", qr_observation, print)
 
     rospy.spin()
 

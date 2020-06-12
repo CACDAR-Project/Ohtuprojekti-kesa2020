@@ -1,5 +1,6 @@
 #!/usr/bin/env python3.7
-## @package scripts
+## Provides funcitonality to detect QR codes in image and publish observations to a topic
+# @package scripts
 
 import rospy
 import threading

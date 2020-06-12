@@ -1,5 +1,7 @@
 #!/usr/bin/env python3.7
-## @package scripts
+
+## Using terminal provides functionality to send messages to different nodes
+#  @package scripts
 
 from konenako.srv import text_message, text_messageResponse, new_frequency, new_frequencyResponse
 import rospy
