@@ -1,5 +1,5 @@
 #!/usr/bin/env python3.7
-## Provides funcitonality to detect QR codes in image and publish observations to a topic
+## Provides functionality to detect QR codes in image and publish observations to a topic
 # @package scripts
 
 import rospy
