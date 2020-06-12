@@ -60,6 +60,13 @@ The documentation can be found in the documentation-folder and viewed on your br
 ```sudo docker build -t konenako .```
 ```
 sudo docker run -it --rm \
+--net rosnet \
+--name master \
+ros:melodic-ros-core \
+roscore
+```
+```
+sudo docker run -it --rm \
     --net rosnet \
     --name asd \
     --env ROS_HOSTNAME=asd \
