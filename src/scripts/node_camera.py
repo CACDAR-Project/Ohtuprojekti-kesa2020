@@ -18,7 +18,7 @@ source = "/dev/video0"
 
 ## Main function for camera node.
 #  Creates topic named "node_name/images" where image/video source
-#  is being published as a image message.
+#  is being published as an image message.
 def run():
     rospy.init_node("camera")
     # We only want to process the latest frame, and Publisher's queue is
