@@ -60,9 +60,11 @@ class ObjectNode:
         # Attempt to get configuration parameters from the ROS parameter server
         self.detect_on = rospy.get_param("detect_on", True)
         if not rospy.has_param("model_file"):
-            raise Exception("A model file must be specified as a ROS parameter")
+            raise Exception(
+                "A model file must be specified as a ROS parameter")
         if not rospy.has_param("label_file"):
-            raise Exception("A label file must be specified as a ROS parameter")
+            raise Exception(
+                "A label file must be specified as a ROS parameter")
         self.model_file = rospy.get_param("model_file")
         self.label_file = rospy.get_param("label_file")
         ## Frequency in hertz
