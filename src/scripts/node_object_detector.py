@@ -10,7 +10,7 @@ import time
 import threading
 from typing import List
 from konenako.msg import observation, boundingbox, image
-from konenako.srv import text_message, text_messageResponse, new_frequency, new_frequencyResponse
+from konenako.srv import text_message, text_messageResponse, new_frequency, new_frequencyResponse, toggle, toggleResponse
 from detector.object_detector import ObjectDetector
 from helpers.image_converter import msg_to_cv2
 
@@ -50,9 +50,24 @@ class ObjectNode:
                 "Object detector freq set to {}, period {}".format(
                     self.run_frequency, self.period))
 
+    def toggle_detection(self, toggle):
+        if self.detect_on == toggle.state:
+            return toggleResponse(
+                "Object detection was already toggled to {}".format(
+                    self.detect_on))
+        if not toggle.state:
+            # Unsubscribe from camera feed when not detecting
+            self.input_sub.unregister()
+        else:
+            self.input_sub = rospy.Subscriber("camera/images", image,
+                                              self.receive_img)
+        self.detect_on = toggle.state
+        return toggleResponse("Object detection toggled to {}".format(
+            self.detect_on))
+   
     ## Initializes topics and services and sets class variable detect_on to true
-    def run(self):
-        self.detect_on = True
+    def __init__(self, state: bool = False):
+        self.detect_on = state
         self.pub = rospy.Publisher("{}/observations".format(rospy.get_name()),
                                    observation,
                                    queue_size=50)
@@ -60,14 +75,19 @@ class ObjectNode:
             "{}/frequency".format(rospy.get_name()), new_frequency,
             self.change_frequency)
         # Image feed topic
-        rospy.Subscriber("camera/images", image, self.receive_img)
+        if self.detect_on:
+            self.input_sub = rospy.Subscriber("camera/images", image,
+                                              self.receive_img)
+
+        rospy.Service("{}/toggle".format(rospy.get_name()), toggle,
+                      self.toggle_detection)
 
     ## Detects image, if not already detecting from another
     #  image and enough time has passed since the previous detection.
     def receive_img(self, msg: image):
-        if self.detect_on and (
-                time.time() - self.last_detect
-        ) > self.period and self.detect_lock.acquire(False):
+        # Detect from this image, if not already detecting from another image and within period time constraints
+        if (time.time() - self.last_detect
+            ) > self.period and self.detect_lock.acquire(False):
             self.detect(msg)
 
     ## Builds observation messages and publishes them.
@@ -102,5 +122,5 @@ class ObjectNode:
 
 if __name__ == "__main__":
     rospy.init_node("object_detector")
-    ObjectNode().run()
+    ObjectNode(True)
     rospy.spin()
