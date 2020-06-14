@@ -8,16 +8,13 @@ import time
 from helpers.image_converter import msg_to_cv2
 import detector.qr_detector as qr_detector
 from std_msgs.msg import String
-from konenako.msg import image, qr_observation, polygon, boundingbox, point64
+from konenako.msg import image, qr_observation, polygon, boundingbox, point64, warning
 from konenako.srv import new_frequency, new_frequencyResponse, toggle, toggleResponse
 
 
 ## Read an image stream from a ROS topic, detect and decode QR codes from the frames and
 #  publish the results in a topic.
 class QRReader:
-    # Frequency in hertz
-    qr_run_frequency = 10
-    qr_period = 1.0 / qr_run_frequency
 
     last_detect = 0  # Last time detect() was called
     detect_lock = threading.Lock(
@@ -55,7 +52,11 @@ class QRReader:
             self.detect(msg)
 
     def __init__(self, state: bool = False):
-        self.detect_on = state
+        # Attempt to get configuration parameters from the ROS parameter server
+        self.detect_on = rospy.get_param("detect_on", True)
+        # Frequency in hertz
+        self.qr_run_frequency = rospy.get_param("frequency", 10)
+        self.qr_period = 1.0 / self.qr_run_frequency
 
         # Results are published as qr_observation.msg ROS messages.
         self.pub = rospy.Publisher("{}/observations".format(rospy.get_name()),
@@ -74,6 +75,11 @@ class QRReader:
 
         rospy.Service("{}/toggle".format(rospy.get_name()), toggle,
                       self.toggle_detection)
+
+        # Warnings are published when processing takes longer than the given period
+        self.warning = rospy.Publisher("{}/warnings".format(rospy.get_name()),
+                                       warning,
+                                       queue_size=50)
 
     ## Process the image using qr_detector.py, publish each QR code's data and
     #  position qs a qr_observation ROS message.
@@ -105,9 +111,10 @@ class QRReader:
 
         processing_time = time.time() - self.last_detect
         if processing_time > period:
-            print("Detecting QR-code took {}, while the period was set to {}!".
-                  format(processing_time,
-                         period))  # TODO: Announce "warnings" to topic
+            self.warning.publish(
+                warning(
+                    "Detecting QR-code took {}, while the period was set to {}!"
+                    .format(processing_time, period)))
 
         # Ready to detect the next image
         self.detect_lock.release()

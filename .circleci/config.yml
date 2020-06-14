@@ -10,6 +10,9 @@ jobs:
       - image: circleci/python:3.7.7
     steps:
     - checkout
+    - add_ssh_keys:
+        fingerprints:
+          - "3a:fd:8a:69:40:1b:3c:76:30:3e:da:a5:a7:c6:8d:c6"
     - run: sudo chown -R circleci:circleci /usr/local/bin
     - run: sudo chown -R circleci:circleci /usr/local/lib/python3.7/site-packages
     - restore_cache:
@@ -26,8 +29,20 @@ jobs:
           - ~/.cache/pypoetry/virtualenvs
         key: konenako-{{ .Branch }}-{{ checksum "pyproject.toml" }}
     - run:
-        command: |      
+        name: Check that code is yapf formatted
+        command: |
           poetry run yapf -rd .
+    - run:
+        name: Yapf formatting & commit changes
+        when: on_fail 
+        command: |
+              poetry run yapf -ri .
+              git status
+              git config --global user.email "app@circleci.com"
+              git config --global user.name "CircleCI"
+              git add .
+              git commit -m "\"$(git log --format=oneline -n 1 $CIRCLE_SHA1)\" formatted by CircleCI"
+              git push --set-upstream origin ${CIRCLE_BRANCH}
     - run:
         command: |
           sudo apt-get update
@@ -37,5 +52,6 @@ jobs:
           cd src
           poetry run coverage run -m unittest discover
           poetry run coverage xml
+
     - codecov/upload:
-          file: "rostest/coverage.xml"
+          file: "src/coverage.xml"

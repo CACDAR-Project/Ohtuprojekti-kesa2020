@@ -3,7 +3,7 @@
 ## Prints messages that are being published to observation topics
 #  @package scripts
 
-from konenako.msg import observation, qr_observation
+from konenako.msg import observation, qr_observation, warning
 from std_msgs.msg import String
 
 import rospy
@@ -16,6 +16,9 @@ def run():
     rospy.init_node("printer")
     rospy.Subscriber("object_detector/observations", observation, print)
     rospy.Subscriber("qr_detector/observations", qr_observation, print)
+
+    rospy.Subscriber("qr_detector/warnings", warning, print)
+    rospy.Subscriber("object_detector/warnings", warning, print)
 
     rospy.spin()
 
