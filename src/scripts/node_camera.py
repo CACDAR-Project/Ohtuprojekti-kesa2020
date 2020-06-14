@@ -10,11 +10,6 @@ from numpy import ndarray
 from konenako.msg import image
 from helpers.image_converter import cv2_to_msg
 
-## Variable containing path to video, picture or camera device
-source = "/dev/video0"
-
-#source = "test.mp4"
-
 
 ## Main function for camera node.
 #  Creates topic named "node_name/images" where image/video source
@@ -26,6 +21,8 @@ def run():
     pub = rospy.Publisher("{}/images".format(rospy.get_name()),
                           image,
                           queue_size=1)
+    # Variable containing path to video, picture or camera device
+    source = rospy.get_param("video_source", "test.mp4")
     cam = cv.VideoCapture(source)
     while cam.grab():
         img = cam.retrieve()[1]
