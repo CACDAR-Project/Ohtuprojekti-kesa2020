@@ -16,6 +16,7 @@ def run():
     rospy.init_node("printer")
     rospy.Subscriber("object_detector/observations", observation, print)
     rospy.Subscriber("qr_detector/observations", qr_observation, print)
+
     rospy.Subscriber("qr_detector/warnings", warning, print)
     rospy.Subscriber("object_detector/warnings", warning, print)
 
