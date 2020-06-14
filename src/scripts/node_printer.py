@@ -19,7 +19,6 @@ def run():
     rospy.Subscriber("qr_detector/warnings", warning, print)
     rospy.Subscriber("object_detector/warnings", warning, print)
 
-
     rospy.spin()
 
 
