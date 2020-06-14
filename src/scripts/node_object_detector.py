@@ -9,7 +9,7 @@ import rospy
 import time
 import threading
 from typing import List
-from konenako.msg import observation, observation_list, boundingbox, image
+from konenako.msg import observation, observation_list, boundingbox, image, warning
 from konenako.srv import text_message, text_messageResponse, new_frequency, new_frequencyResponse, toggle, toggleResponse
 from detector.object_detector import ObjectDetector
 from helpers.image_converter import msg_to_cv2
@@ -89,6 +89,11 @@ class ObjectNode:
         rospy.Service("{}/toggle".format(rospy.get_name()), toggle,
                       self.toggle_detection)
 
+        # Warnings are published when processing takes longer than the given period
+        self.warning = rospy.Publisher("{}/warnings".format(rospy.get_name()),
+                                       warning,
+                                       queue_size=50)
+
     ## Detects image, if not already detecting from another
     #  image and enough time has passed since the previous detection.
     def receive_img(self, msg: image):
@@ -121,8 +126,10 @@ class ObjectNode:
 
         processing_time = time.time() - self.last_detect
         if processing_time > period:
-            print("Detecting objects took {}, while the period was set to {}!".
-                  format(processing_time, period))
+            self.warning.publish(
+                warning(
+                    "Detecting QR-code took {}, while the period was set to {}!"
+                    .format(processing_time, period)))
 
         # Ready to detect the next image
         self.detect_lock.release()
