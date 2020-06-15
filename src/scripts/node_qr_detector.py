@@ -39,11 +39,11 @@ class QRReader:
 
     def change_frequency(self, new_frequency):
         with self.frequency_change_lock:
-            self.qr_run_frequency = new_frequency.data
-            self.qr_period = 1.0 / self.qr_run_frequency
+            self.run_frequency = new_frequency.data
+            self.qr_period = 1.0 / self.run_frequency
             return new_frequencyResponse(
                 "QR detector freq set to {}, period {}".format(
-                    self.qr_run_frequency, self.qr_period))
+                    self.run_frequency, self.qr_period))
 
     def receive_img(self, msg: image):
         # Detect from this image, if not already detecting from another image and within period time constraints
@@ -55,8 +55,8 @@ class QRReader:
         # Attempt to get configuration parameters from the ROS parameter server
         self.detect_on = rospy.get_param("detect_on", True)
         # Frequency in hertz
-        self.qr_run_frequency = rospy.get_param("frequency", 10)
-        self.qr_period = 1.0 / self.qr_run_frequency
+        self.frequency_change_lockfrequency = rospy.get_param("frequency", 10)
+        self.qr_period = 1.0 / self.run_frequency
 
         # Results are published as qr_observation.msg ROS messages.
         self.pub = rospy.Publisher("{}/observations".format(rospy.get_name()),
