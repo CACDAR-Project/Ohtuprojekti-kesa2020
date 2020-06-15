@@ -15,7 +15,7 @@ class DetectorControlNode:
         for node in self.nodes:
             # Publishing from the nodes set to false
             observation_list.append(node.receive_img(msg, False)[2])
-        self.pub.publish(observations(msg.camera_id, msg.image_counter, observation_list)
+        self.pub.publish(observations(msg.camera_id, msg.image_counter, observation_list))
 
     def __init__(self):
         self.combine_results = rospy.get_param("combine_results", True)
