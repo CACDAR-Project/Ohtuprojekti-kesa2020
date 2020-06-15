@@ -8,7 +8,7 @@ import time
 from helpers.image_converter import msg_to_cv2
 import detector.qr_detector as qr_detector
 from std_msgs.msg import String
-from konenako.msg import image, qr_observation, qr_observation_list, polygon, boundingbox, point64
+from konenako.msg import image, qr_observation, qr_observations, polygon, boundingbox, point64, warning
 from konenako.srv import new_frequency, new_frequencyResponse, toggle, toggleResponse
 
 
@@ -60,7 +60,7 @@ class QRReader:
 
         # Results are published as qr_observation.msg ROS messages.
         self.pub = rospy.Publisher("{}/observations".format(rospy.get_name()),
-                                   qr_observation_list,
+                                   qr_observations,
                                    queue_size=50)
 
         # Camera feed is read from ros messages
@@ -75,6 +75,11 @@ class QRReader:
 
         rospy.Service("{}/toggle".format(rospy.get_name()), toggle,
                       self.toggle_detection)
+
+        # Warnings are published when processing takes longer than the given period
+        self.warning = rospy.Publisher("{}/warnings".format(rospy.get_name()),
+                                       warning,
+                                       queue_size=50)
 
     ## Process the image using qr_detector.py, publish each QR code's data and
     #  position qs a qr_observation ROS message.
@@ -108,9 +113,10 @@ class QRReader:
 
         processing_time = time.time() - self.last_detect
         if processing_time > period:
-            print("Detecting QR-code took {}, while the period was set to {}!".
-                  format(processing_time,
-                         period))  # TODO: Announce "warnings" to topic
+            self.warning.publish(
+                warning(
+                    "Detecting QR-code took {}, while the period was set to {}!"
+                    .format(processing_time, period)))
 
         # Ready to detect the next image
         self.detect_lock.release()
