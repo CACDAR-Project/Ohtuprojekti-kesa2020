@@ -52,8 +52,6 @@ find_package(catkin REQUIRED COMPONENTS
    observation.msg
    observations.msg
    image.msg
-   qr_observation.msg
-   qr_observations.msg
    polygon.msg
    point64.msg
    warning.msg
