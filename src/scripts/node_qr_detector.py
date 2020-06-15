@@ -85,7 +85,9 @@ class QRReader:
     #  position qs a qr_observation ROS message.
     #
     #  @param msg image.msg ROS message of the frame to process.
-    def detect(self, msg: image):
+    #  @param publish Toggle publishing to a topic.
+    #  @return observations ROS message of the detections.
+    def detect(self, msg: image, publish: bool = True) -> observations:
         # For tracking the frequency
         self.last_detect = time.time()
         period = self.qr_period
@@ -94,9 +96,9 @@ class QRReader:
         img = msg_to_cv2(msg)[2]
 
         # Detect QR codes with qr_detector.py, save to list.
-        observations = []
+        observation_list = []
         for o in qr_detector.detect(img):
-            observations.append(
+            observation_list.append(
                 observation(
                     "QR", 0, str(o["data"]), 1,
                     boundingbox(o["bbox"]["top"], o["bbox"]["right"],
@@ -108,7 +110,9 @@ class QRReader:
                         point64(o["polygon"][3]["x"], o["polygon"][3]["y"])
                     ])))
         # Publish observations to a topic.
-        self.pub.publish(msg.camera_id, msg.image_counter, observations)
+        obs = observations(msg.camera_id, msg.image_counter, observation_list)
+        if publish:
+            self.pub.publish(obs)
 
         processing_time = time.time() - self.last_detect
         if processing_time > period:
@@ -119,6 +123,8 @@ class QRReader:
 
         # Ready to detect the next image
         self.detect_lock.release()
+
+        return obs
 
 
 if __name__ == "__main__":

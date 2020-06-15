@@ -105,7 +105,11 @@ class ObjectNode:
     ## Builds observation messages and publishes them.
     #  Prints a warning if time between detections grows too large.
     #  @todo Announce "warnings" to a topic
-    def detect(self, msg: image):
+    #
+    #  @param msg image.msg ROS message of the frame to process.
+    #  @param publish Toggle publishing to a topic.
+    #  @return observations ROS message of the detections.
+    def detect(self, msg: image, publish: bool = True):
         # For tracking the frequency
         self.last_detect = time.time()
         period = self.period
@@ -122,8 +126,10 @@ class ObjectNode:
                                 detection["bbox"]["right"],
                                 detection["bbox"]["bottom"],
                                 detection["bbox"]["left"]), polygon(0, [])))
-        self.pub.publish(
-            observations(msg.camera_id, msg.image_counter, observation_list))
+
+        obs = observations(msg.camera_id, msg.image_counter, observation_list)
+        if publish:
+            self.pub.publish(obs)
 
         processing_time = time.time() - self.last_detect
         if processing_time > period:
@@ -134,6 +140,8 @@ class ObjectNode:
 
         # Ready to detect the next image
         self.detect_lock.release()
+
+        return obs
 
 
 if __name__ == "__main__":
