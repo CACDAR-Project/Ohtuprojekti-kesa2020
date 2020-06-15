@@ -23,12 +23,19 @@ def run():
                           queue_size=1)
     # Variable containing path to video, picture or camera device
     source = rospy.get_param("video_source", "test.mp4")
+    if rospy.has_param("video_feed_name"):
+        feed_name = rospy.get_param("video_feed_name")
+    else:
+        feed_name = source
     cam = cv.VideoCapture(source)
+    # Counter for identifying the frames
+    counter = 1
     while cam.grab():
         img = cam.retrieve()[1]
         # Converting the image from numpy ndarray to an image message
-        msg = cv2_to_msg(img)
+        msg = cv2_to_msg(feed_name, counter, img)
         pub.publish(msg)
+        counter += 1
 
 
 if __name__ == "__main__":

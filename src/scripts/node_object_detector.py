@@ -100,17 +100,18 @@ class ObjectNode:
     ## Builds observation messages and publishes them.
     #  Prints a warning if time between detections grows too large.
     #  @todo Announce "warnings" to a topic
-    def detect(self, img: image):
+    def detect(self, msg: image):
         # For tracking the frequency
         self.last_detect = time.time()
         period = self.period
         # Convert the image back from an image message to a numpy ndarray
-        img = msg_to_cv2(img)
+        img = msg_to_cv2(msg)[2]
         observations = []
 
         for detection in self.detector.detect(img):
             observations.append(
                 observation(
+                    msg.camera_id, msg.image_counter, 
                     detection["class_id"], detection["label"],
                     detection["score"],
                     boundingbox(detection["bbox"]["top"],
