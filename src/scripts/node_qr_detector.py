@@ -55,7 +55,7 @@ class QRReader:
         # Attempt to get configuration parameters from the ROS parameter server
         self.detect_on = rospy.get_param("detect_on", True)
         # Frequency in hertz
-        self.frequency_change_lockfrequency = rospy.get_param("frequency", 10)
+        self.run_frequency = rospy.get_param("frequency", 10)
         self.qr_period = 1.0 / self.run_frequency
 
         # Results are published as qr_observation.msg ROS messages.
