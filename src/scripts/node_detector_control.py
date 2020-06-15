@@ -11,7 +11,7 @@ class DetectorControlNode:
         self.nodes.append(node)
 
     def receive_img(msg: image):
-        observation_list = []h
+        observation_list = []
         for node in self.nodes:
             # Publishing from the nodes set to false
             observation_list.append(node.receive_img(msg, False)[2])
