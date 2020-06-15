@@ -116,9 +116,8 @@ class ObjectNode:
         for detection in self.detector.detect(img):
             observation_list.append(
                 observation(
-                    msg.camera_id, msg.image_counter, 
-                    detection["class_id"], detection["label"],
-                    detection["score"],
+                    msg.camera_id, msg.image_counter, detection["class_id"],
+                    detection["label"], detection["score"],
                     boundingbox(detection["bbox"]["top"],
                                 detection["bbox"]["right"],
                                 detection["bbox"]["bottom"],

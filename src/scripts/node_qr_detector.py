@@ -98,8 +98,7 @@ class QRReader:
         for o in qr_detector.detect(img):
             observations.append(
                 qr_observation(
-                    msg.camera_id, msg.image_counter, 
-                    str(o["data"]),
+                    msg.camera_id, msg.image_counter, str(o["data"]),
                     boundingbox(o["bbox"]["top"], o["bbox"]["right"],
                                 o["bbox"]["bottom"], o["bbox"]["left"]),
                     polygon(len(o["polygon"]), [

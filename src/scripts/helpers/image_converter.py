@@ -21,6 +21,6 @@ def cv2_to_msg(id: str, counter: int, img: np.ndarray) -> image:
 #  @param ROS image message
 #  @return triple containing camera name, frame counter and the image
 def msg_to_cv2(msg: image) -> np.ndarray:
-    # Convert the channels from bytes to uint8 arrays and reconstruct the shape 
-    return (msg.camera_id, msg.image_counter, 
-        np.frombuffer(msg.data, "uint8").reshape(msg.height, msg.width, 3))
+    # Convert the channels from bytes to uint8 arrays and reconstruct the shape
+    return (msg.camera_id, msg.image_counter,
+            np.frombuffer(msg.data, "uint8").reshape(msg.height, msg.width, 3))
