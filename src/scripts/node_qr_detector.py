@@ -91,14 +91,14 @@ class QRReader:
         period = self.qr_period
 
         # Convert image from Image message to numpy ndarray
-        img = msg_to_cv2(msg)
+        img = msg_to_cv2(msg)[2]
 
         # Detect QR codes with qr_detector.py, save to list.
         observations = []
         for o in qr_detector.detect(img):
             observations.append(
                 qr_observation(
-                    str(o["data"]),
+                    msg.camera_id, msg.image_counter, str(o["data"]),
                     boundingbox(o["bbox"]["top"], o["bbox"]["right"],
                                 o["bbox"]["bottom"], o["bbox"]["left"]),
                     polygon(len(o["polygon"]), [
