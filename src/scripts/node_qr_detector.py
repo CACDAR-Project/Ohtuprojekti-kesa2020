@@ -45,11 +45,12 @@ class QRReader:
                 "QR detector freq set to {}, period {}".format(
                     self.qr_run_frequency, self.qr_period))
 
-    def receive_img(self, msg: image):
+    def receive_img(self, msg: image, publish: bool = True):
         # Detect from this image, if not already detecting from another image and within period time constraints
         if (time.time() - self.last_detect
             ) > self.qr_period and self.detect_lock.acquire(False):
-            self.detect(msg)
+            return self.detect(msg, publish)
+        return []
 
     def __init__(self, state: bool = False):
         # Attempt to get configuration parameters from the ROS parameter server
@@ -87,7 +88,7 @@ class QRReader:
     #  @param msg image.msg ROS message of the frame to process.
     #  @param publish Toggle publishing to a topic.
     #  @return observations ROS message of the detections.
-    def detect(self, msg: image, publish: bool = True) -> observations:
+    def detect(self, msg: image, publish: bool):
         # For tracking the frequency
         self.last_detect = time.time()
         period = self.qr_period
@@ -124,7 +125,7 @@ class QRReader:
         # Ready to detect the next image
         self.detect_lock.release()
 
-        return obs
+        return observation_list
 
 
 if __name__ == "__main__":

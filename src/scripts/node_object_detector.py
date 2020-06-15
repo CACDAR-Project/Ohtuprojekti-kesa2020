@@ -96,11 +96,12 @@ class ObjectNode:
 
     ## Detects image, if not already detecting from another
     #  image and enough time has passed since the previous detection.
-    def receive_img(self, msg: image):
+    def receive_img(self, msg: image, publish: bool = True):
         # Detect from this image, if not already detecting from another image and within period time constraints
         if (time.time() - self.last_detect
             ) > self.period and self.detect_lock.acquire(False):
-            self.detect(msg)
+            return self.detect(msg, publish)
+        return (None, None, [])
 
     ## Builds observation messages and publishes them.
     #  Prints a warning if time between detections grows too large.
@@ -109,7 +110,7 @@ class ObjectNode:
     #  @param msg image.msg ROS message of the frame to process.
     #  @param publish Toggle publishing to a topic.
     #  @return observations ROS message of the detections.
-    def detect(self, msg: image, publish: bool = True):
+    def detect(self, msg: image, publish: bool):
         # For tracking the frequency
         self.last_detect = time.time()
         period = self.period
@@ -141,7 +142,7 @@ class ObjectNode:
         # Ready to detect the next image
         self.detect_lock.release()
 
-        return obs
+        return (msg.camera_id, msg.image_counter, observation_list)
 
 
 if __name__ == "__main__":
