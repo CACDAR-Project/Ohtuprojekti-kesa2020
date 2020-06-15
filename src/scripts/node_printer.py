@@ -17,8 +17,10 @@ def run():
     rospy.Subscriber("object_detector/observations", observations, print)
     rospy.Subscriber("qr_detector/observations", observations, print)
 
-    rospy.Subscriber("qr_detector/warnings", warning, print)
+    rospy.Subscriber("qr_detector/qr_warnings", warning, print)
     rospy.Subscriber("object_detector/warnings", warning, print)
+
+    rospy.Subscriber("detector_control_node/observations", observations, print)
 
     rospy.spin()
 

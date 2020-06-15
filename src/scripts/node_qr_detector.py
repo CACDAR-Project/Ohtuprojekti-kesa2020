@@ -71,14 +71,14 @@ class QRReader:
 
         # ROS service for changing detection frequency.
         frequency_service = rospy.Service(
-            "{}/frequency".format(rospy.get_name()), new_frequency,
+            "{}/qr_frequency".format(rospy.get_name()), new_frequency,
             self.change_frequency)
 
-        rospy.Service("{}/toggle".format(rospy.get_name()), toggle,
+        rospy.Service("{}/qr_toggle".format(rospy.get_name()), toggle,
                       self.toggle_detection)
 
         # Warnings are published when processing takes longer than the given period
-        self.warning = rospy.Publisher("{}/warnings".format(rospy.get_name()),
+        self.warning = rospy.Publisher("{}/qr_warnings".format(rospy.get_name()),
                                        warning,
                                        queue_size=50)
 
@@ -111,9 +111,8 @@ class QRReader:
                         point64(o["polygon"][3]["x"], o["polygon"][3]["y"])
                     ])))
         # Publish observations to a topic.
-        obs = observations(msg.camera_id, msg.image_counter, observation_list)
         if publish:
-            self.pub.publish(obs)
+            self.pub.publish(observations(msg.camera_id, msg.image_counter, observation_list))
 
         processing_time = time.time() - self.last_detect
         if processing_time > period:

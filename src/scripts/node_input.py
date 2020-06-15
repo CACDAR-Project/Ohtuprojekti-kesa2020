@@ -71,7 +71,7 @@ def init():
 
     rospy.wait_for_service('/object_detector/frequency')
     print("Object detector frequency service found")
-    rospy.wait_for_service('/qr_detector/frequency')
+    rospy.wait_for_service('/qr_detector/qr_frequency')
     print("QR detector frequency service found")
     rospy.wait_for_service('/object_detector/toggle')
     print("Object detection toggle service found")
@@ -82,7 +82,7 @@ def init():
 
     frequency_changer = rospy.ServiceProxy('/object_detector/frequency',
                                            new_frequency)
-    qr_frequency_changer = rospy.ServiceProxy('/qr_detector/frequency',
+    qr_frequency_changer = rospy.ServiceProxy('/qr_detector/qr_frequency',
                                               new_frequency)
     object_detection_toggler = rospy.ServiceProxy('/object_detector/toggle',
                                                   toggle)

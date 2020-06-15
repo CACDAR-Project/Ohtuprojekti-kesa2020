@@ -101,7 +101,7 @@ class ObjectNode:
         if (time.time() - self.last_detect
             ) > self.period and self.detect_lock.acquire(False):
             return self.detect(msg, publish)
-        return (None, None, [])
+        return []
 
     ## Builds observation messages and publishes them.
     #  Prints a warning if time between detections grows too large.
@@ -142,7 +142,7 @@ class ObjectNode:
         # Ready to detect the next image
         self.detect_lock.release()
 
-        return (msg.camera_id, msg.image_counter, observation_list)
+        return observation_list
 
 
 if __name__ == "__main__":
