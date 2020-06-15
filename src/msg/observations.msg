@@ -1,2 +1,2 @@
-string detection_type
+string model_name
 observation[] observations
