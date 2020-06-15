@@ -8,7 +8,7 @@ import time
 from helpers.image_converter import msg_to_cv2
 import detector.qr_detector as qr_detector
 from std_msgs.msg import String
-from konenako.msg import image, qr_observation, polygon, boundingbox, point64, warning
+from konenako.msg import image, qr_observation, qr_observations, polygon, boundingbox, point64, warning
 from konenako.srv import new_frequency, new_frequencyResponse, toggle, toggleResponse
 
 
@@ -60,7 +60,7 @@ class QRReader:
 
         # Results are published as qr_observation.msg ROS messages.
         self.pub = rospy.Publisher("{}/observations".format(rospy.get_name()),
-                                   qr_observation,
+                                   qr_observations,
                                    queue_size=50)
 
         # Camera feed is read from ros messages
@@ -93,21 +93,22 @@ class QRReader:
         # Convert image from Image message to numpy ndarray
         img = msg_to_cv2(msg)
 
-        # Detect QR codes with qr_detector.py
-        observations = qr_detector.detect(img)
-        # Publish each QR code to a topic.
-        for o in observations:
-            obs = qr_observation(
-                str(o["data"]),
-                boundingbox(o["bbox"]["top"], o["bbox"]["right"],
-                            o["bbox"]["bottom"], o["bbox"]["left"]),
-                polygon(len(o["polygon"]), [
-                    point64(o["polygon"][0]["x"], o["polygon"][0]["y"]),
-                    point64(o["polygon"][1]["x"], o["polygon"][1]["y"]),
-                    point64(o["polygon"][2]["x"], o["polygon"][2]["y"]),
-                    point64(o["polygon"][3]["x"], o["polygon"][3]["y"])
-                ]))
-            self.pub.publish(obs)
+        # Detect QR codes with qr_detector.py, save to list.
+        observations = []
+        for o in qr_detector.detect(img):
+            observations.append(
+                qr_observation(
+                    str(o["data"]),
+                    boundingbox(o["bbox"]["top"], o["bbox"]["right"],
+                                o["bbox"]["bottom"], o["bbox"]["left"]),
+                    polygon(len(o["polygon"]), [
+                        point64(o["polygon"][0]["x"], o["polygon"][0]["y"]),
+                        point64(o["polygon"][1]["x"], o["polygon"][1]["y"]),
+                        point64(o["polygon"][2]["x"], o["polygon"][2]["y"]),
+                        point64(o["polygon"][3]["x"], o["polygon"][3]["y"])
+                    ])))
+        # Publish observations to a topic.
+        self.pub.publish(observations)
 
         processing_time = time.time() - self.last_detect
         if processing_time > period:
