@@ -8,6 +8,10 @@ from std_msgs.msg import String
 
 import rospy
 
+def printCombined(msg):
+    print("combined msg:")
+    print(msg)
+
 
 ## Subscribes to topics and leaves node to spin
 def run():
@@ -20,7 +24,7 @@ def run():
     rospy.Subscriber("qr_detector/qr_warnings", warning, print)
     rospy.Subscriber("object_detector/warnings", warning, print)
 
-    rospy.Subscriber("detector_control_node/observations", observations, print)
+    rospy.Subscriber("detector_control_node/observations", observations, printCombined)
 
     rospy.spin()
 

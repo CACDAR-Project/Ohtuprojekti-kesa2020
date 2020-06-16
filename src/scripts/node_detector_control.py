@@ -14,10 +14,10 @@ class DetectorControlNode:
     def receive_img(self, msg: image):
         observation_list = []
         for node in self.nodes:
-            # Publishing from the nodes set to false
-            x = node.receive_img(msg, False)
+            # Publishing from the nodes set to opposite of the combine boolean.
+            x = node.receive_img(msg, not self.combine)
             observation_list += x
-        if observation_list:
+        if observation_list and self.combine:
             self.pub.publish(observations(msg.camera_id, msg.image_counter, observation_list))
 
     def __init__(self):
@@ -30,6 +30,10 @@ class DetectorControlNode:
 
         # List of active nodes
         self.nodes = []
+
+        # Combine results to single message, or publish separately.
+        # @todo a service to change this value
+        self.combine = True
 
         # temporary
         self.nodes.append(ObjectNode())
