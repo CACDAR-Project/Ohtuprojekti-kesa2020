@@ -33,7 +33,6 @@ jobs:
     docker:
       - image: circleci/python:3.7.7
     steps:
-      - checkout
       - run:
           command: |
             sudo apt-get update
@@ -67,13 +66,13 @@ jobs:
 
 
 workflows:
-version: 2.1
-build-test-and-format:
-  jobs:
-    - build
-    - test:
-        requires:
-          - build
-    - format:
-        requires:
-          - test
+  version: 2.1
+  build-test-and-format:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+      - format:
+          requires:
+            - test
