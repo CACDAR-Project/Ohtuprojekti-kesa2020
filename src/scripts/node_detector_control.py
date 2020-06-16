@@ -4,9 +4,17 @@ from node_object_detector import ObjectNode
 from node_qr_detector import QRReader
 from konenako.msg import image, observations
 import rospy
+from konenako.srv import toggle, toggleResponse
 
 
 class DetectorControlNode:
+    def toggle_combine(self, msg):
+        self.combine = msg.state
+        if self.combine:
+            return toggleResponse("Combining results turned on")
+        else:
+            return toggleResponse("Combining results turned off")
+
     def add_detection_node(self, node):
         # @todo add/remove nodes with a service?
         self.nodes.append(node)
@@ -35,8 +43,9 @@ class DetectorControlNode:
         self.nodes = []
 
         # Combine results to single message, or publish separately.
-        # @todo a service to change this value
         self.combine = True
+        rospy.Service("{}/combine_toggle".format(rospy.get_name()), toggle,
+                      self.toggle_combine)
 
         # temporary
         self.nodes.append(ObjectNode())

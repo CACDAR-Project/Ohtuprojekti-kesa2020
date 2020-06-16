@@ -41,13 +41,23 @@ def send_OD_toggle():
     print("Received response: " + response.response)
 
 
+## Sends on or off command for combining results
+def send_combine_toggle():
+    print("Give something for on, empty for off!")
+    inp = bool(input())
+    print(inp)
+    response = combine_toggler(inp)
+    print("Received response: " + response.response)
+
+
 ## Function running in loop waiting for command to send message
 def run():
     while not rospy.is_shutdown():
         print("Give command.\n" +
               "1 for changing object detection frequency,\n" +
               "2 for changing QR code detection frequency,\n" +
-              "3 for toggling object detection on or off:")
+              "3 for toggling object detection on or off,\n" +
+              "4 for toggling result combining:")
         inp = input()
 
         # Catch errors if a node is not running
@@ -58,6 +68,8 @@ def run():
                 send_qr_frequency()
             elif inp == "3":
                 send_OD_toggle()
+            elif inp == "4":
+                send_combine_toggle()
             else:
                 print("Command not recognized!")
         except Exception as ex:
@@ -92,6 +104,11 @@ def init():
     print("QR detector frequency service found")
     rospy.wait_for_service(oNode + '/toggle')
     print("Object detection toggle service found")
+    if inp == "d":
+        rospy.wait_for_service(oNode + '/combine_toggle')
+        print("Combine toggle service found")
+        global combine_toggler
+        combine_toggler = rospy.ServiceProxy(oNode + '/combine_toggle', toggle)
 
     global frequency_changer
     global qr_frequency_changer
