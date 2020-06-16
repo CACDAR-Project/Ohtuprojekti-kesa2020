@@ -9,49 +9,71 @@ jobs:
     docker:
       - image: circleci/python:3.7.7
     steps:
-    - checkout
-    - add_ssh_keys:
-        fingerprints:
-          - "3a:fd:8a:69:40:1b:3c:76:30:3e:da:a5:a7:c6:8d:c6"
-    - run: sudo chown -R circleci:circleci /usr/local/bin
-    - run: sudo chown -R circleci:circleci /usr/local/lib/python3.7/site-packages
-    - restore_cache:
-        keys:
-          - konenako-{{ .Branch }}-{{ checksum "pyproject.toml" }}
-          - konenako-{{ .Branch }}-
-          - konenako-
-    - run:
-        command: |
-          curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
-          poetry install
-    - save_cache:
-        paths:
-          - ~/.cache/pypoetry/virtualenvs
-        key: konenako-{{ .Branch }}-{{ checksum "pyproject.toml" }}
-    - run:
-        name: Check that code is yapf formatted
-        command: |
-          poetry run yapf -rd .
-    - run:
-        name: Yapf formatting & commit changes
-        when: on_fail 
-        command: |
-              poetry run yapf -ri .
-              git status
-              git config --global user.email "app@circleci.com"
-              git config --global user.name "CircleCI"
-              git add .
-              git commit -m "\"$(git log --format=oneline -n 1 $CIRCLE_SHA1)\" formatted by CircleCI"
-              git push --set-upstream origin ${CIRCLE_BRANCH}
-    - run:
-        command: |
-          sudo apt-get update
-          sudo apt-get install -y libzbar0
-    - run: 
-        command: |
-          cd src
-          poetry run coverage run -m unittest discover
-          poetry run coverage xml
+      - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "3a:fd:8a:69:40:1b:3c:76:30:3e:da:a5:a7:c6:8d:c6"
+      - run: sudo chown -R circleci:circleci /usr/local/bin
+      - run: sudo chown -R circleci:circleci /usr/local/lib/python3.7/site-packages
+      - restore_cache:
+          keys:
+            - konenako-{{ .Branch }}-{{ checksum "pyproject.toml" }}
+            - konenako-{{ .Branch }}-
+            - konenako-
+      - run:
+          command: |
+            curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+            poetry install
+      - save_cache:
+          paths:
+            - ~/.cache/pypoetry/virtualenvs
+          key: konenako-{{ .Branch }}-{{ checksum "pyproject.toml" }}
+  test:
+    working_directory: ~/repository
+    docker:
+      - image: circleci/python:3.7.7
+    steps:
+      - checkout
+      - run:
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y libzbar0
+      - run: 
+          command: |
+            cd src
+            poetry run coverage run -m unittest discover
+            poetry run coverage xml
+      - codecov/upload:
+            file: "src/coverage.xml"
+  format:
+    working_directory: ~/repository
+    docker:
+      - image: circleci/python:3.7.7
+      - run:
+          name: Check that code is yapf formatted
+          command: |
+            poetry run yapf -rd .
+      - run:
+          name: Yapf formatting & commit changes
+          when: on_fail 
+          command: |
+            poetry run yapf -ri .
+            git status
+            git config --global user.email "app@circleci.com"
+            git config --global user.name "CircleCI"
+            git add .
+            git commit -m "\"$(git log --format=oneline -n 1 $CIRCLE_SHA1)\" formatted by CircleCI"
+            git push --set-upstream origin ${CIRCLE_BRANCH}
 
-    - codecov/upload:
-          file: "src/coverage.xml"
+
+workflows:
+version: 2
+build-test-and-format:
+  jobs:
+    - build
+    - test:
+        requires:
+          - build
+    - format:
+        requires:
+          - test

@@ -25,9 +25,7 @@ class QRCodeDetector(unittest.TestCase):
         img = cv.imread("tests/data/banana_and_cow.png")
 
         results = qr_detector.detect(img)
-        self.assertEqual(len(results), 999)
-
-
+        self.assertEqual(len(results), 0)
 
 
 if __name__ == '__main__':
