@@ -119,7 +119,7 @@ class ObjectNode:
             self.warning.publish(
                 warning(
                     "{}: Detecting objects took {}, while the period was set to {}!"
-                    .format(name, processing_time, period)))
+                    .format(self.name, processing_time, period)))
 
         # Ready to detect the next image
         self.detect_lock.release()
