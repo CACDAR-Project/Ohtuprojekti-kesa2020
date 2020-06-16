@@ -69,6 +69,9 @@ jobs:
             echo $CIRCLE_SHA1
             echo '$CIRCLE_SHA1'
             echo $(git log --format=oneline -n 1)
+            echo $(git log --format=oneline -n 1 $CIRCLE_SHA1)
+            echo $(git log --format=oneline -n 1 $CIRCLE_SHA1 | cut -c 41-)
+            echo $(git log --format=oneline -n 1 | cut -c 41-)
             poetry run yapf -ri .
             git status
             git config --global user.email "app@circleci.com"
