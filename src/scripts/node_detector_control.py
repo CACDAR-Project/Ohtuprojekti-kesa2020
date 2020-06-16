@@ -21,8 +21,10 @@ class DetectorControlNode:
 
     def receive_img(self, msg: image):
         observation_list = []
+        # Get observations from all active nodes
         for node in self.nodes:
             # Publishing from the nodes set to opposite of the combine boolean.
+            # If combinin is off, each node publishes the results separately.
             x = node.receive_img(msg, not self.combine)
             observation_list += x
         if observation_list and self.combine:
@@ -31,7 +33,6 @@ class DetectorControlNode:
                              observation_list))
 
     def __init__(self):
-        self.combine_results = rospy.get_param("combine_results", True)
         self.input_sub = rospy.Subscriber("camera/images", image,
                                           self.receive_img)
         ## Topic to publish results
@@ -43,7 +44,7 @@ class DetectorControlNode:
         self.nodes = []
 
         # Combine results to single message, or publish separately.
-        self.combine = True
+        self.combine = rospy.get_param("combine_results", True)
         rospy.Service("{}/combine_toggle".format(rospy.get_name()), toggle,
                       self.toggle_combine)
 

@@ -9,6 +9,7 @@ from std_msgs.msg import String
 import rospy
 
 
+## Show that received results were combined.
 def printCombined(msg):
     print("combined msg:")
     print(msg)
