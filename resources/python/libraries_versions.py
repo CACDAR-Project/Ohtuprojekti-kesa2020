@@ -10,10 +10,10 @@ warnings.filterwarnings('ignore', category=FutureWarning)
 
 # Dict with all the required libraries and their minimum supported version.
 libraries = {
-    'cv2':          '4.1.0',
-    'tensorflow':   '1.14.0',
-    'numpy':        '1.18',
-    'pyzbar':       '0.1.7'
+    'cv2': '4.1.0',
+    'tensorflow': '1.14.0',
+    'numpy': '1.18',
+    'pyzbar': '0.1.7'
 }
 
 
@@ -27,11 +27,13 @@ def main():
             lib = __import__(library)
         except Exception:
             lib = None
-    
+
         if lib:
             version = lib.__version__
             if parse_version(version) < parse_version(required):
-                print(f'You have version {parse_version(version)} of {library}, while the minimum required is {required}.')
+                print(
+                    f'You have version {parse_version(version)} of {library}, while the minimum required is {required}.'
+                )
                 all_required = False
             #else:
             #    # Print found usable libraries and their version
@@ -42,7 +44,9 @@ def main():
 
     # Exit with error code if we have unfulfilled dependencies.
     if not all_required:
-        print('You have unmet library dependencies, please fix them before continuing.')
+        print(
+            'You have unmet library dependencies, please fix them before continuing.'
+        )
         sys.exit(1)
     else:
         print('You have all the correct libraries installed!')
