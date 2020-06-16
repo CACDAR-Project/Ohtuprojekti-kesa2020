@@ -39,12 +39,19 @@ The documentation can be found in the documentation-folder and viewed on your br
 ```bash
 .
 ├── documentation
+├── resources
+│   ├── images                      - Contains all the images, for tests etc.
+│   ├── python                      - Contains various helperscripts
+│   ├── tflite_models               - Model and labelfiles
+│   └── videos                      - Contains all the videos, for tests etc.
 ├── src                             - ROS-package directory
 │   ├── models                      - Models should be moved here (SUBJECT TO CHANGE)
 │   ├── msg                         - ROS messages specifications
 │   ├── resources                   - Different resources used in the ROS-package or nodes (SUBJECT TO CHANGE)
 │   ├── scripts                     - Nodes are placed here as executable python-files
 │   │   ├── detector                - Python packages can be placed here
+│   │   ├── config                  - Package for various configs
+│   │   │   └── constants.py        - Constants are defined in this module
 │   │   ├── ...
 │   │   ├── <package_n>
 │   │   ├── node_camera.py          - node executables are prefixed with the name "node_"
@@ -159,7 +166,7 @@ Some libraries must be separately installed, current list:
  * zbar/libzbar0 
 
 ### Testing
-All python unittests are run from inside the [src](https://github.com/Konenako/Ohtuprojekti-kesa2020/tree/master/src) folder.
+All python unittests are run from inside the [src](https://github.com/Konenako/Ohtuprojekti-kesa2020/tree/master/src) folder.  
 `poetry run python -m unittest`
 
 ## Versions
