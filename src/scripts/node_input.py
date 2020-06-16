@@ -68,20 +68,21 @@ def run():
 def init():
     rospy.init_node("input")
 
-    print("Are you running nodes from detector control node or separately? (d/s)")
+    print(
+        "Are you running nodes from detector control node or separately? (d/s)"
+    )
     while True:
         inp = input()
         if inp == "d":
             oNode = "/detector_control_node"
             qrNode = "/detector_control_node"
             break
-        elif inp == "s": 
+        elif inp == "s":
             oNode = "/object_detector"
             qrNode = "/qr_detector"
             break
         else:
             print("Command not recognized!")
-
 
     print("Waiting for services")
 
@@ -96,12 +97,10 @@ def init():
     global qr_frequency_changer
     global object_detection_toggler
 
-    frequency_changer = rospy.ServiceProxy(oNode + '/frequency',
-                                           new_frequency)
+    frequency_changer = rospy.ServiceProxy(oNode + '/frequency', new_frequency)
     qr_frequency_changer = rospy.ServiceProxy(qrNode + '/qr_frequency',
                                               new_frequency)
-    object_detection_toggler = rospy.ServiceProxy(oNode + '/toggle',
-                                                  toggle)
+    object_detection_toggler = rospy.ServiceProxy(oNode + '/toggle', toggle)
 
 
 if __name__ == "__main__":
