@@ -63,6 +63,8 @@ add_service_files(
   text_message.srv
   new_frequency.srv
   toggle.srv
+  add_object_detector.srv
+  remove_object_detector.srv
 )
 
 ## Generate actions in the 'action' folder
