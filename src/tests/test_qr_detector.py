@@ -5,6 +5,7 @@ import cv2 as cv
 import scripts.detector.qr_detector as qr_detector
 from scripts.config.constants import images_path
 
+
 class QRCodeDetector(unittest.TestCase):
     def test_qr_two(self):
         img = cv.imread("../{}/qr.png".format(images_path))
