@@ -66,18 +66,12 @@ jobs:
           name: Yapf formatting & commit changes
           when: on_fail 
           command: |
-            echo $CIRCLE_SHA1
-            echo '$CIRCLE_SHA1'
-            echo $(git log --format=oneline -n 1)
-            echo $(git log --format=oneline -n 1 $CIRCLE_SHA1)
-            echo $(git log --format=oneline -n 1 $CIRCLE_SHA1 | cut -c 41-)
-            echo $(git log --format=oneline -n 1 | cut -c 41-)
             poetry run yapf -ri .
             git status
             git config --global user.email "app@circleci.com"
             git config --global user.name "CircleCI"
             git add .
-            git commit -m "\"$(git log --format=oneline -n 1 $CIRCLE_SHA1)\" formatted by CircleCI" -m "[skip ci]"
+            git commit -m "\"$(git log --format=oneline -n 1 | cut -c 41-)\" formatted by CircleCI" -m "[skip ci]"
             git push --set-upstream origin ${CIRCLE_BRANCH}
 
 
