@@ -33,7 +33,7 @@ class DetectorControlNode:
         # Get observations from all active nodes
         for node in self.detectors.values():
             # Publishing from the nodes set to opposite of the combine boolean.
-            # If combinin is off, each node publishes the results separately.
+            # If combining is off, each node publishes the results separately.
             x = node.receive_img(img)
             if self.combine:
                 observation_list += x
