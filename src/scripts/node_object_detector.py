@@ -9,7 +9,7 @@ import rospy
 import time
 import threading
 from typing import List
-from konenako.msg import observation, boundingbox, image, warning
+from konenako.msg import observation, observations, boundingbox, image, warning
 from konenako.srv import text_message, text_messageResponse, new_frequency, new_frequencyResponse, toggle, toggleResponse
 from detector.object_detector import ObjectDetector
 from helpers.image_converter import msg_to_cv2
@@ -76,7 +76,7 @@ class ObjectNode:
         self.detector = ObjectDetector(self.model_file, self.label_file)
 
         self.pub = rospy.Publisher("{}/observations".format(rospy.get_name()),
-                                   observation,
+                                   observations,
                                    queue_size=50)
         frequency_service = rospy.Service(
             "{}/frequency".format(rospy.get_name()), new_frequency,
@@ -105,23 +105,24 @@ class ObjectNode:
     ## Builds observation messages and publishes them.
     #  Prints a warning if time between detections grows too large.
     #  @todo Announce "warnings" to a topic
-    def detect(self, img: image):
+    def detect(self, msg: image):
         # For tracking the frequency
         self.last_detect = time.time()
         period = self.period
         # Convert the image back from an image message to a numpy ndarray
-        img = msg_to_cv2(img)
+        img = msg_to_cv2(msg)[2]
+        observation_list = []
 
         for detection in self.detector.detect(img):
-
-            self.pub.publish(
+            observation_list.append(
                 observation(
-                    detection["class_id"], detection["label"],
-                    detection["score"],
+                    msg.camera_id, msg.image_counter, detection["class_id"],
+                    detection["label"], detection["score"],
                     boundingbox(detection["bbox"]["top"],
                                 detection["bbox"]["right"],
                                 detection["bbox"]["bottom"],
                                 detection["bbox"]["left"])))
+        self.pub.publish(observations(self.model_file, observation_list))
 
         processing_time = time.time() - self.last_detect
         if processing_time > period:

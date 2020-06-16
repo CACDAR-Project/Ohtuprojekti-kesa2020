@@ -8,7 +8,7 @@ import time
 from helpers.image_converter import msg_to_cv2
 import detector.qr_detector as qr_detector
 from std_msgs.msg import String
-from konenako.msg import image, qr_observation, polygon, boundingbox, point64, warning
+from konenako.msg import image, qr_observation, qr_observations, polygon, boundingbox, point64, warning
 from konenako.srv import new_frequency, new_frequencyResponse, toggle, toggleResponse
 
 
@@ -39,11 +39,11 @@ class QRReader:
 
     def change_frequency(self, new_frequency):
         with self.frequency_change_lock:
-            self.qr_run_frequency = new_frequency.data
-            self.qr_period = 1.0 / self.qr_run_frequency
+            self.run_frequency = new_frequency.data
+            self.qr_period = 1.0 / self.run_frequency
             return new_frequencyResponse(
                 "QR detector freq set to {}, period {}".format(
-                    self.qr_run_frequency, self.qr_period))
+                    self.run_frequency, self.qr_period))
 
     def receive_img(self, msg: image):
         # Detect from this image, if not already detecting from another image and within period time constraints
@@ -55,12 +55,12 @@ class QRReader:
         # Attempt to get configuration parameters from the ROS parameter server
         self.detect_on = rospy.get_param("detect_on", True)
         # Frequency in hertz
-        self.qr_run_frequency = rospy.get_param("frequency", 10)
-        self.qr_period = 1.0 / self.qr_run_frequency
+        self.run_frequency = rospy.get_param("frequency", 10)
+        self.qr_period = 1.0 / self.run_frequency
 
         # Results are published as qr_observation.msg ROS messages.
         self.pub = rospy.Publisher("{}/observations".format(rospy.get_name()),
-                                   qr_observation,
+                                   qr_observations,
                                    queue_size=50)
 
         # Camera feed is read from ros messages
@@ -91,23 +91,24 @@ class QRReader:
         period = self.qr_period
 
         # Convert image from Image message to numpy ndarray
-        img = msg_to_cv2(msg)
+        img = msg_to_cv2(msg)[2]
 
-        # Detect QR codes with qr_detector.py
-        observations = qr_detector.detect(img)
-        # Publish each QR code to a topic.
-        for o in observations:
-            obs = qr_observation(
-                str(o["data"]),
-                boundingbox(o["bbox"]["top"], o["bbox"]["right"],
-                            o["bbox"]["bottom"], o["bbox"]["left"]),
-                polygon(len(o["polygon"]), [
-                    point64(o["polygon"][0]["x"], o["polygon"][0]["y"]),
-                    point64(o["polygon"][1]["x"], o["polygon"][1]["y"]),
-                    point64(o["polygon"][2]["x"], o["polygon"][2]["y"]),
-                    point64(o["polygon"][3]["x"], o["polygon"][3]["y"])
-                ]))
-            self.pub.publish(obs)
+        # Detect QR codes with qr_detector.py, save to list.
+        observations = []
+        for o in qr_detector.detect(img):
+            observations.append(
+                qr_observation(
+                    msg.camera_id, msg.image_counter, str(o["data"]),
+                    boundingbox(o["bbox"]["top"], o["bbox"]["right"],
+                                o["bbox"]["bottom"], o["bbox"]["left"]),
+                    polygon(len(o["polygon"]), [
+                        point64(o["polygon"][0]["x"], o["polygon"][0]["y"]),
+                        point64(o["polygon"][1]["x"], o["polygon"][1]["y"]),
+                        point64(o["polygon"][2]["x"], o["polygon"][2]["y"]),
+                        point64(o["polygon"][3]["x"], o["polygon"][3]["y"])
+                    ])))
+        # Publish observations to a topic.
+        self.pub.publish(observations)
 
         processing_time = time.time() - self.last_detect
         if processing_time > period:
