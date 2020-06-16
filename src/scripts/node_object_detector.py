@@ -41,8 +41,7 @@ class ObjectNode:
         with self.frequency_change_lock:
             self.period = 1.0 / new_frequency.data
             return new_frequencyResponse(
-                "Object detector freq set to period {}".format(
-                    self.period))
+                "Object detector freq set to period {}".format(self.period))
 
     def toggle_detection(self, toggle):
         if self.detect_on == toggle.state:
@@ -73,17 +72,15 @@ class ObjectNode:
         ## Helper class used for detecting objects
         self.detector = ObjectDetector(model_path, label_path)
 
-        self.frequency_service = rospy.Service(
-            "{}/frequency".format(name), new_frequency,
-            self.change_frequency)
+        self.frequency_service = rospy.Service("{}/frequency".format(name),
+                                               new_frequency,
+                                               self.change_frequency)
 
         self.toggle_service = rospy.Service("{}/toggle".format(name), toggle,
-                      self.toggle_detection)
+                                            self.toggle_detection)
 
         # Warnings are published when processing takes longer than the given period
-        self.warning = rospy.Publisher("warnings",
-                                       warning,
-                                       queue_size=50)
+        self.warning = rospy.Publisher("warnings", warning, queue_size=50)
 
     ## Detects image, if not already detecting from another
     #  image and enough time has passed since the previous detection.

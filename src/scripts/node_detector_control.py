@@ -13,17 +13,19 @@ class DetectorControlNode:
 
     def toggle_combine(self, msg):
         self.combine = msg.state
-        return toggleResponse("Combining results set to {}".format(self.combine))
+        return toggleResponse("Combining results set to {}".format(
+            self.combine))
 
     def remove_object_detector(self, msg):
         self.detectors[msg.name].remove()
-        self.detectors.pop(msg.name) # TODO: locks/thread safety?
+        self.detectors.pop(msg.name)  # TODO: locks/thread safety?
         return remove_object_detectorResponse()
 
     def add_object_detector(self, msg):
-        self.detectors[msg.name] = ObjectNode(msg.name, msg.model_path, msg.label_path) # TODO: locks/thread safety?
+        self.detectors[msg.name] = ObjectNode(
+            msg.name, msg.model_path,
+            msg.label_path)  # TODO: locks/thread safety?
         return add_object_detectorResponse()
-
 
     def receive_img(self, msg: image):
         observation_list = []
@@ -36,7 +38,8 @@ class DetectorControlNode:
             if self.combine:
                 observation_list += x
             elif x:
-                self.pub.publish(observations(msg.camera_id, msg.image_counter, x))
+                self.pub.publish(
+                    observations(msg.camera_id, msg.image_counter, x))
 
         if observation_list and self.combine:
             self.pub.publish(
@@ -51,9 +54,11 @@ class DetectorControlNode:
                                    observations,
                                    queue_size=50)
 
-        rospy.Service("{}/add_object_detector".format(rospy.get_name()), add_object_detector, self.add_object_detector)
+        rospy.Service("{}/add_object_detector".format(rospy.get_name()),
+                      add_object_detector, self.add_object_detector)
 
-        rospy.Service("{}/remove_object_detector".format(rospy.get_name()), remove_object_detector, self.remove_object_detector)
+        rospy.Service("{}/remove_object_detector".format(rospy.get_name()),
+                      remove_object_detector, self.remove_object_detector)
 
         # Combine results to single message, or publish separately.
         self.combine = rospy.get_param("combine_results", True)
@@ -61,7 +66,9 @@ class DetectorControlNode:
                       self.toggle_combine)
 
         # temporary, TODO: replace with parameter based ?
-        self.detectors["object_detector"] = ObjectNode("object_detector", rospy.get_param("model_file"), rospy.get_param("label_file"))
+        self.detectors["object_detector"] = ObjectNode(
+            "object_detector", rospy.get_param("model_file"),
+            rospy.get_param("label_file"))
         self.detectors["QR"] = QRReader()
 
 

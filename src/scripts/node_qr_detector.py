@@ -42,8 +42,7 @@ class QRReader:
         with self.frequency_change_lock:
             self.period = 1.0 / new_frequency.data
             return new_frequencyResponse(
-                "QR detector freq set to period {}".format(
-                    self.period))
+                "QR detector freq set to period {}".format(self.period))
 
     def receive_img(self, img):
         # Detect from this image, if not already detecting from another image and within period time constraints
@@ -64,13 +63,11 @@ class QRReader:
             "{}/frequency".format(self.name), new_frequency,
             self.change_frequency)
 
-        self.toggle_service = rospy.Service("{}/toggle".format(self.name), toggle,
-                      self.toggle_detection)
+        self.toggle_service = rospy.Service("{}/toggle".format(self.name),
+                                            toggle, self.toggle_detection)
 
         # Warnings are published when processing takes longer than the given period
-        self.warning = rospy.Publisher("warnings",
-                                       warning,
-                                       queue_size=50)
+        self.warning = rospy.Publisher("warnings", warning, queue_size=50)
 
     ## Process the image using qr_detector.py, publish each QR code's data and
     #  position qs a qr_observation ROS message.
