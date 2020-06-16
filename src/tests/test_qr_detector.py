@@ -27,6 +27,9 @@ class QRCodeDetector(unittest.TestCase):
         results = qr_detector.detect(img)
         self.assertEqual(len(results), 0)
 
+    def fail(self):
+        self.assertEqual(True, False)
+
 
 if __name__ == '__main__':
     unittest.main()
