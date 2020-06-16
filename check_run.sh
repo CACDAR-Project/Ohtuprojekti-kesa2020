@@ -26,14 +26,18 @@ DEV=0
 # Array with all the required binaries
 REQ_BIN=(poetry python catkin_make roscore rosparam rosrun)
 
+# Required versions, in integers for bash compatibility
+POETRY_VER=105
+PYTHON_VER=370
+
 # ROS package name
 ROSPKG=konenako
 
 # Array with all the required parameters that need to be set
 REQ_PARAMS=(label_file model_file video_source)
 # Default values
-DEF_LABEL=ssd_mobilenet_v1_1_metadata_1.tflite
-DEF_MODEL=mscoco_complete_labels
+DEF_LABEL=mscoco_complete_labels
+DEF_MODEL=ssd_mobilenet_v1_1_metadata_1.tflite
 DEF_VIDEO=/dev/video0
 
 # Available nodes
@@ -72,7 +76,7 @@ if [ "$REQ_MET" -ne 0 ]; then
     exit 1
 fi
 
-echo "All requirements found, continuing"
+echo "All required binaries found, continuing"
 echo
 
 
@@ -81,6 +85,32 @@ if [ ! -z "$POETRY_ACTIVE" ] || [ ! -z "$VIRTUAL_ENV" ]; then
     echo "You are in venv! Quit venv with the command: exit. Then run this script again."
     exit 2
 fi
+
+
+# Check for correct versions
+# Poetry
+poetryver=$(poetry --version|grep -Po '(?<=version )(.+)')
+poetryver=${poetryver//./}
+if [ "$poetryver" -lt $POETRY_VER ]; then
+    echo "You are running an outdated poetry version, please upgrade. Exiting.."
+    exit 1
+fi
+
+# Python
+pytver=$(poetry run python --version|grep -Po '(?<=Python )(.+)')
+pytver=${pytver//./}
+if [ "$pytver" -lt "$PYTHON_VER" ]; then
+    echo "Your python version inside the virtual env is less than $PYTHON_VER, please upgrade. Exiting.."
+    exit 1
+fi
+
+# Imported libraries, checks all required libraries
+# and prints if they are missing or too old versions
+# TODO: try running poetry install and check again
+if ! poetry run python resources/python/libraries_versions.py; then
+    exit 1
+fi
+echo
 
 
 # (re)start roscore, requires pgrep to be installed
