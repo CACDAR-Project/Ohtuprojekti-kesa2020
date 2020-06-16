@@ -57,6 +57,7 @@ The documentation can be found in the documentation-folder and viewed on your br
 ## Running the application
 
 ### Running with roslaunch
+```sudo docker network create rosnet```
 ```sudo docker build -t konenako .```
 ```
 sudo docker run -it --rm \
