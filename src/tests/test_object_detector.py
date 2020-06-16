@@ -10,7 +10,7 @@ class Detector(unittest.TestCase):
         img = cv2.imread("tests/data/banana_and_cow.png")
         results = detector.detect(img)
         labels = {d['label'] for d in results}
-        self.assertSetEqual(labels, {'cow','banana'})
+        self.assertSetEqual(labels, {'cow', 'banana'})
 
 
 if __name__ == '__main__':
