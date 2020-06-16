@@ -6,8 +6,11 @@ import scripts.detector.qr_detector as qr_detector
 
 
 class QRCodeDetector(unittest.TestCase):
+    def setUp(self):
+        self.res_path = '../resources'
+
     def test_qr_two(self):
-        img = cv.imread("tests/data/qr.png")
+        img = cv.imread("{}/images/qr.png".format(self.res_path))
 
         results = qr_detector.detect(img)
         data = {r["data"] for r in results}
@@ -22,7 +25,7 @@ class QRCodeDetector(unittest.TestCase):
                     })))
 
     def test_qr_none(self):
-        img = cv.imread("tests/data/banana_and_cow.png")
+        img = cv.imread("{}/images/banana_and_cow.png".format(self.res_path))
 
         results = qr_detector.detect(img)
         self.assertEqual(len(results), 0)
