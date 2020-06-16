@@ -71,7 +71,7 @@ jobs:
             git config --global user.email "app@circleci.com"
             git config --global user.name "CircleCI"
             git add .
-            git commit -m "\"$(git log --format=oneline -n 1 | cut -c 41-)\" formatted by CircleCI" -m "[skip ci]"
+            git commit -m "\"$(git log --format=oneline -n 1 | cut -c 42-)\" formatted by CircleCI" -m "[skip ci]"
             git push --set-upstream origin ${CIRCLE_BRANCH}
 
 
