@@ -42,7 +42,7 @@ jobs:
           command: |
             sudo apt-get install tree
             tree
-            cd src
+            cd src/
             poetry run coverage run -m unittest discover
             poetry run coverage xml
       - codecov/upload:
