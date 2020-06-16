@@ -5,9 +5,6 @@ from scripts.config.constants import tflite_path, images_path
 
 
 class Detector(unittest.TestCase):
-    def setUp(self):
-        self.res_path = '../resources'
-
     def test_detect_cow_banana(self):
         detector = ObjectDetector(
             "../{}/ssd_mobilenet_v1_1_metadata_1.tflite".format(tflite_path),
