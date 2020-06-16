@@ -45,9 +45,7 @@ The documentation can be found in the documentation-folder and viewed on your br
 │   ├── tflite_models               - Model and labelfiles
 │   └── videos                      - Contains all the videos, for tests etc.
 ├── src                             - ROS-package directory
-│   ├── models                      - Models should be moved here (SUBJECT TO CHANGE)
 │   ├── msg                         - ROS messages specifications
-│   ├── resources                   - Different resources used in the ROS-package or nodes (SUBJECT TO CHANGE)
 │   ├── scripts                     - Nodes are placed here as executable python-files
 │   │   ├── detector                - Python packages can be placed here
 │   │   ├── config                  - Package for various configs
