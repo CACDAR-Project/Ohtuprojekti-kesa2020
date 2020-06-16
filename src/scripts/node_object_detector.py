@@ -13,7 +13,7 @@ from konenako.msg import observation, observations, boundingbox, image, warning
 from konenako.srv import text_message, text_messageResponse, new_frequency, new_frequencyResponse, toggle, toggleResponse
 from detector.object_detector import ObjectDetector
 from helpers.image_converter import msg_to_cv2
-
+from config.constants import tflite_path
 
 ## Class for detecting objects in images.
 #  Reads an image stream from a ROS topic, detects objects in the
@@ -65,8 +65,8 @@ class ObjectNode:
         if not rospy.has_param("label_file"):
             raise Exception(
                 "A label file must be specified as a ROS parameter")
-        self.model_file = rospy.get_param("model_file")
-        self.label_file = rospy.get_param("label_file")
+        self.model_file = '{}/{}'.format(tflite_path, rospy.get_param("model_file"))
+        self.label_file = '{}/{}'.format(tflite_path, rospy.get_param("label_file"))
         ## Frequency in hertz
         self.run_frequency = rospy.get_param("frequency", 1)
 
