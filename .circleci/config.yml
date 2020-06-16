@@ -33,6 +33,7 @@ jobs:
     docker:
       - image: circleci/python:3.7.7
     steps:
+      - checkout
       - run:
           command: |
             sudo apt-get update
@@ -48,6 +49,8 @@ jobs:
     working_directory: ~/repository
     docker:
       - image: circleci/python:3.7.7
+    steps:
+      - checkout
       - run:
           name: Check that code is yapf formatted
           command: |
