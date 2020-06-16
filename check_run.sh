@@ -49,7 +49,10 @@ NODES=(camera object_detector qr_detector printer input)
 CATKIN_PWD="${PWD%/*/*}/devel"
 PROJ_PWD=$(pwd)
 
+# Env variables
 
+# For catkin_make
+export ROS_LANG_DISABLE=genlisp:geneus:gennodejs
 
 
 # Run the script
@@ -112,6 +115,17 @@ if ! poetry run python resources/python/libraries_versions.py; then
 fi
 echo
 
+
+# Check that ROS Workspace exists
+if [ ! -d "$CATKIN_PWD" ] || [ ! -f "$CATKIN_PWD/setup.bash" ]; then
+    echo "Catkin workspace is not set up properly"
+    echo "Please consult the Github README for instructions."
+    echo "Exiting.."
+    exit 1
+fi
+
+
+exit
 
 # (re)start roscore, requires pgrep to be installed
 if [ $(pgrep roscore) ]; then
