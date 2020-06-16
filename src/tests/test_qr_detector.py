@@ -28,7 +28,5 @@ class QRCodeDetector(unittest.TestCase):
         self.assertEqual(len(results), 999)
 
 
-
-
 if __name__ == '__main__':
     unittest.main()
