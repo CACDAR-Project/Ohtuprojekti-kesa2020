@@ -115,7 +115,6 @@ if ! poetry run python resources/python/libraries_versions.py; then
 fi
 echo
 
-
 # Check that ROS Workspace exists
 if [ ! -d "$CATKIN_PWD" ] || [ ! -f "$CATKIN_PWD/setup.bash" ]; then
     echo "Catkin workspace is not set up properly"
@@ -124,8 +123,6 @@ if [ ! -d "$CATKIN_PWD" ] || [ ! -f "$CATKIN_PWD/setup.bash" ]; then
     exit 1
 fi
 
-
-exit
 
 # (re)start roscore, requires pgrep to be installed
 if [ $(pgrep roscore) ]; then
