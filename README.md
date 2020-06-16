@@ -158,6 +158,9 @@ or `poetry run <command>` to run a single command in the environment
 Some libraries must be separately installed, current list:
  * zbar/libzbar0 
 
+### Testing
+All python unittests are run from inside the [src](https://github.com/Konenako/Ohtuprojekti-kesa2020/tree/master/src) folder.
+`poetry run python -m unittest`
 
 ## Versions
 
