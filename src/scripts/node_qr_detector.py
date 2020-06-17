@@ -1,6 +1,6 @@
 #!/usr/bin/env python3.7
 ## Provides functionality to detect QR codes in image and publish observations to a topic
-# @package scripts
+#  @package scripts
 
 import rospy
 import threading
@@ -15,13 +15,20 @@ from konenako.srv import new_frequency, new_frequencyResponse, toggle, toggleRes
 ## Read an image stream from a ROS topic, detect and decode QR codes from the frames and
 #  publish the results in a topic.
 class QRReader:
+    
+    ## Last time detect() was called
+    last_detect = 0  
+    ## Locked while detect() is being run, we detect() only 1 image at time
+    detect_lock = threading.Lock()
 
-    last_detect = 0  # Last time detect() was called
-    detect_lock = threading.Lock(
-    )  # Locked, while detect() is being run, we detect() only 1 image at time
-
+    ## Locked while detect() is being run, we change frequency when it is safe
+    #  @todo check if unnecessary
     frequency_change_lock = threading.Lock()
 
+    ## Change detection on and off.
+    #  Used by service for toggling detection on and off.
+    #  Toggling is implemented by subscribing and unsubscribing
+    #  camera feed. 
     def toggle_detection(self, toggle):
         if self.detect_on == toggle.state:
             return toggleResponse(
@@ -37,6 +44,7 @@ class QRReader:
         return toggleResponse("QR detection toggled to {}".format(
             self.detect_on))
 
+    
     def change_frequency(self, new_frequency):
         with self.frequency_change_lock:
             self.run_frequency = new_frequency.data
