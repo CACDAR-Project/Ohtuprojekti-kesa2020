@@ -36,11 +36,9 @@ Using Doxygen with Python (leave out the \\):
 
 Using Doxygen with C-languages:
 
-/**  
-
-\* ... text ...  
-
-\*/
+    /**   
+    * ... text ...  
+    */
 
 More information in Doxygen documentation.  
 For Python...  
