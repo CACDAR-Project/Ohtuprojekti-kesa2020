@@ -86,8 +86,8 @@ def init():
     while True:
         inp = input()
         if inp == "d":
-            oNode = "/detector_control_node"
-            qrNode = "/detector_control_node"
+            oNode = "/object_detector"
+            qrNode = "/QR"
             break
         elif inp == "s":
             oNode = "/object_detector"
@@ -100,15 +100,15 @@ def init():
 
     rospy.wait_for_service(oNode + '/frequency')
     print("Object detector frequency service found")
-    rospy.wait_for_service(qrNode + '/qr_frequency')
+    rospy.wait_for_service(qrNode + '/frequency')
     print("QR detector frequency service found")
     rospy.wait_for_service(oNode + '/toggle')
     print("Object detection toggle service found")
     if inp == "d":
-        rospy.wait_for_service(oNode + '/combine_toggle')
+        rospy.wait_for_service('/detector_control_node/combine_toggle')
         print("Combine toggle service found")
         global combine_toggler
-        combine_toggler = rospy.ServiceProxy(oNode + '/combine_toggle', toggle)
+        combine_toggler = rospy.ServiceProxy('/detector_control_node/combine_toggle', toggle)
 
     global frequency_changer
     global qr_frequency_changer
