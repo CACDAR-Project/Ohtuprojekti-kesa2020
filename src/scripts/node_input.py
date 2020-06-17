@@ -53,6 +53,7 @@ def send_combine_toggle():
     response = combine_toggler(inp)
     print("Received response: " + response.response)
 
+
 ## Sends parameters for adding a new detector
 def send_detector_add():
     print("Give name for the new detector:")
@@ -79,8 +80,7 @@ def run():
               "2 for changing QR code detection frequency,\n" +
               "3 for toggling object detection on or off,\n" +
               "4 for toggling result combining,\n" +
-              "5 for adding detectors,\n" +
-              "6 for removing detectors:")
+              "5 for adding detectors,\n" + "6 for removing detectors:")
         inp = input()
 
         # Catch errors if a node is not running
@@ -123,8 +123,7 @@ def init():
     # rospy.wait_for_service('/detector_control_node/combine_toggle')
     # print("Combine toggle service found")
     global combine_toggler
-    combine_toggler = rospy.ServiceProxy(
-        cNode + '/combine_toggle', toggle)
+    combine_toggler = rospy.ServiceProxy(cNode + '/combine_toggle', toggle)
 
     global qr_frequency_changer
     global detector_adder
@@ -132,8 +131,10 @@ def init():
 
     qr_frequency_changer = rospy.ServiceProxy(qrNode + '/frequency',
                                               new_frequency)
-    detector_adder = rospy.ServiceProxy(cNode + "/add_object_detector", add_object_detector)
-    detector_remover = rospy.ServiceProxy(cNode + "/remove_object_detector", remove_object_detector)
+    detector_adder = rospy.ServiceProxy(cNode + "/add_object_detector",
+                                        add_object_detector)
+    detector_remover = rospy.ServiceProxy(cNode + "/remove_object_detector",
+                                          remove_object_detector)
 
 
 if __name__ == "__main__":
