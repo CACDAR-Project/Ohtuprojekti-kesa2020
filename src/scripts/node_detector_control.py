@@ -66,9 +66,11 @@ class DetectorControlNode:
                       self.toggle_combine)
 
         # temporary, TODO: replace with parameter based ?
-        self.detectors["object_detector"] = ObjectNode(
-            "object_detector", rospy.get_param("model_file"),
-            rospy.get_param("label_file"))
+        for kp in rospy.get_param("testi", {}).items():
+            self.detectors[kp[0]] = ObjectNode(name=kp[0], **kp[1])
+#        self.detectors["object_detector"] = ObjectNode(
+ #           "object_detector", rospy.get_param("model_file"),
+  #          rospy.get_param("label_file"))
         self.detectors["QR"] = QRReader()
 
 

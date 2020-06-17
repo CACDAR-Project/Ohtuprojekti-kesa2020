@@ -54,10 +54,10 @@ class ObjectNode:
             self.detect_on))
 
     ## Initializes topics and services and sets class variable detect_on to true
-    def __init__(self, name, model_path, label_path):
+    def __init__(self, name, model_path, label_path, frequency=5, detect_on=True):
         self.name = name
         # Attempt to get configuration parameters from the ROS parameter server
-        self.detect_on = rospy.get_param("detect_on", True)
+        self.detect_on = detect_on
         #if not rospy.has_param("model_file"):
         #    raise Exception(
         #        "A model file must be specified as a ROS parameter")
@@ -67,7 +67,7 @@ class ObjectNode:
         #self.model_file = rospy.get_param("model_file")
         #self.label_file = rospy.get_param("label_file")
         ## Frequency in hertz
-        self.period = 1 / rospy.get_param("{}/frequency".format(name), 5)
+        self.period = 1 / frequency
 
         ## Helper class used for detecting objects
         self.detector = ObjectDetector(model_path, label_path)
@@ -86,7 +86,7 @@ class ObjectNode:
     #  image and enough time has passed since the previous detection.
     def receive_img(self, img):
         # Detect from this image, if not already detecting from another image and within period time constraints
-        if (time.time() - self.last_detect
+        if self.detect_on and (time.time() - self.last_detect
             ) > self.period and self.detect_lock.acquire(False):
             return self.detect(img)
         return []
