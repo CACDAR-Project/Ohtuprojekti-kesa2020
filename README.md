@@ -18,6 +18,8 @@ We also provide already configured Dockerfiles for both x86-64 and armv7 archite
 
 [ROS nodes structure](https://docs.google.com/drawings/d/1a4bOr0Cu2g_0QJ_u3QxHUjvKshzWlyNOfwyI5jS2Bu8)
 
+[Code documentation](https://konenako.github.io/Ohtuprojekti-kesa2020/)
+
 ### Definition of Done
 * All code should be formatted with yapf to follow [PEP8](https://www.python.org/dev/peps/pep-0008/#introduction)
 * All code should be clearly commented
@@ -27,13 +29,6 @@ We also provide already configured Dockerfiles for both x86-64 and armv7 archite
 * All CircleCI tests must pass before merging to master
 * Pull requests need at least 2 approvals before merging to master
 * Documentation should be updated whenever any functionality is changed or added
-
-### Generating documentation for classes, files etc.    
-
-You can run auto-documentation on root with    
-`doxygen`    
-
-The documentation can be found in the documentation-folder and viewed on your browser at ./documentation/html/index.html
 
 ### Repository structure
 ```bash
