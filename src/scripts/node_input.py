@@ -108,7 +108,8 @@ def init():
         rospy.wait_for_service('/detector_control_node/combine_toggle')
         print("Combine toggle service found")
         global combine_toggler
-        combine_toggler = rospy.ServiceProxy('/detector_control_node/combine_toggle', toggle)
+        combine_toggler = rospy.ServiceProxy(
+            '/detector_control_node/combine_toggle', toggle)
 
     global frequency_changer
     global qr_frequency_changer
