@@ -5,7 +5,7 @@
 
 from konenako.msg import observation, observations, warning
 from std_msgs.msg import String
-
+from config.constants import name_node_printer
 import rospy
 
 
@@ -19,7 +19,7 @@ def printCombined(msg):
 def run():
     print("Printer running")
 
-    rospy.init_node("printer")
+    rospy.init_node(name_node_printer)
     rospy.Subscriber("object_detector/observations", observations, print)
     rospy.Subscriber("qr_detector/observations", observations, print)
 

@@ -1,13 +1,15 @@
 #!/usr/bin/env python3.7
 
+import time
+
 from node_object_detector import ObjectNode
 from node_qr_detector import QRReader
 from konenako.msg import image, observations
-import rospy
 from konenako.srv import toggle, toggleResponse, add_object_detector, remove_object_detector, add_object_detectorResponse, remove_object_detectorResponse
 from helpers.image_converter import msg_to_cv2
-from config.constants import tflite_path
+from config.constants import tflite_path, name_node_detector_control, name_node_camera, topic_images, topic_observations, srv_add_object_detector, srv_rm_object_detector, rosparam_poll_interval, rosparam_combine_results, rosparam_combine_toggle
 
+import rospy
 
 class DetectorControlNode:
     detectors = dict()
@@ -49,22 +51,27 @@ class DetectorControlNode:
                              observation_list))
 
     def __init__(self):
-        self.input_sub = rospy.Subscriber("camera/images", image,
+        self.input_sub = rospy.Subscriber('{}/{}'.format(name_node_camera, topic_images), image,
                                           self.receive_img)
         ## Topic to publish results
-        self.pub = rospy.Publisher("{}/observations".format(rospy.get_name()),
+        self.pub = rospy.Publisher('{}/{}'.format(rospy.get_name(), topic_observations),
                                    observations,
                                    queue_size=50)
 
-        rospy.Service("{}/add_object_detector".format(rospy.get_name()),
+        rospy.Service('{}/{}'.format(rospy.get_name(), srv_add_object_detector),
                       add_object_detector, self.add_object_detector)
 
-        rospy.Service("{}/remove_object_detector".format(rospy.get_name()),
+        rospy.Service('{}/{}'.format(rospy.get_name(), srv_rm_object_detector),
                       remove_object_detector, self.remove_object_detector)
 
         # Combine results to single message, or publish separately.
-        self.combine = rospy.get_param("combine_results", True)
-        rospy.Service("{}/combine_toggle".format(rospy.get_name()), toggle,
+        # Poll until param is found.
+        while not rospy.has_param(rosparam_combine_results):
+            print(f'[INFO] {name_node_detector_control} trying to get param {rosparam_combine_results}')
+            time.sleep(rosparam_poll_interval)
+
+        self.combine = rospy.get_param(rosparam_combine_results)
+        rospy.Service('{}/{}'.format(rospy.get_name(), rosparam_combine_toggle), toggle,
                       self.toggle_combine)
 
         # temporary, TODO: replace with parameter based ?
@@ -76,13 +83,9 @@ class DetectorControlNode:
                                                model_path=model_path,
                                                label_path=label_path)
 
-
-#        self.detectors["object_detector"] = ObjectNode(
-#           "object_detector", rospy.get_param("model_file"),
-#          rospy.get_param("label_file"))
         self.detectors["QR"] = QRReader()
 
 if __name__ == "__main__":
-    rospy.init_node("detector_control_node")
+    rospy.init_node(name_node_detector_control)
     DetectorControlNode()
     rospy.spin()
