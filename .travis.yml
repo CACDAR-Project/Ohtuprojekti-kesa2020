@@ -20,7 +20,7 @@ script:
     --name testing \
     --env ROS_HOSTNAME=testing \
     --env ROS_MASTER_URI=http://master:11311 \
-    ohtukonenako/ohtuprojekti_kesa2020:latest bash -c "cd src/ohtu && poetry run /bin/bash -c 'source ../../devel/setup.bash && cd ../../ && ROS_HOME=/catkin_ws/src/ohtu/src catkin_make run_tests && catkin_test_results'"
+    ohtukonenako/ohtuprojekti_kesa2020:latest bash -c "cd src/ohtu && poetry run /bin/bash -c 'source ../../devel/setup.bash && cd ../../ && ROS_HOME=/catkin_ws/src/ohtu catkin_make run_tests && catkin_test_results'"
 deploy:
   - provider: script
     script:
