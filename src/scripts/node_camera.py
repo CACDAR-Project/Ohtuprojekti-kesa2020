@@ -21,7 +21,7 @@ class Camera:
     ## Main function for camera node.
     #  Creates topic named "node_name/images" where image/video source
     #  is being published as an image message.
-    def run(self):
+    def run(self, hz):
         signal.signal(signal.SIGINT, self.handle_signal_stop)
         signal.signal(signal.SIGTERM, self.handle_signal_stop)
 
@@ -39,6 +39,7 @@ class Camera:
             feed_name = source
         # Counter for identifying the frames
         counter = 1
+        rate = rospy.Rate(hz)
         while True:
             cam = cv.VideoCapture(source)
             while cam.grab() and not self.stop:
@@ -47,8 +48,9 @@ class Camera:
                 msg = cv2_to_msg(feed_name, counter, img)
                 pub.publish(msg)
                 counter += 1
+                rate.sleep()
 
 
 if __name__ == "__main__":
-    Camera().run()
+    Camera().run(rospy.get_param("camhz", 9999))
     rospy.spin()
