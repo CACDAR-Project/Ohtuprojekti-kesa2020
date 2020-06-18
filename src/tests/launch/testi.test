@@ -8,10 +8,10 @@
             <rosparam>
                 topics:
                     - name: detector_control_node/observations
-                      timeout: 10
+                      timeout: 30
                       negative: False # Something published at least once in the first 10 seconds
                     - name: camera/images
-                      timeout: 10
+                      timeout: 30
                       negative: False # Something published at least once in the first 10 seconds
             </rosparam>
         </test>
