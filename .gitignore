@@ -36,3 +36,6 @@ catkin_ws
 doc/
 documentation/html
 documentation/latex
+
+# Ros node logs
+src/log

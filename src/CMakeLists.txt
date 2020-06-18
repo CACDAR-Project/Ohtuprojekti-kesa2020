@@ -52,8 +52,6 @@ find_package(catkin REQUIRED COMPONENTS
    observation.msg
    observations.msg
    image.msg
-   qr_observation.msg
-   qr_observations.msg
    polygon.msg
    point64.msg
    warning.msg
@@ -65,6 +63,8 @@ add_service_files(
   text_message.srv
   new_frequency.srv
   toggle.srv
+  add_object_detector.srv
+  remove_object_detector.srv
 )
 
 ## Generate actions in the 'action' folder
