@@ -65,6 +65,7 @@ add_service_files(
   toggle.srv
   add_object_detector.srv
   remove_object_detector.srv
+  score_threshold.srv
 )
 
 ## Generate actions in the 'action' folder

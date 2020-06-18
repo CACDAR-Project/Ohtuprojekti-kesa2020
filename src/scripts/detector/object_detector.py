@@ -7,6 +7,7 @@ from typing import List
 class ObjectDetector:
     labels: List[str]
     interpreter: tf.lite.Interpreter
+    score_threshold = 0.3
 
     def __init__(self, model_path: str, labels_path: str):
         self.load_model(model_path)
@@ -51,7 +52,7 @@ class ObjectDetector:
             classId = int(classes[i])
             score = float(scores[i])
             bbox = [float(v) for v in boxes[i]]
-            if score > 0.3:
+            if score >= self.score_threshold:
                 detections.append({
                     "class_id": classId,
                     "label": self.labels[int(classId) + 1],

@@ -4,7 +4,7 @@ from node_object_detector import ObjectNode
 from node_qr_detector import QRReader
 from konenako.msg import image, observations
 import rospy
-from konenako.srv import toggle, toggleResponse, add_object_detector, remove_object_detector, add_object_detectorResponse, remove_object_detectorResponse
+import konenako.srv as srv
 from helpers.image_converter import msg_to_cv2
 
 
@@ -13,19 +13,19 @@ class DetectorControlNode:
 
     def toggle_combine(self, msg):
         self.combine = msg.state
-        return toggleResponse("Combining results set to {}".format(
+        return srv.toggleResponse("Combining results set to {}".format(
             self.combine))
 
     def remove_object_detector(self, msg):
         self.detectors[msg.name].remove()
         self.detectors.pop(msg.name)  # TODO: locks/thread safety?
-        return remove_object_detectorResponse()
+        return srv.remove_object_detectorResponse()
 
     def add_object_detector(self, msg):
         self.detectors[msg.name] = ObjectNode(
             msg.name, msg.model_path,
             msg.label_path)  # TODO: locks/thread safety?
-        return add_object_detectorResponse()
+        return srv.add_object_detectorResponse()
 
     def receive_img(self, msg: image):
         observation_list = []
@@ -55,14 +55,14 @@ class DetectorControlNode:
                                    queue_size=50)
 
         rospy.Service("{}/add_object_detector".format(rospy.get_name()),
-                      add_object_detector, self.add_object_detector)
+                      srv.add_object_detector, self.add_object_detector)
 
         rospy.Service("{}/remove_object_detector".format(rospy.get_name()),
-                      remove_object_detector, self.remove_object_detector)
+                      srv.remove_object_detector, self.remove_object_detector)
 
         # Combine results to single message, or publish separately.
         self.combine = rospy.get_param("combine_results", True)
-        rospy.Service("{}/combine_toggle".format(rospy.get_name()), toggle,
+        rospy.Service("{}/combine_toggle".format(rospy.get_name()), srv.toggle,
                       self.toggle_combine)
 
         # temporary, TODO: replace with parameter based ?
