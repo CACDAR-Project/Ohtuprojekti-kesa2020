@@ -9,9 +9,9 @@ import threading
 
 # https://github.com/ros/ros_tutorials/blob/noetic-devel/rospy_tutorials/005_add_two_ints/add_two_ints_client
 
-
 ## Dictionary for holding the various callable serviceproxies
 services = dict()
+
 
 ## Sends a new frequency with frequency_changer and prints the received response.
 def send_frequency():
@@ -45,18 +45,16 @@ def run():
         '2': send_qr_frequency,
         '3': send_OD_toggle
     }
-    commands_instruction = '\n'.join((
-        'Give command.',
-        "1 for changing object detection frequency,",
-        "2 for changing QR code detection frequency,",
-        "3 for toggling object detection on or off,",
-        "q for shutting off this input node:"
-    ))
+    commands_instruction = '\n'.join(
+        ('Give command.', "1 for changing object detection frequency,",
+         "2 for changing QR code detection frequency,",
+         "3 for toggling object detection on or off,",
+         "q for shutting off this input node:"))
 
     while not rospy.is_shutdown():
         print(commands_instruction)
         inp = input()
-        
+
         if inp == 'q':
             return
 
@@ -65,7 +63,7 @@ def run():
             if not inp in commands:
                 print("Command not recognized!")
             else:
-                commands[inp]()    
+                commands[inp]()
         except Exception as ex:
             print("Got exception:", ex)
 
@@ -76,16 +74,23 @@ def initialize_service(service_name: str, service_msg) -> None:
     print(f'[INFO] Service \'{service_name}\' found')
     services[service_name] = rospy.ServiceProxy(service_name, service_msg)
 
+
 ## Initialized variables containing services
 def init():
     # TODO: REPLACE ALL HARDCODED service, node etc names with variables (from config/constants?)
     rospy.init_node("input")
     print("Initializing services")
-    
+
     # Use threading for initializing services, thread will run until service is found
-    s1 = threading.Thread(target=initialize_service, args=('/object_detector/frequency', new_frequency), daemon=True)
-    s2 = threading.Thread(target=initialize_service, args=('/qr_detector/frequency', new_frequency), daemon=True)
-    s3 = threading.Thread(target=initialize_service, args=('/object_detector/toggle', toggle), daemon=True)
+    s1 = threading.Thread(target=initialize_service,
+                          args=('/object_detector/frequency', new_frequency),
+                          daemon=True)
+    s2 = threading.Thread(target=initialize_service,
+                          args=('/qr_detector/frequency', new_frequency),
+                          daemon=True)
+    s3 = threading.Thread(target=initialize_service,
+                          args=('/object_detector/toggle', toggle),
+                          daemon=True)
     s1.start()
     s2.start()
     s3.start()

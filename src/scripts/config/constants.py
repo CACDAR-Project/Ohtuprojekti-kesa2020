@@ -8,7 +8,6 @@ tflite_path = f'{resources_path}/tflite_models'
 videos_path = f'{resources_path}/videos'
 images_path = f'{resources_path}/images'
 
-
 # # Work in progress, these will change when the other PR is merged
 # # Nodes
 # camera = 'camera'
