@@ -33,6 +33,9 @@ PYTHON_VER=370
 # ROS package name
 ROSPKG=konenako
 
+# ROS distro
+ROS_DISTRO=$(rosversion -d)
+
 # Array with all the required parameters that need to be set
 REQ_PARAMS=(label_file model_file video_source)
 # Default values
@@ -46,7 +49,7 @@ NODES=(camera object_detector qr_detector printer input)
 # ---------------
 # Misc variables
 # ---------------
-CATKIN_PWD="${PWD%/*/*}/devel"
+CATKIN_PWD="${PWD}/catkin_ws/devel"
 PROJ_PWD=$(pwd)
 
 # Env variables
@@ -115,14 +118,39 @@ if ! poetry run python resources/python/libraries_versions.py; then
 fi
 echo
 
-# Check that ROS Workspace exists
-if [ ! -d "$CATKIN_PWD" ] || [ ! -f "$CATKIN_PWD/setup.bash" ]; then
-    echo "Catkin workspace is not set up properly"
-    echo "Please consult the Github README for instructions."
-    echo "Exiting.."
-    exit 1
+
+# Delete previous catkin workspace if it exists in project directory. 
+if [ -d ${PROJ_PWD}"/catkin_ws" ]
+then
+    echo 'Removing previous catkin workspace from project directory!'
+    rm -r ${PROJ_PWD}/catkin_ws
 fi
 
+echo 'Creating directory for new catkin workspace inside project directory.'
+mkdir ${PROJ_PWD}/catkin_ws/
+
+echo 'Copying all files from project directory to catkin workspace.'
+cp -r ${PROJ_PWD}/src ${PROJ_PWD}/resources ${PROJ_PWD}/catkin_ws/
+
+echo 'Sourcing /opt/ros/'${ROS_DISTRO}'/setup.bash'
+source /opt/ros/${ROS_DISTRO}/setup.bash
+
+echo 'Creating catkin workspace with catkin_make'
+catkin_make -C ${PROJ_PWD}/catkin_ws > /dev/null 2>&1
+
+echo 'Sourcing '${PROJ_PWD}'/catkin_ws/devel/setup.bash'
+source ${PROJ_PWD}/catkin_ws/devel/setup.bash
+
+echo 'Installing poetry dependencies'
+poetry install > /dev/null 2>&1
+
+#Check that ROS Workspace exists
+#if [ ! -d "$CATKIN_PWD" ] || [ ! -f "$CATKIN_PWD/setup.bash" ]; then
+#    echo "Catkin workspace is not set up properly"
+#    echo "Please consult the Github README for instructions."
+#    echo "Exiting.."
+#    exit 1
+#fi
 
 # (re)start roscore, requires pgrep to be installed
 if [ $(pgrep roscore) ]; then
@@ -131,8 +159,10 @@ if [ $(pgrep roscore) ]; then
 fi
 
 if [ "$DEV" -eq 0 ]; then
-    gnome-terminal --geometry 60x16 --title="Roscore" -- /bin/bash -c 'cd '${PROJ_PWD}'; roscore; bash' &
+    echo 'Opening roscore in new terminal window'
+    gnome-terminal --geometry 60x16 --title="Roscore" -- /bin/bash -c 'cd '${PROJ_PWD}'; roscore; exec bash' > /dev/null 2>&1 &
 else
+    echo 'Opening roscore'
     roscore > /dev/null 2>&1 &
 fi
 
@@ -209,11 +239,11 @@ echo
 # Run all the nodes
 # TODO: dont open terminals for all nodes and dont append ;bash to the end so they close when DEV is not set
 for node in ${NODES[@]}; do
-    read -p "Do you wish to run the node: $node? " -n 1 -r
+    read -p "Do you wish to run the node: $node? [Y/y] " -n 1 -r
     echo # Newline
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         echo "Running node $node"        
-        gnome-terminal --geometry 60x16 --title="$node" -- /bin/bash -c 'source '${CATKIN_PWD}'/setup.bash; cd '${PROJ_PWD}'; poetry run rosrun '${ROSPKG}' node_'${node}'.py; bash' &
+        gnome-terminal --geometry 60x16 --title="$node" -- /bin/bash -c 'source '${CATKIN_PWD}'/setup.bash; cd '${PROJ_PWD}'; poetry run rosrun '${ROSPKG}' node_'${node}'.py; exec bash'  &
     fi
     echo
 done
