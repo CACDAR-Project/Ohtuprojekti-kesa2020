@@ -5,11 +5,7 @@ services:
     networks:
       - rosnet
     image: ros:melodic-ros-core
-    command: >
-        /bin/bash -c "cd /
-        && roscore
-        && /opt/ros/melodic/bin/rosparam set label_file mscoco_complete_labels
-        && /opt/ros/melodic/bin/rosparam set model_file ssd_mobilenet_v1_1_metadata_1.tflite"
+    command: roscore
 
   rosdetector:
     container_name: "rosdetector"
@@ -71,8 +67,6 @@ services:
       - "ROS_MASTER_URI=http://master:11311"
     logging:
       driver: none
-    devices:
-      - /dev/video0:/dev/video0
     tty: true
     stdin_open: true
     privileged: True

@@ -42,9 +42,6 @@ COPY test.launch /catkin_ws/src/ohtu/
 
 
 FROM rosbase as rosobjectdetector
-# These lines wont set the rosparams (?)
-#RUN ["/bin/bash", "-c", "cd /", "/opt/ros/melodic/bin/rosparam", "set", "label_file", "mscoco_complete_labels"]
-#RUN ["/bin/bash", "-c", "cd /", "/opt/ros/melodic/bin/rosparam", "set", "model_file", "ssd_mobilenet_v1_1_metadata_1.tflite"]
 CMD cd /catkin_ws/src/ohtu && poetry run /bin/bash -c 'source /opt/ros/melodic/setup.bash && source ../../devel/setup.bash && cd src && rosrun konenako node_object_detector.py; bash'
 
 FROM rosbase as rosinput
@@ -54,8 +51,6 @@ FROM rosbase as rosprinter
 CMD cd /catkin_ws/src/ohtu && poetry run /bin/bash -c 'source /opt/ros/melodic/setup.bash && source ../../devel/setup.bash && cd src && rosrun konenako node_printer.py'
 
 FROM rosbase as roscamera
-# Neither will this line
-#RUN ["/bin/bash", "-c", "cd /", "/opt/ros/melodic/bin/rosparam set video_source /dev/video0"]
 CMD cd /catkin_ws/src/ohtu && poetry run /bin/bash -c 'source /opt/ros/melodic/setup.bash && source ../../devel/setup.bash && cd src && rosrun konenako node_camera.py'
 
 FROM rosbase as rosqrdetector
