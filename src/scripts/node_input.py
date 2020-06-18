@@ -112,8 +112,8 @@ def run():
 def initialize_service(service_name: str, service_fun) -> None:
     print(f'[INFO] Waiting for service \'{service_name}\'')
     rospy.wait_for_service(service_name)
-    print(f'[INFO] Service \'{service_name}\' found')
     services[service_name] = rospy.ServiceProxy(service_name, service_fun)
+    print(f'[INFO] Service \'{service_name}\' found')
 
 
 ## Initialized variables containing services
