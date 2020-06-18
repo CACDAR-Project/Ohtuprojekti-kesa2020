@@ -4,7 +4,7 @@
 
 This is a brief instruction for making doxygen documents.
 
-Doxygen finds comments written in the following style (leave out the \\):
+Using Doxygen with Python (leave out the \\):
 
     ## \@package pyexample
     #  Documentation for this module.
@@ -34,9 +34,19 @@ Doxygen finds comments written in the following style (leave out the \\):
        ## \@var _memVar
        #  a member variable
 
+Using Doxygen with C-languages:
 
-This example and further information can be found at:
+    /**   
+    * ... text ...  
+    */
+
+More information in Doxygen documentation.  
+For Python...  
 https://www.doxygen.nl/manual/docblocks.html#pythonblocks
+
+And for C-languages...
+https://www.doxygen.nl/manual/docblocks.html#cppblock
+
 
 ### Commands
 Some useful commands...

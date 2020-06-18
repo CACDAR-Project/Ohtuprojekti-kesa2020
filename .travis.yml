@@ -7,13 +7,22 @@ env:
     - secure: "GljKtcsWdC5/HI6rMCr5GyzhffkrYQFkqE/4mzLftrgx/Do308qCYZM0anvI4yWoIo17JiqVtwIdxEzAJZK/kTwzSwgjELQzzo23QrJYGNlxuoIaqb6eomT88J8HoxOXWGyYwLBb89WrqMpAY0jS5lQ2YjOdnwiuRk0NLCY45nRvVQV4Hez1VkO/oc6UtHn36cZLRbXNBplXcbWoFXE0NUKuy2HVO4NBSTHwTrOrMfJ4tQ2IO+gvqT9rcZy3mepuv59ouDEGFG/lesWZpOXZOjCc879pfKcHHW3HPjFPUTqhb/jCObw5qp6ysUOqeQHtkzIYu3J42zwfE0ZGOc3tZwlueXW9fG2Q3BFp4EDTUbZgEq4dsSNxmsdcyF9LYrOezP+c37yMw01raiLsdoAYFgMFV2JIRHJbVXelxUdaCPPpr5tyPEMSo+OePJpoRCRI6Q5M0kpnJ7NP9L/g5Uyr+CSP420cPxlu9yGfWsQ8z48k0aCrZpR0Masw6H0rz5ITWyE6W2u/Pb4poopA+ARgNSYST/jGhxiw9EgeJNlD1fRSjlzKIykpYs6NDtIxhm7XPOamgponOlzOxdgSx4L9vJQQU6yakNmvyKFP5A3D6gznpl1qKovzXah6bNn49w5q66ygeaighZVsAbpzaq6X5xBRjcJ/Zjou14eM5oYF5XM="
 services:
   - docker
+
 script:
   - docker pull ohtukonenako/ohtuprojekti_kesa2020:latest
   - docker run --rm --privileged multiarch/qemu-user-static --reset -p yesdocker run --rm --privileged multiarch/qemu-user-static --reset -p yes
   - docker build -f Dockerfile.arm -t ohtukonenako/ohtuprojekti_kesa2020:latest --cache-from ohtukonenako/ohtuprojekti_kesa2020:latest .
+
 deploy:
   - provider: script
     script:
       - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin && docker push ohtukonenako/ohtuprojekti_kesa2020:latest
     on:
       branch: master
+  - provider: pages
+    skip_cleanup: true
+    local_dir: docs/html
+    github_token: $GH_REPO_TOKEN
+    on:
+      branch: master
+
