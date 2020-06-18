@@ -6,6 +6,7 @@ FROM ros:melodic-ros-base as rosbase
 # http://wiki.ros.org/ROS/EnvironmentVariables#ROS_LANG_DISABLE
 # http://wiki.ros.org/message_generation
 ENV ROS_LANG_DISABLE genlisp:geneus:gennodejs
+
 RUN apt-get update \
  && apt-get -y install \
  python3.7 \
@@ -27,16 +28,21 @@ RUN python3.7 -m pip install --upgrade pip \
  && poetry run pip install --upgrade setuptools \
  && poetry install
 
-# We need to create our own directory here, since docker COPY srcdic destdir actually works like COPY srcdir/* destdir
-COPY src/ /catkin_ws/src/ohtu/src/
+COPY src/package.xml /catkin_ws/src/ohtu/src/
+COPY src/CMakeLists.txt /catkin_ws/src/ohtu/src/
+COPY src/msg/ /catkin_ws/src/ohtu/src/msg/
+COPY src/srv/ /catkin_ws/src/ohtu/src/srv/
+COPY src/scripts/ /catkin_ws/src/ohtu/src/scripts/
+COPY resources/tflite_models/ /catkin_ws/src/ohtu/resources/tflite_models/
+
 WORKDIR /catkin_ws
 RUN /bin/bash -c "source /opt/ros/melodic/setup.bash && catkin_make"
 
 COPY test.launch /catkin_ws/src/ohtu/
 
-# Can we omit the sourcing from these layers?
+
 FROM rosbase as rosobjectdetector
-CMD cd /catkin_ws/src/ohtu && poetry run /bin/bash -c 'source /opt/ros/melodic/setup.bash && source ../../devel/setup.bash && cd src && rosrun konenako node_object_detector.py'
+CMD cd /catkin_ws/src/ohtu && poetry run /bin/bash -c 'source /opt/ros/melodic/setup.bash && source ../../devel/setup.bash && cd src && rosrun konenako node_object_detector.py; bash'
 
 FROM rosbase as rosinput
 CMD cd /catkin_ws/src/ohtu && poetry run /bin/bash -c 'source /opt/ros/melodic/setup.bash && source ../../devel/setup.bash && cd src && rosrun konenako node_input.py'

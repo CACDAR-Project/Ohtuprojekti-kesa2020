@@ -18,6 +18,8 @@ We also provide already configured Dockerfiles for both x86-64 and armv7 archite
 
 [ROS nodes structure](https://docs.google.com/drawings/d/1a4bOr0Cu2g_0QJ_u3QxHUjvKshzWlyNOfwyI5jS2Bu8)
 
+[Code documentation](https://konenako.github.io/Ohtuprojekti-kesa2020/)
+
 ### Definition of Done
 * All code should be formatted with yapf to follow [PEP8](https://www.python.org/dev/peps/pep-0008/#introduction)
 * All code should be clearly commented
@@ -28,23 +30,21 @@ We also provide already configured Dockerfiles for both x86-64 and armv7 archite
 * Pull requests need at least 2 approvals before merging to master
 * Documentation should be updated whenever any functionality is changed or added
 
-### Generating documentation for classes, files etc.    
-
-You can run auto-documentation on root with    
-`doxygen`    
-
-The documentation can be found in the documentation-folder and viewed on your browser at ./documentation/html/index.html
-
 ### Repository structure
 ```bash
 .
 ├── documentation
+├── resources
+│   ├── images                      - Contains all the images, for tests etc.
+│   ├── python                      - Contains various helperscripts
+│   ├── tflite_models               - Model and labelfiles
+│   └── videos                      - Contains all the videos, for tests etc.
 ├── src                             - ROS-package directory
-│   ├── models                      - Models should be moved here (SUBJECT TO CHANGE)
 │   ├── msg                         - ROS messages specifications
-│   ├── resources                   - Different resources used in the ROS-package or nodes (SUBJECT TO CHANGE)
 │   ├── scripts                     - Nodes are placed here as executable python-files
 │   │   ├── detector                - Python packages can be placed here
+│   │   ├── config                  - Package for various configs
+│   │   │   └── constants.py        - Constants are defined in this module
 │   │   ├── ...
 │   │   ├── <package_n>
 │   │   ├── node_camera.py          - node executables are prefixed with the name "node_"
@@ -158,6 +158,9 @@ or `poetry run <command>` to run a single command in the environment
 Some libraries must be separately installed, current list:
  * zbar/libzbar0 
 
+### Testing
+All python unittests are run from inside the [src](https://github.com/Konenako/Ohtuprojekti-kesa2020/tree/master/src) folder.  
+`poetry run python -m unittest`
 
 ## Versions
 
