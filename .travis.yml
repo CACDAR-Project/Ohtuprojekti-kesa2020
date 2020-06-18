@@ -21,8 +21,9 @@ deploy:
       branch: master
   - provider: pages
     cleanup: false
+    token: $GH_REPO_TOKEN
+    edge: true
     local_dir: docs/html
-    github_token: $GH_REPO_TOKEN
     on:
       branch: master
 
