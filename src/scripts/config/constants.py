@@ -9,23 +9,23 @@ images_path = f'{resources_path}/images'
 
 # # Work in progress, these will change when the other PR is merged
 # Node names
-name_node_camera = 'camera'                             #
-name_node_detector_control = 'detector_control_node'    #
+name_node_camera = 'camera'  #
+name_node_detector_control = 'detector_control_node'  #
 name_node_object_detector = 'object_detector'
 name_node_qr_detector = 'qr_detector'
-name_node_printer = 'printer'                           #
+name_node_printer = 'printer'  #
 
 # Parameters
-rosparam_video_source = 'video_source'                  #
-rosparam_video_feed_name = 'video_feed_name'            #
-rosparam_combine_results = 'combine_results'            #
+rosparam_video_source = 'video_source'  #
+rosparam_video_feed_name = 'video_feed_name'  #
+rosparam_combine_results = 'combine_results'  #
 rosparam_detection = 'detect_on'
 rosparam_model_file = 'model_file'
 rosparam_label_file = 'label_file'
 rosparam_frequency = 'frequency'
 
 # Topics
-topic_images = 'images'                                 #
+topic_images = 'images'  #
 topic_observations = 'observations'
 topic_warnings = 'warnings'
 
