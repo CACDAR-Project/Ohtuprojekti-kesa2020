@@ -28,12 +28,12 @@ RUN python3.7 -m pip install --upgrade pip \
  && poetry run pip install --upgrade setuptools \
  && poetry install
 
+
+COPY resources/ /catkin_ws/src/ohtu/resources/
 COPY src/ /catkin_ws/src/ohtu/src/
 
 WORKDIR /catkin_ws
 RUN /bin/bash -c "source /opt/ros/melodic/setup.bash && catkin_make"
-
-COPY resources/ /catkin_ws/src/ohtu/resources/
 
 COPY test.launch /catkin_ws/src/ohtu/
 
