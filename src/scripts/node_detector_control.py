@@ -6,6 +6,7 @@ from konenako.msg import image, observations
 import rospy
 import konenako.srv as srv
 from helpers.image_converter import msg_to_cv2
+from config.constants import tflite_path
 
 
 class DetectorControlNode:
@@ -23,9 +24,10 @@ class DetectorControlNode:
 
     def add_object_detector(self, msg):
         self.detectors[msg.name] = ObjectNode(
-            msg.name, msg.model_path,
-            msg.label_path)  # TODO: locks/thread safety?
-        return srv.add_object_detectorResponse()
+            msg.name, '{}/{}'.format(tflite_path, msg.model_path),
+            '{}/{}'.format(tflite_path,
+                           msg.label_path))  # TODO: locks/thread safety?
+        return add_object_detectorResponse()
 
     def receive_img(self, msg: image):
         observation_list = []
@@ -67,7 +69,12 @@ class DetectorControlNode:
 
         # temporary, TODO: replace with parameter based ?
         for kp in rospy.get_param("testi", {}).items():
-            self.detectors[kp[0]] = ObjectNode(name=kp[0], **kp[1])
+            # TODO: model and label _path should be renamed to _file
+            model_path = '{}/{}'.format(tflite_path, kp[1]['model_path'])
+            label_path = '{}/{}'.format(tflite_path, kp[1]['label_path'])
+            self.detectors[kp[0]] = ObjectNode(name=kp[0],
+                                               model_path=model_path,
+                                               label_path=label_path)
 
 
 #        self.detectors["object_detector"] = ObjectNode(

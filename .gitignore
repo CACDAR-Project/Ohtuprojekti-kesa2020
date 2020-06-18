@@ -37,5 +37,7 @@ doc/
 documentation/html
 documentation/latex
 
-# Ros node logs
+# Ros node logs and cache files
 src/log
+rospack_cache*
+roscore-*.pid
