@@ -5,15 +5,12 @@
 
 from konenako.srv import new_frequency, toggle, add_object_detector, remove_object_detector, add_object_detectorResponse, remove_object_detectorResponse
 import rospy
+import threading
 
 # https://github.com/ros/ros_tutorials/blob/noetic-devel/rospy_tutorials/005_add_two_ints/add_two_ints_client
 
-## Service for sending a new frequency to object detector.
-frequency_changer = None
-## Service for sending a new frequency to QR detector.
-qr_frequency_changer = None
-## Service for toggling object detection on/off
-object_detection_toggler = None
+## Dictionary for holding the various callable serviceproxies
+services = dict()
 
 
 ## Sends a new frequency with frequency_changer and prints the received response.
@@ -22,7 +19,7 @@ def send_frequency():
     name = input()
     print("Give frequency!")
     inp = int(input())
-    response = rospy.ServiceProxy(name + '/frequency', new_frequency)(inp)
+    response = services[f'{name}/frequency'](inp)
     print("Received response: " + response.response)
 
 
@@ -30,7 +27,7 @@ def send_frequency():
 def send_qr_frequency():
     print("Give frequency!")
     inp = int(input())
-    response = qr_frequency_changer(inp)
+    response = services['/QR/frequency'](inp)
     print("Received response: " + response.response)
 
 
@@ -41,7 +38,7 @@ def send_OD_toggle():
     print("Give something for on, empty for off!")
     inp = bool(input())
     print(inp)
-    response = rospy.ServiceProxy(name + '/toggle', toggle)(inp)
+    response = services[f'/{name}/toggle'](inp)
     print("Received response: " + response.response)
 
 
@@ -50,7 +47,7 @@ def send_combine_toggle():
     print("Give something for on, empty for off!")
     inp = bool(input())
     print(inp)
-    response = combine_toggler(inp)
+    response = services['/detector_control_node/combine_toggle'](inp)
     print("Received response: " + response.response)
 
 
@@ -62,79 +59,90 @@ def send_detector_add():
     model_path = input()
     print("Give label file path:")
     label_file = input()
-    detector_adder(name, model_path, label_file)
+    services['/detector_control_node/add_object_detector'](name, model_path,
+                                                           label_file)
 
 
 ## Sends name of a detector to be removed
 def send_detector_remove():
     print("Give name of the detector to remove:")
     name = input()
-    detector_remover(name)
+    services['/detector_control_node/remove_object_detector'](name)
 
 
 ## Function running in loop waiting for command to send message
 def run():
+    commands = {
+        '1': send_frequency,
+        '2': send_qr_frequency,
+        '3': send_OD_toggle,
+        '4': send_combine_toggle,
+        '5': send_detector_add,
+        '6': send_detector_remove
+    }
+    commands_instruction = '\n'.join(
+        ('Give command.', "1 for changing object detection frequency,",
+         "2 for changing QR code detection frequency,",
+         "3 for toggling object detection on or off,",
+         "4 for toggling result combining,", "5 for adding detectors,",
+         "6 for removing detectors,", "q for shutting off this input node:"))
+
     while not rospy.is_shutdown():
-        print("Give command.\n" +
-              "1 for changing object detection frequency,\n" +
-              "2 for changing QR code detection frequency,\n" +
-              "3 for toggling object detection on or off,\n" +
-              "4 for toggling result combining,\n" +
-              "5 for adding detectors,\n" + "6 for removing detectors:")
+
+        print(commands_instruction)
         inp = input()
+
+        if inp == 'q':
+            return
 
         # Catch errors if a node is not running
         try:
-            if inp == "1":
-                send_frequency()
-            elif inp == "2":
-                send_qr_frequency()
-            elif inp == "3":
-                send_OD_toggle()
-            elif inp == "4":
-                send_combine_toggle()
-            elif inp == "5":
-                send_detector_add()
-            elif inp == "6":
-                send_detector_remove()
-            else:
+            if not inp in commands:
                 print("Command not recognized!")
+            else:
+                commands[inp]()
         except Exception as ex:
             print("Got exception:", ex)
 
 
+## Initializes services and sets callable functions in the dictionary
+def initialize_service(service_name: str, service_fun) -> None:
+    print(f'[INFO] Waiting for service \'{service_name}\'')
+    rospy.wait_for_service(service_name)
+    services[service_name] = rospy.ServiceProxy(service_name, service_fun)
+    print(f'[INFO] Service \'{service_name}\' found')
+
+
 ## Initialized variables containing services
 def init():
+    # TODO: import all variables from config/constants.py
     rospy.init_node("input")
+
+    print("Initializing services")
 
     oNode = "/object_detector"
     qrNode = "/QR"
     cNode = "/detector_control_node"
 
-    print("Waiting for services")
-
-    # rospy.wait_for_service(oNode + '/frequency')
-    # print("Object detector frequency service found")
-    # rospy.wait_for_service(qrNode + '/frequency')
-    # print("QR detector frequency service found")
-    # rospy.wait_for_service(oNode + '/toggle')
-    # print("Object detection toggle service found")
-
-    # rospy.wait_for_service('/detector_control_node/combine_toggle')
-    # print("Combine toggle service found")
-    global combine_toggler
-    combine_toggler = rospy.ServiceProxy(cNode + '/combine_toggle', toggle)
-
-    global qr_frequency_changer
-    global detector_adder
-    global detector_remover
-
-    qr_frequency_changer = rospy.ServiceProxy(qrNode + '/frequency',
-                                              new_frequency)
-    detector_adder = rospy.ServiceProxy(cNode + "/add_object_detector",
-                                        add_object_detector)
-    detector_remover = rospy.ServiceProxy(cNode + "/remove_object_detector",
-                                          remove_object_detector)
+    # Use threading for initializing services, thread will run until service is found or node is shut down
+    s1 = threading.Thread(target=initialize_service,
+                          args=(f'{cNode}/combine_toggle', toggle),
+                          daemon=True)
+    s2 = threading.Thread(target=initialize_service,
+                          args=(f'{qrNode}/frequency', new_frequency),
+                          daemon=True)
+    s3 = threading.Thread(target=initialize_service,
+                          args=(f'{cNode}/add_object_detector',
+                                add_object_detector),
+                          daemon=True)
+    s4 = threading.Thread(target=initialize_service,
+                          args=(f'{cNode}/remove_object_detector',
+                                remove_object_detector),
+                          daemon=True)
+    s1.start()
+    s2.start()
+    s3.start()
+    s4.start()
 
 
 if __name__ == "__main__":
