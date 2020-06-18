@@ -80,8 +80,7 @@ def run():
               "2 for changing QR code detection frequency,\n" +
               "3 for toggling object detection on or off,\n" +
               "4 for toggling result combining,\n" +
-              "5 for adding detectors,\n" + 
-              "6 for removing detectors:")
+              "5 for adding detectors,\n" + "6 for removing detectors:")
         inp = input()
 
         # Catch errors if a node is not running
