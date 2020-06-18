@@ -71,6 +71,7 @@ class ObjectNode:
         #        "A label file must be specified as a ROS parameter")
         #self.model_file = rospy.get_param("model_file")
         #self.label_file = rospy.get_param("label_file")
+
         ## Frequency in hertz
         self.period = 1 / frequency
 
