@@ -1,0 +1,30 @@
+<launch>
+    <group ns="konenako">
+        <node name="camera" pkg="konenako" type="node_camera.py" />
+        <node name="detector_control_node" pkg="konenako" type="node_detector_control.py" />
+        <test name="publishtest_observation"
+            test-name="Publishing any observation from detector_control_node"
+            pkg="rostest" type="publishtest">
+            <rosparam>
+                topics:
+                    - name: detector_control_node/observations
+                      timeout: 5
+                      negative: False # Something published at least once in the first 10 seconds
+            </rosparam>
+        </test>
+        <test name="publishtest_camera"
+            test-name="Publishing any image from camera"
+            pkg="rostest" type="publishtest">
+            <rosparam>
+                topics:
+                    - name: camera/images
+                      timeout: 5
+                      negative: False # Something published at least once in the first 10 seconds
+            </rosparam>
+        </test>
+        <param name="video_source" type="str" value="test.mp4" />
+        <param name="combine_results" type="bool" value="True" />
+        <param name="testi" type="yaml" value="object_detect: {model_path: 'ssd_mobilenet_v1_1_metadata_1.tflite', label_path: 'mscoco_complete_labels', detect_on: True, frequency: 42, score_threshold: 0.3}" />
+    </group>
+</launch>
+
