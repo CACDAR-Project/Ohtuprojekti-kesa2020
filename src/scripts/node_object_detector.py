@@ -10,7 +10,6 @@ import time
 import threading
 from typing import List
 from konenako.msg import observation, observations, boundingbox, polygon, image, warning
-#from konenako.srv import text_message, text_messageResponse, new_frequency, new_frequencyResponse, toggle, toggleResponse, score_threshold, score_thresholdResponse
 import konenako.srv as srv
 from detector.object_detector import ObjectDetector
 
