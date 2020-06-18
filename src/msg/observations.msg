@@ -1,2 +1,3 @@
-string model_name
+string camera_id
+uint64 image_counter
 observation[] observations
