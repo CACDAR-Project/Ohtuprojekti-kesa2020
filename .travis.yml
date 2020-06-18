@@ -11,6 +11,12 @@ script:
   - docker pull ohtukonenako/ohtuprojekti_kesa2020:latest
   - docker run --rm --privileged multiarch/qemu-user-static --reset -p yesdocker run --rm --privileged multiarch/qemu-user-static --reset -p yes
   - docker build -f Dockerfile.arm -t ohtukonenako/ohtuprojekti_kesa2020:latest --cache-from ohtukonenako/ohtuprojekti_kesa2020:latest .
+  - docker run -it --rm \
+    --net rosnet \
+    --name e2e \
+    --env ROS_HOSTNAME=e2e \
+    --env ROS_MASTER_URI=http://master:11311 \
+    konenako bash -c "cd src/ohtu && poetry run /bin/bash -c 'source ../../devel/setup.bash && cd ../../ && ROS_HOME=/catkin_ws/src/ohtu/src catkin_make run_tests && catkin_test_results'"
 deploy:
   - provider: script
     script:
