@@ -59,7 +59,8 @@ def send_detector_add():
     model_path = input()
     print("Give label file path:")
     label_file = input()
-    services['/detector_control_node/add_object_detector'](name, model_path, label_file)
+    services['/detector_control_node/add_object_detector'](name, model_path,
+                                                           label_file)
 
 
 ## Sends name of a detector to be removed
@@ -79,16 +80,12 @@ def run():
         '5': send_detector_add,
         '6': send_detector_remove
     }
-    commands_instruction = '\n'.join((
-        'Give command.',
-        "1 for changing object detection frequency,",
-        "2 for changing QR code detection frequency,",
-        "3 for toggling object detection on or off,",
-        "4 for toggling result combining,",
-        "5 for adding detectors,",
-        "6 for removing detectors,",
-        "q for shutting off this input node:")
-    )
+    commands_instruction = '\n'.join(
+        ('Give command.', "1 for changing object detection frequency,",
+         "2 for changing QR code detection frequency,",
+         "3 for toggling object detection on or off,",
+         "4 for toggling result combining,", "5 for adding detectors,",
+         "6 for removing detectors,", "q for shutting off this input node:"))
 
     while not rospy.is_shutdown():
 
@@ -122,11 +119,11 @@ def init():
     rospy.init_node("input")
 
     print("Initializing services")
-    
+
     oNode = "/object_detector"
     qrNode = "/QR"
     cNode = "/detector_control_node"
-    
+
     # Use threading for initializing services, thread will run until service is found or node is shut down
     s1 = threading.Thread(target=initialize_service,
                           args=(f'{cNode}/combine_toggle', toggle),
@@ -135,10 +132,12 @@ def init():
                           args=(f'{qrNode}/frequency', new_frequency),
                           daemon=True)
     s3 = threading.Thread(target=initialize_service,
-                          args=(f'{cNode}/add_object_detector', add_object_detector),
+                          args=(f'{cNode}/add_object_detector',
+                                add_object_detector),
                           daemon=True)
     s4 = threading.Thread(target=initialize_service,
-                          args=(f'{cNode}/remove_object_detector', remove_object_detector),
+                          args=(f'{cNode}/remove_object_detector',
+                                remove_object_detector),
                           daemon=True)
     s1.start()
     s2.start()

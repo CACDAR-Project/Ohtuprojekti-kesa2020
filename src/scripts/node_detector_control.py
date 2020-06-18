@@ -24,10 +24,9 @@ class DetectorControlNode:
 
     def add_object_detector(self, msg):
         self.detectors[msg.name] = ObjectNode(
-            msg.name,
-            '{}/{}'.format(tflite_path, msg.model_path),
-            '{}/{}'.format(tflite_path, msg.label_path)
-        )  # TODO: locks/thread safety?
+            msg.name, '{}/{}'.format(tflite_path, msg.model_path),
+            '{}/{}'.format(tflite_path,
+                           msg.label_path))  # TODO: locks/thread safety?
         return add_object_detectorResponse()
 
     def receive_img(self, msg: image):
@@ -73,7 +72,9 @@ class DetectorControlNode:
             # TODO: model and label _path should be renamed to _file
             model_path = '{}/{}'.format(tflite_path, kp[1]['model_path'])
             label_path = '{}/{}'.format(tflite_path, kp[1]['label_path'])
-            self.detectors[kp[0]] = ObjectNode(name=kp[0], model_path=model_path, label_path=label_path)
+            self.detectors[kp[0]] = ObjectNode(name=kp[0],
+                                               model_path=model_path,
+                                               label_path=label_path)
 
 
 #        self.detectors["object_detector"] = ObjectNode(
