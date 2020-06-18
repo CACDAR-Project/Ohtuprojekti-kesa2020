@@ -24,7 +24,7 @@
 DEV=0
 
 # Array with all the required binaries
-REQ_BIN=(poetry python catkin_make roscore rosparam rosrun)
+REQ_BIN=(poetry python3 catkin_make roscore rosparam rosrun)
 
 # Required versions, in integers for bash compatibility
 POETRY_VER=105
@@ -61,6 +61,9 @@ export ROS_LANG_DISABLE=genlisp:geneus:gennodejs
 # Run the script
 # --------------
 
+# Source environment
+echo 'Sourcing /opt/ros/'${ROS_DISTRO}'/setup.bash'
+source /opt/ros/${ROS_DISTRO}/setup.bash
 
 # Check that all required applications are installed
 REQ_MET=0
@@ -131,9 +134,6 @@ mkdir ${PROJ_PWD}/catkin_ws/
 
 echo 'Copying all files from project directory to catkin workspace.'
 cp -r ${PROJ_PWD}/src ${PROJ_PWD}/resources ${PROJ_PWD}/catkin_ws/
-
-echo 'Sourcing /opt/ros/'${ROS_DISTRO}'/setup.bash'
-source /opt/ros/${ROS_DISTRO}/setup.bash
 
 echo 'Creating catkin workspace with catkin_make'
 catkin_make -C ${PROJ_PWD}/catkin_ws > /dev/null 2>&1
@@ -243,7 +243,7 @@ for node in ${NODES[@]}; do
     echo # Newline
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         echo "Running node $node"        
-        gnome-terminal --geometry 60x16 --title="$node" -- /bin/bash -c 'source '${CATKIN_PWD}'/setup.bash; cd '${PROJ_PWD}'; poetry run rosrun '${ROSPKG}' node_'${node}'.py; exec bash'  &
+        gnome-terminal --geometry 60x16 --title="$node" -- /bin/bash -c 'source '${CATKIN_PWD}'/setup.bash; cd '${PROJ_PWD}'; poetry run rosrun '${ROSPKG}' node_'${node}'.py; exec bash' /dev/null 2>&1  &
     fi
     echo
 done
