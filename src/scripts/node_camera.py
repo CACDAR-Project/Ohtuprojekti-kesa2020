@@ -40,7 +40,7 @@ class Camera:
         # Counter for identifying the frames
         counter = 1
         rate = rospy.Rate(hz)
-        while True:
+        while True and not self.stop:
             cam = cv.VideoCapture(source)
             while cam.grab() and not self.stop:
                 img = cam.retrieve()[1]
