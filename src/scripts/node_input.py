@@ -5,22 +5,19 @@
 
 from konenako.srv import new_frequency, toggle
 import rospy
+import threading
 
 # https://github.com/ros/ros_tutorials/blob/noetic-devel/rospy_tutorials/005_add_two_ints/add_two_ints_client
 
-## Service for sending a new frequency to object detector.
-frequency_changer = None
-## Service for sending a new frequency to QR detector.
-qr_frequency_changer = None
-## Service for toggling object detection on/off
-object_detection_toggler = None
 
+## Dictionary for holding the various callable serviceproxies
+services = dict()
 
 ## Sends a new frequency with frequency_changer and prints the received response.
 def send_frequency():
     print("Give frequency!")
     inp = int(input())
-    response = frequency_changer(inp)
+    response = services['/object_detector/frequency'](inp)
     print("Received response: " + response.response)
 
 
@@ -28,7 +25,7 @@ def send_frequency():
 def send_qr_frequency():
     print("Give frequency!")
     inp = int(input())
-    response = qr_frequency_changer(inp)
+    response = services['/qr_detector/frequency'](inp)
     print("Received response: " + response.response)
 
 
@@ -37,55 +34,61 @@ def send_OD_toggle():
     print("Give something for on, empty for off!")
     inp = bool(input())
     print(inp)
-    response = object_detection_toggler(inp)
+    response = services['/object_detector/toggle'](inp)
     print("Received response: " + response.response)
 
 
 ## Function running in loop waiting for command to send message
 def run():
+    commands = {
+        '1': send_frequency,
+        '2': send_qr_frequency,
+        '3': send_OD_toggle
+    }
+    commands_instruction = '\n'.join((
+        'Give command.',
+        "1 for changing object detection frequency,",
+        "2 for changing QR code detection frequency,",
+        "3 for toggling object detection on or off,",
+        "q for shutting off this input node:"
+    ))
+
     while not rospy.is_shutdown():
-        print("Give command.\n" +
-              "1 for changing object detection frequency,\n" +
-              "2 for changing QR code detection frequency,\n" +
-              "3 for toggling object detection on or off:")
+        print(commands_instruction)
         inp = input()
+        
+        if inp == 'q':
+            return
 
         # Catch errors if a node is not running
         try:
-            if inp == "1":
-                send_frequency()
-            elif inp == "2":
-                send_qr_frequency()
-            elif inp == "3":
-                send_OD_toggle()
-            else:
+            if not inp in commands:
                 print("Command not recognized!")
+            else:
+                commands[inp]()    
         except Exception as ex:
             print("Got exception:", ex)
 
 
+## Initializes services and sets callable functions in the dictionary
+def initialize_service(service_name: str, service_msg) -> None:
+    rospy.wait_for_service(service_name)
+    print(f'[INFO] Service \'{service_name}\' found')
+    services[service_name] = rospy.ServiceProxy(service_name, service_msg)
+
 ## Initialized variables containing services
 def init():
+    # TODO: REPLACE ALL HARDCODED service, node etc names with variables (from config/constants?)
     rospy.init_node("input")
-    print("Waiting for services")
-
-    rospy.wait_for_service('/object_detector/frequency')
-    print("Object detector frequency service found")
-    rospy.wait_for_service('/qr_detector/frequency')
-    print("QR detector frequency service found")
-    rospy.wait_for_service('/object_detector/toggle')
-    print("Object detection toggle service found")
-
-    global frequency_changer
-    global qr_frequency_changer
-    global object_detection_toggler
-
-    frequency_changer = rospy.ServiceProxy('/object_detector/frequency',
-                                           new_frequency)
-    qr_frequency_changer = rospy.ServiceProxy('/qr_detector/frequency',
-                                              new_frequency)
-    object_detection_toggler = rospy.ServiceProxy('/object_detector/toggle',
-                                                  toggle)
+    print("Initializing services")
+    
+    # Use threading for initializing services, thread will run until service is found
+    s1 = threading.Thread(target=initialize_service, args=('/object_detector/frequency', new_frequency), daemon=True)
+    s2 = threading.Thread(target=initialize_service, args=('/qr_detector/frequency', new_frequency), daemon=True)
+    s3 = threading.Thread(target=initialize_service, args=('/object_detector/toggle', toggle), daemon=True)
+    s1.start()
+    s2.start()
+    s3.start()
 
 
 if __name__ == "__main__":
