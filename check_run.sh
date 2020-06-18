@@ -131,8 +131,10 @@ if [ $(pgrep roscore) ]; then
 fi
 
 if [ "$DEV" -eq 0 ]; then
-    gnome-terminal --geometry 60x16 --title="Roscore" -- /bin/bash -c 'cd '${PROJ_PWD}'; roscore; bash' &
+    echo 'Opening roscore in new terminal window'
+    gnome-terminal --geometry 60x16 --title="Roscore" -- /bin/bash -c 'cd '${PROJ_PWD}'; roscore; bash' > /dev/null 2>&1 &
 else
+    echo 'Opening roscore'
     roscore > /dev/null 2>&1 &
 fi
 
@@ -209,11 +211,11 @@ echo
 # Run all the nodes
 # TODO: dont open terminals for all nodes and dont append ;bash to the end so they close when DEV is not set
 for node in ${NODES[@]}; do
-    read -p "Do you wish to run the node: $node? " -n 1 -r
+    read -p "Do you wish to run the node: $node? [Y/y] " -n 1 -r
     echo # Newline
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         echo "Running node $node"        
-        gnome-terminal --geometry 60x16 --title="$node" -- /bin/bash -c 'source '${CATKIN_PWD}'/setup.bash; cd '${PROJ_PWD}'; poetry run rosrun '${ROSPKG}' node_'${node}'.py; bash' &
+        gnome-terminal --geometry 60x16 --title="$node" -- /bin/bash -c 'source '${CATKIN_PWD}'/setup.bash; cd '${PROJ_PWD}'; poetry run rosrun '${ROSPKG}' node_'${node}'.py; exec bash' > /dev/null 2>&1 &
     fi
     echo
 done
