@@ -81,7 +81,10 @@ class DetectorControlNode:
             label_path = '{}/{}'.format(tflite_path, kp[1]['label_path'])
             self.detectors[kp[0]] = ObjectNode(name=kp[0],
                                                model_path=model_path,
-                                               label_path=label_path)
+                                               label_path=label_path,
+                                               frequency=kp[1]['frequency'],
+                                               detect_on=kp[1]['detect_on']
+                                               )
 
         self.detectors["QR"] = QRReader()
 
