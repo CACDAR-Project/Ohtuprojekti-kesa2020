@@ -120,23 +120,24 @@ def init():
 
     print("Initializing services")
 
-    oNode = "/object_detector"
-    qrNode = "/QR"
-    cNode = "/detector_control_node"
+    rospkgname = 'konenako'
+    oNode = "object_detector"
+    qrNode = "QR"
+    cNode = "detector_control_node"
 
     # Use threading for initializing services, thread will run until service is found or node is shut down
     s1 = threading.Thread(target=initialize_service,
-                          args=(f'{cNode}/combine_toggle', toggle),
+                          args=(f'/{rospkgname}/{cNode}/combine_toggle', toggle),
                           daemon=True)
     s2 = threading.Thread(target=initialize_service,
-                          args=(f'{qrNode}/frequency', new_frequency),
+                          args=(f'/{rospkgname}/{qrNode}/frequency', new_frequency),
                           daemon=True)
     s3 = threading.Thread(target=initialize_service,
-                          args=(f'{cNode}/add_object_detector',
+                          args=(f'/{rospkgname}/{cNode}/add_object_detector',
                                 add_object_detector),
                           daemon=True)
     s4 = threading.Thread(target=initialize_service,
-                          args=(f'{cNode}/remove_object_detector',
+                          args=(f'/{rospkgname}/{cNode}/remove_object_detector',
                                 remove_object_detector),
                           daemon=True)
     s1.start()
