@@ -13,6 +13,7 @@ from konenako.msg import image
 from helpers.image_converter import cv2_to_msg
 from config.constants import name_node_camera, topic_images, rosparam_video_source, rosparam_video_feed_name, rosparam_poll_interval
 
+
 ## Main function for camera node.
 #  Creates topic named "node_name/images" where image/video source
 #  is being published as an image message.
@@ -26,7 +27,9 @@ def run():
     
     # Poll for videosource parameter in intervals of 1s by default
     while not rospy.has_param(rosparam_video_source):
-        print(f'[INFO] {name_node_camera} trying to get param {rosparam_video_source}')
+        print(
+            f'[INFO] {name_node_camera} trying to get param {rosparam_video_source}'
+        )
         time.sleep(rosparam_poll_interval)
 
     # Variable containing path to video, picture or camera device
@@ -37,7 +40,7 @@ def run():
         feed_name = rospy.get_param(rosparam_video_feed_name)
     else:
         feed_name = source
-    
+
     cam = cv.VideoCapture(source)
     # Counter for identifying the frames
     counter = 1

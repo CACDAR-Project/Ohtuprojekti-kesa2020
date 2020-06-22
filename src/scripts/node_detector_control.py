@@ -11,6 +11,7 @@ from config.constants import tflite_path, name_node_detector_control, name_node_
 
 import rospy
 
+
 class DetectorControlNode:
     detectors = dict()
 
@@ -63,15 +64,19 @@ class DetectorControlNode:
         # This node will crash if calling self.receive_img when self.detectors are altered
         self.ready = False
         ## Topic with images to analyze
-        self.input_sub = rospy.Subscriber('{}/{}'.format(name_node_camera, topic_images), image,
-                                          self.receive_img)
+        self.input_sub = rospy.Subscriber(
+            '{}/{}'.format(name_node_camera, topic_images), image,
+            self.receive_img)
+
         ## Topic to publish results
-        self.pub = rospy.Publisher('{}/{}'.format(rospy.get_name(), topic_observations),
+        self.pub = rospy.Publisher('{}/{}'.format(rospy.get_name(),
+                                                  topic_observations),
                                    observations,
                                    queue_size=50)
 
-        rospy.Service('{}/{}'.format(rospy.get_name(), srv_add_object_detector),
-                      add_object_detector, self.add_object_detector)
+        rospy.Service(
+            '{}/{}'.format(rospy.get_name(), srv_add_object_detector),
+            add_object_detector, self.add_object_detector)
 
         rospy.Service('{}/{}'.format(rospy.get_name(), srv_rm_object_detector),
                       remove_object_detector, self.remove_object_detector)
@@ -100,12 +105,16 @@ class DetectorControlNode:
         # Combine results to single message, or publish separately.
         # Poll until param is found.
         while not rospy.has_param(rosparam_combine_results):
-            print(f'[INFO] {name_node_detector_control} trying to get param {rosparam_combine_results}')
+            print(
+                f'[INFO] {name_node_detector_control} trying to get param {rosparam_combine_results}'
+            )
             time.sleep(rosparam_poll_interval)
 
         self.combine = rospy.get_param(rosparam_combine_results)
-        rospy.Service('{}/{}'.format(rospy.get_name(), rosparam_combine_toggle), toggle,
-                      self.toggle_combine)
+        rospy.Service(
+            '{}/{}'.format(rospy.get_name(), rosparam_combine_toggle), toggle,
+            self.toggle_combine)
+
 
 
 

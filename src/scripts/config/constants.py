@@ -31,6 +31,7 @@ rosparam_video_feed_name = 'video_feed_name'
 
 rosparam_combine_results = 'combine_results'
 rosparam_combine_toggle = 'combine_toggle'
+
 rosparam_detection = 'detect_on'
 
 rosparam_model_file = 'model_file'
