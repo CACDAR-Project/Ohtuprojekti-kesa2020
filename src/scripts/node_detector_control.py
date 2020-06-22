@@ -5,11 +5,11 @@ import time
 from node_object_detector import ObjectNode
 from node_qr_detector import QRReader
 from konenako.msg import image, observations
-from konenako.srv import toggle, toggleResponse, add_object_detector, remove_object_detector, add_object_detectorResponse, remove_object_detectorResponse
+import konenako.srv as srv
+import rospy
 from helpers.image_converter import msg_to_cv2
 from config.constants import tflite_path, name_node_detector_control, name_node_camera, topic_images, topic_observations, srv_add_object_detector, srv_rm_object_detector, rosparam_poll_interval, rosparam_combine_results, rosparam_combine_toggle
 
-import rospy
 
 
 class DetectorControlNode:
@@ -17,7 +17,7 @@ class DetectorControlNode:
 
     def toggle_combine(self, msg):
         self.combine = msg.state
-        return toggleResponse("Combining results set to {}".format(
+        return srv.toggleResponse("Combining results set to {}".format(
             self.combine))
 
     def remove_object_detector(self, msg):
@@ -25,7 +25,7 @@ class DetectorControlNode:
         self.detectors[msg.name].remove()
         self.detectors.pop(msg.name)  # TODO: locks/thread safety? Is one boolean enough, or do we need the threading module?
         self.ready = True
-        return remove_object_detectorResponse()
+        return srv.remove_object_detectorResponse()
 
     def add_object_detector(self, msg):
         self.ready = False
@@ -34,7 +34,7 @@ class DetectorControlNode:
             '{}/{}'.format(tflite_path,
                            msg.label_path))  # TODO: locks/thread safety? Is one boolean enough, or do we need the threading module?
         self.ready = True
-        return add_object_detectorResponse()
+        return srv.add_object_detectorResponse()
 
     def receive_img(self, msg: image):
         if not self.ready:
@@ -76,10 +76,10 @@ class DetectorControlNode:
 
         rospy.Service(
             '{}/{}'.format(rospy.get_name(), srv_add_object_detector),
-            add_object_detector, self.add_object_detector)
+            srv.add_object_detector, self.add_object_detector)
 
         rospy.Service('{}/{}'.format(rospy.get_name(), srv_rm_object_detector),
-                      remove_object_detector, self.remove_object_detector)
+                      srv.remove_object_detector, self.remove_object_detector)
 
         ## Load all required rosparams 
         self.load_rosparams()
@@ -112,7 +112,7 @@ class DetectorControlNode:
 
         self.combine = rospy.get_param(rosparam_combine_results)
         rospy.Service(
-            '{}/{}'.format(rospy.get_name(), rosparam_combine_toggle), toggle,
+            '{}/{}'.format(rospy.get_name(), rosparam_combine_toggle), srv.toggle,
             self.toggle_combine)
 
 

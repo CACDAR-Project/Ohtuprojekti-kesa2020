@@ -49,3 +49,4 @@ srv_combine_toggle = rosparam_combine_toggle
 srv_toggle = 'toggle'
 srv_add_object_detector = 'add_object_detector'
 srv_rm_object_detector = 'remove_object_detector'
+srv_score_treshold = 'score_treshold'

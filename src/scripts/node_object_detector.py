@@ -10,9 +10,9 @@ import time
 import threading
 from typing import List
 from konenako.msg import observation, observations, boundingbox, polygon, image, warning
-from konenako.srv import text_message, text_messageResponse, new_frequency, new_frequencyResponse, toggle, toggleResponse
+import konenako.srv as srv
 from detector.object_detector import ObjectDetector
-from config.constants import srv_frequency, srv_toggle, topic_warnings
+from config.constants import srv_frequency, srv_toggle, srv_score_treshold, topic_warnings
 
 
 ## Class for detecting objects in images.
@@ -33,26 +33,32 @@ class ObjectNode:
         self.warning.unregister()
         self.toggle_service.shutdown()
         self.frequency_service.shutdown()
+        self.score_service.shutdown()
 
     ## Set a new frequency for the object detection.
     #  @param new_frequency The new frequency in hz as a new_frequency.srv message.
     #  @return Confirmation string as a new_frequencyResponse.srv message.
     def change_frequency(
-            self, new_frequency: new_frequency) -> new_frequencyResponse:
+            self,
+            new_frequency: srv.new_frequency) -> srv.new_frequencyResponse:
         with self.frequency_change_lock:
             self.period = 1.0 / new_frequency.data
-            return new_frequencyResponse(
+            return srv.new_frequencyResponse(
                 "Object detector freq set to period {}".format(self.period))
 
     def toggle_detection(self, toggle):
         if self.detect_on == toggle.state:
-            return toggleResponse(
+            return srv.toggleResponse(
                 "Object detection was already toggled to {}".format(
                     self.detect_on))
 
         self.detect_on = toggle.state
-        return toggleResponse("Object detection toggled to {}".format(
+        return srv.toggleResponse("Object detection toggled to {}".format(
             self.detect_on))
+
+    def set_score_threshold(self, msg):
+        self.detector.score_threshold = msg.score_threshold
+        return srv.score_thresholdResponse()
 
     ## Initializes topics and services and sets class variable detect_on to true
     def __init__(self,
@@ -60,7 +66,8 @@ class ObjectNode:
                  model_path,
                  label_path,
                  frequency=5,
-                 detect_on=True):
+                 detect_on=True,
+                 score_threshold=0.3):
         self.name = name
         # Attempt to get configuration parameters from the ROS parameter server
         self.detect_on = detect_on
@@ -78,14 +85,19 @@ class ObjectNode:
 
         ## Helper class used for detecting objects
         self.detector = ObjectDetector(model_path, label_path)
+        self.detector.score_threshold = score_threshold
 
         # Register to services
         self.frequency_service = rospy.Service("{}/{}".format(name, srv_frequency),
-                                               new_frequency,
+                                               srv.new_frequency,
                                                self.change_frequency)
 
-        self.toggle_service = rospy.Service("{}/{}".format(name, srv_toggle), toggle,
+        self.toggle_service = rospy.Service("{}/{}".format(name, srv_toggle), srv.toggle,
                                             self.toggle_detection)
+                                            
+        self.score_service = rospy.Service("{}/{}".format(name, srv_score_treshold),
+                                           srv.score_threshold,
+                                           self.set_score_threshold)
 
         # Warnings are published when processing takes longer than the given period
         self.warning = rospy.Publisher(topic_warnings, warning, queue_size=50)

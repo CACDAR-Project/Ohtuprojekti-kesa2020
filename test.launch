@@ -5,7 +5,7 @@
 		<node name="detector_control_node" pkg="konenako" type="node_detector_control.py" output="screen" />
 		<param name="video_source" type="str" value="/dev/video0" />
 		<param name="combine_results" type="bool" value="True" />
-		<param name="testi" type="yaml" value="object_detect: {model_path: 'ssd_mobilenet_v1_1_metadata_1.tflite', label_path: 'mscoco_complete_labels', detect_on: True, frequency: 42}" />
+		<param name="testi" type="yaml" value="object_detect: {model_path: 'ssd_mobilenet_v1_1_metadata_1.tflite', label_path: 'mscoco_complete_labels', detect_on: True, frequency: 42, score_threshold: 0.3}" />
 	</group>
 </launch>
 
