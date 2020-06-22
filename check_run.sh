@@ -160,11 +160,7 @@ fi
 
 if [ "$DEV" -eq 0 ]; then
     echo 'Opening roscore in new terminal window'
-<<<<<<< HEAD
     gnome-terminal --geometry 60x16 --title="Roscore" -- /bin/bash -c 'cd '${PROJ_PWD}'; roscore; exec bash' > /dev/null 2>&1 &
-=======
-    gnome-terminal --geometry 60x16 --title="Roscore" -- /bin/bash -c 'cd '${PROJ_PWD}'; roscore; bash' > /dev/null 2>&1 &
->>>>>>> ee6f54cf104675771fd9eff7c76091b1d0be4412
 else
     echo 'Opening roscore'
     roscore > /dev/null 2>&1 &
@@ -247,11 +243,7 @@ for node in ${NODES[@]}; do
     echo # Newline
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         echo "Running node $node"        
-<<<<<<< HEAD
-        gnome-terminal --geometry 60x16 --title="$node" -- /bin/bash -c 'source '${CATKIN_PWD}'/setup.bash; cd '${PROJ_PWD}'; poetry run rosrun '${ROSPKG}' node_'${node}'.py; exec bash' /dev/null 2>&1  &
-=======
         gnome-terminal --geometry 60x16 --title="$node" -- /bin/bash -c 'source '${CATKIN_PWD}'/setup.bash; cd '${PROJ_PWD}'; poetry run rosrun '${ROSPKG}' node_'${node}'.py; exec bash' > /dev/null 2>&1 &
->>>>>>> ee6f54cf104675771fd9eff7c76091b1d0be4412
     fi
     echo
 done
