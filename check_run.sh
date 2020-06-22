@@ -44,7 +44,7 @@ DEF_MODEL=ssd_mobilenet_v1_1_metadata_1.tflite
 DEF_VIDEO=/dev/video0
 
 # Available nodes
-NODES=(camera object_detector qr_detector printer input)
+NODES=(camera detector_control printer input)
 
 # ---------------
 # Misc variables
@@ -243,7 +243,7 @@ for node in ${NODES[@]}; do
     echo # Newline
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         echo "Running node $node"        
-        gnome-terminal --geometry 60x16 --title="$node" -- /bin/bash -c 'source '${CATKIN_PWD}'/setup.bash; cd '${PROJ_PWD}'; poetry run rosrun '${ROSPKG}' node_'${node}'.py; exec bash' > /dev/null 2>&1 &
+        gnome-terminal --geometry 60x16 --title="$node" -- /bin/bash -c 'source '${CATKIN_PWD}'/setup.bash; cd '${PROJ_PWD}'; poetry run rosrun '${ROSPKG}' node_'${node}'.py; exec bash' &
     fi
     echo
 done
