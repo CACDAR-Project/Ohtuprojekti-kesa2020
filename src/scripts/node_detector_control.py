@@ -95,7 +95,8 @@ class DetectorControlNode:
                                                model_path=model_path,
                                                label_path=label_path,
                                                frequency=kp[1]['frequency'],
-                                               detect_on=kp[1]['detect_on']
+                                               detect_on=kp[1]['detect_on'],
+                                               score_threshold=kp[1]['score_threshold']
                                                )
 
         self.detectors["QR"] = QRReader()
