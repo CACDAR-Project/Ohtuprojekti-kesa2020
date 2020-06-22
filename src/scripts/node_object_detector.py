@@ -133,7 +133,8 @@ class ObjectNode:
                     boundingbox(detection["bbox"]["top"],
                                 detection["bbox"]["right"],
                                 detection["bbox"]["bottom"],
-                                detection["bbox"]["left"]), polygon(0, [])))
+                                detection["bbox"]["left"]), polygon(0, []), 
+                                img.shape[0], img.shape[1]))
 
         processing_time = time.time() - self.last_detect
         if processing_time > period:
