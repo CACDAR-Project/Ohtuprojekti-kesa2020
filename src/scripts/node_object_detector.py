@@ -94,7 +94,7 @@ class ObjectNode:
 
         self.toggle_service = rospy.Service("{}/{}".format(name, srv_toggle), srv.toggle,
                                             self.toggle_detection)
-                                            
+
         self.score_service = rospy.Service("{}/{}".format(name, srv_score_treshold),
                                            srv.score_threshold,
                                            self.set_score_threshold)
