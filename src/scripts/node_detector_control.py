@@ -1,6 +1,7 @@
 #!/usr/bin/env python3.7
 
 import time
+import threading
 
 from node_object_detector import ObjectNode
 from node_qr_detector import QRReader
@@ -21,29 +22,35 @@ class DetectorControlNode:
             self.combine))
 
     def remove_object_detector(self, msg):
-        self.ready = False
-        self.detectors[msg.name].remove()
-        self.detectors.pop(msg.name)  # TODO: locks/thread safety? Is one boolean enough, or do we need the threading module?
-        self.ready = True
+        # Store detector to remove for quicker Lock releasing
+        detector_to_remove = self.detectors[msg.name]
+
+        self.detect_lock.acquire()
+        self.detectors.pop(msg.name)
+        self.detect_lock.release()
+
+        # Close services outside lock
+        detector_to_remove.remove()
         return srv.remove_object_detectorResponse()
 
     def add_object_detector(self, msg):
-        self.ready = False
-        self.detectors[msg.name] = ObjectNode(
+        # Initialize new detector outside Lock for quicker Lock releasing
+        detector_to_add = ObjectNode(
             msg.name, '{}/{}'.format(tflite_path, msg.model_path),
             '{}/{}'.format(tflite_path,
-                           msg.label_path))  # TODO: locks/thread safety? Is one boolean enough, or do we need the threading module?
-        self.ready = True
+                           msg.label_path))
+
+        self.detect_lock.acquire()
+        self.detectors[msg.name] = detector_to_add
+        self.detect_lock.release()
         return srv.add_object_detectorResponse()
 
     def receive_img(self, msg: image):
-        if not self.ready:
-            ## TODO: return empty observation or error message?
-            return
-
         observation_list = []
         img = msg_to_cv2(msg)[2]
+        
         # Get observations from all active nodes
+        self.detect_lock.acquire()
         for node in self.detectors.values():
             # Publishing from the nodes set to opposite of the combine boolean.
             # If combining is off, each node publishes the results separately.
@@ -54,15 +61,17 @@ class DetectorControlNode:
                 self.pub.publish(
                     observations(msg.camera_id, msg.image_counter, x))
 
+        self.detect_lock.release()
+
         if observation_list and self.combine:
             self.pub.publish(
                 observations(msg.camera_id, msg.image_counter,
                              observation_list))
 
     def __init__(self):
-        ## Boolean which is True if node is ready to detect.
-        # This node will crash if calling self.receive_img when self.detectors are altered
-        self.ready = False
+        # Locked when self.detectors is altered or iterated
+        self.detect_lock = threading.Lock()
+
         ## Topic with images to analyze
         self.input_sub = rospy.Subscriber(
             '{}/{}'.format(name_node_camera, topic_images), image,
@@ -84,6 +93,7 @@ class DetectorControlNode:
         ## Load all required rosparams 
         self.load_rosparams()
 
+        self.detect_lock.acquire()
         # temporary, TODO: replace with parameter based ?
         for kp in rospy.get_param("testi", {}).items():
             # TODO: model and label _path should be renamed to _file
@@ -100,7 +110,7 @@ class DetectorControlNode:
                                                )
 
         self.detectors["QR"] = QRReader()
-        self.ready = True
+        self.detect_lock.release()
 
     def load_rosparams(self):
         # Combine results to single message, or publish separately.
