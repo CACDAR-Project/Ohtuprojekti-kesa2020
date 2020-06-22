@@ -10,6 +10,7 @@ import detector.qr_detector as qr_detector
 from std_msgs.msg import String
 from konenako.msg import image, observation, observations, polygon, boundingbox, point64, warning
 from konenako.srv import new_frequency, new_frequencyResponse, toggle, toggleResponse
+from config.constants import name_det_qr, srv_frequency, srv_toggle, topic_warnings
 
 
 ## Read an image stream from a ROS topic, detect and decode QR codes from the frames and
@@ -52,7 +53,7 @@ class QRReader:
         return []
 
     def __init__(self):
-        self.name = "QR"
+        self.name = name_det_qr
         # Attempt to get configuration parameters from the ROS parameter server
         self.detect_on = rospy.get_param("detect_on", True)
         # Frequency in hertz
@@ -60,14 +61,14 @@ class QRReader:
 
         # ROS service for changing detection frequency.
         self.frequency_service = rospy.Service(
-            "{}/frequency".format(self.name), new_frequency,
+            "{}/{}".format(self.name, srv_frequency), new_frequency,
             self.change_frequency)
 
-        self.toggle_service = rospy.Service("{}/toggle".format(self.name),
+        self.toggle_service = rospy.Service("{}/{}".format(self.name, srv_toggle),
                                             toggle, self.toggle_detection)
 
         # Warnings are published when processing takes longer than the given period
-        self.warning = rospy.Publisher("warnings", warning, queue_size=50)
+        self.warning = rospy.Publisher(topic_warnings, warning, queue_size=50)
 
     ## Process the image using qr_detector.py, publish each QR code's data and
     #  position qs a qr_observation ROS message.
@@ -85,7 +86,7 @@ class QRReader:
         for o in qr_detector.detect(img):
             observation_list.append(
                 observation(
-                    "QR", 0, str(o["data"]), 1,
+                    name_det_qr, 0, str(o["data"]), 1,
                     boundingbox(o["bbox"]["top"], o["bbox"]["right"],
                                 o["bbox"]["bottom"], o["bbox"]["left"]),
                     polygon(len(o["polygon"]), [

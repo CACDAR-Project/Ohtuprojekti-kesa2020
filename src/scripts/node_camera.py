@@ -24,7 +24,7 @@ def run():
                           image,
                           queue_size=1)
     
-    # Poll for videosource parameter in 1s intervals
+    # Poll for videosource parameter in intervals of 1s by default
     while not rospy.has_param(rosparam_video_source):
         print(f'[INFO] {name_node_camera} trying to get param {rosparam_video_source}')
         time.sleep(rosparam_poll_interval)
