@@ -14,14 +14,15 @@ from konenako.msg import image
 from helpers.image_converter import cv2_to_msg
 from config.constants import name_node_camera, topic_images, rosparam_video_source, rosparam_video_feed_name, rosparam_poll_interval, rosparam_camera_hz
 
-
 ## Global variable, is set to true when received SIGINT or SIGTERM
 interrupted = False
+
 
 ## Catches received signals and sets the global variable interrupted to True for stopping the node.
 def handle_signal_stop(signum, frame):
     global interrupted
     interrupted = True
+
 
 class Camera:
     def __init__(self):
@@ -34,9 +35,10 @@ class Camera:
         # image/video source is being published as an image message.
         # We only want to process the latest frame, and Publisher's queue is
         # FIFO (?), thus queue_size is set to 1.
-        self.pub = rospy.Publisher("{}/{}".format(rospy.get_name(), topic_images),
-                              image,
-                              queue_size=1)
+        self.pub = rospy.Publisher("{}/{}".format(rospy.get_name(),
+                                                  topic_images),
+                                   image,
+                                   queue_size=1)
 
     def load_rosparams(self):
         # Variable containing path to video, picture or camera device
@@ -75,12 +77,12 @@ class Camera:
                 self.pub.publish(msg)
                 counter += 1
                 rate.sleep()
-    
-    
+
+
 if __name__ == "__main__":
     signal.signal(signal.SIGINT, handle_signal_stop)
     signal.signal(signal.SIGTERM, handle_signal_stop)
-    
+
     cam = Camera()
     cam.run()
     rospy.spin()

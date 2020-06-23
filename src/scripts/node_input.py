@@ -17,6 +17,7 @@ import threading
 services = dict()
 lock = threading.Lock()
 
+
 ## Sends a new frequency with frequency_changer and prints the received response.
 def send_frequency():
     print("Give name of the detector:")
@@ -88,7 +89,7 @@ def run():
         print("Give command.")
         for i in sorted(commands.keys()):
             print(commands[str(i)][0])
-        
+
         # Print found services
         print()
         print('---')
@@ -137,23 +138,36 @@ def init():
     print("Initializing services")
     # Use threading for initializing services, thread will run until service is found or node is shut down
     services = list()
-    services.append(threading.Thread(target=initialize_service,
-                          args=(f'/{name_ros_pkg}/{name_node_detector_control}/{srv_combine_toggle}', toggle),
-                          daemon=True))
-    services.append(threading.Thread(target=initialize_service,
-                          args=(f'/{name_ros_pkg}/{name_det_qr}/{srv_frequency}', new_frequency),
-                          daemon=True))
-    services.append(threading.Thread(target=initialize_service,
-                          args=(f'/{name_ros_pkg}/{name_node_detector_control}/{srv_add_object_detector}',
-                                add_object_detector),
-                          daemon=True))
-    services.append(threading.Thread(target=initialize_service,
-                          args=(f'/{name_ros_pkg}/{name_node_detector_control}/{srv_rm_object_detector}',
-                                remove_object_detector),
-                          daemon=True))
-    
+    services.append(
+        threading.Thread(
+            target=initialize_service,
+            args=
+            (f'/{name_ros_pkg}/{name_node_detector_control}/{srv_combine_toggle}',
+             toggle),
+            daemon=True))
+    services.append(
+        threading.Thread(
+            target=initialize_service,
+            args=(f'/{name_ros_pkg}/{name_det_qr}/{srv_frequency}',
+                  new_frequency),
+            daemon=True))
+    services.append(
+        threading.Thread(
+            target=initialize_service,
+            args=
+            (f'/{name_ros_pkg}/{name_node_detector_control}/{srv_add_object_detector}',
+             add_object_detector),
+            daemon=True))
+    services.append(
+        threading.Thread(
+            target=initialize_service,
+            args=
+            (f'/{name_ros_pkg}/{name_node_detector_control}/{srv_rm_object_detector}',
+             remove_object_detector),
+            daemon=True))
+
     # The name 'object_detect' is hardcoded in test.launch param name="test" type="yaml" value="object_detect"....
-    # Also fails with -> python2 ja 3 errors and finally: AttributeError: 'function' object has no attribute '_request_class'    
+    # Also fails with -> python2 ja 3 errors and finally: AttributeError: 'function' object has no attribute '_request_class'
     #services.append(threading.Thread(target=initialize_service,
     #                      args=(f'/{name_ros_pkg}/object_detect/{srv_toggle}', send_OD_toggle),
     #                      daemon=True))

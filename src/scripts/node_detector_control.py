@@ -12,7 +12,6 @@ from helpers.image_converter import msg_to_cv2
 from config.constants import name_node_detector_control, name_node_camera, topic_images, topic_observations, srv_add_object_detector, srv_rm_object_detector, rosparam_poll_interval, rosparam_combine_results, rosparam_combine_toggle
 
 
-
 class DetectorControlNode:
     detectors = dict()
 
@@ -53,7 +52,7 @@ class DetectorControlNode:
     def receive_img(self, msg: image):
         observation_list = []
         img = msg_to_cv2(msg)[2]
-        
+
         # Get observations from all active nodes
         self.detect_lock.acquire()
         for node in self.detectors.values():
@@ -95,7 +94,7 @@ class DetectorControlNode:
         rospy.Service('{}/{}'.format(rospy.get_name(), srv_rm_object_detector),
                       srv.remove_object_detector, self.remove_object_detector)
 
-        ## Load all required rosparams 
+        ## Load all required rosparams
         self.load_rosparams()
 
         self.detect_lock.acquire()
@@ -117,10 +116,8 @@ class DetectorControlNode:
 
         self.combine = rospy.get_param(rosparam_combine_results)
         rospy.Service(
-            '{}/{}'.format(rospy.get_name(), rosparam_combine_toggle), srv.toggle,
-            self.toggle_combine)
-
-
+            '{}/{}'.format(rospy.get_name(), rosparam_combine_toggle),
+            srv.toggle, self.toggle_combine)
 
 
 if __name__ == "__main__":

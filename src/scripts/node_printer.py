@@ -24,14 +24,20 @@ def run():
     print("Printer running")
 
     rospy.init_node(name_node_printer)
-    rospy.Subscriber('{}/{}'.format(name_node_object_detector, topic_observations), observations, print)
-    rospy.Subscriber('{}/{}'.format(name_node_qr_detector, topic_observations), observations, print)
+    rospy.Subscriber(
+        '{}/{}'.format(name_node_object_detector, topic_observations),
+        observations, print)
+    rospy.Subscriber('{}/{}'.format(name_node_qr_detector, topic_observations),
+                     observations, print)
 
-    rospy.Subscriber('{}/{}'.format(name_node_qr_detector, topic_warnings), warning, print)
-    rospy.Subscriber('{}/{}'.format(name_node_object_detector, topic_warnings), warning, print)
+    rospy.Subscriber('{}/{}'.format(name_node_qr_detector, topic_warnings),
+                     warning, print)
+    rospy.Subscriber('{}/{}'.format(name_node_object_detector, topic_warnings),
+                     warning, print)
 
-    rospy.Subscriber('{}/{}'.format(name_node_detector_control, topic_observations), observations,
-                     printCombined)
+    rospy.Subscriber(
+        '{}/{}'.format(name_node_detector_control, topic_observations),
+        observations, printCombined)
 
     rospy.spin()
 

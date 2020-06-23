@@ -65,8 +65,9 @@ class QRReader:
             "{}/{}".format(self.name, srv_frequency), new_frequency,
             self.change_frequency)
 
-        self.toggle_service = rospy.Service("{}/{}".format(self.name, srv_toggle),
-                                            toggle, self.toggle_detection)
+        self.toggle_service = rospy.Service(
+            "{}/{}".format(self.name, srv_toggle), toggle,
+            self.toggle_detection)
 
         # Warnings are published when processing takes longer than the given period
         self.warning = rospy.Publisher(topic_warnings, warning, queue_size=50)

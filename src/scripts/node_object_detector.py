@@ -88,16 +88,16 @@ class ObjectNode:
         self.detector.score_threshold = score_threshold
 
         # Register to services
-        self.frequency_service = rospy.Service("{}/{}".format(name, srv_frequency),
-                                               srv.new_frequency,
-                                               self.change_frequency)
+        self.frequency_service = rospy.Service(
+            "{}/{}".format(name, srv_frequency), srv.new_frequency,
+            self.change_frequency)
 
-        self.toggle_service = rospy.Service("{}/{}".format(name, srv_toggle), srv.toggle,
-                                            self.toggle_detection)
+        self.toggle_service = rospy.Service("{}/{}".format(name, srv_toggle),
+                                            srv.toggle, self.toggle_detection)
 
-        self.score_service = rospy.Service("{}/{}".format(name, srv_score_treshold),
-                                           srv.score_threshold,
-                                           self.set_score_threshold)
+        self.score_service = rospy.Service(
+            "{}/{}".format(name, srv_score_treshold), srv.score_threshold,
+            self.set_score_threshold)
 
         # Warnings are published when processing takes longer than the given period
         self.warning = rospy.Publisher(topic_warnings, warning, queue_size=50)
