@@ -79,7 +79,7 @@ sudo docker run -it --rm \
 
 ### Running nodes in Docker with script file
 
-`./docker_runner.sh`
+`./docker_runner.sh`  
 
 Kills containers that are open, builds and runs containers and attaches new terminals to them.
 
