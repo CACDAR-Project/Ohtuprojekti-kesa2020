@@ -93,7 +93,7 @@ class QRReader:
                         point64(o["polygon"][1]["x"], o["polygon"][1]["y"]),
                         point64(o["polygon"][2]["x"], o["polygon"][2]["y"]),
                         point64(o["polygon"][3]["x"], o["polygon"][3]["y"])
-                    ])))
+                    ]), img.shape[0], img.shape[1]))
 
         processing_time = time.time() - self.last_detect
         if processing_time > period:
