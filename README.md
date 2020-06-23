@@ -109,16 +109,27 @@ source /opt/ros/$(rosversion -d)/setup.bash
 catkin_make
 ```
 
+Set needed parameters
+
+```console
+rosparam set konenako/camhz 30
+rosparam set konenako/combine_results True
+rosparam set konenako/testi/object_detect/detect_on True
+rosparam set konenako/testi/object_detect/frequency 42
+rosparam set konenako/testi/object_detect/label_path resources/tflite_models/mscoco_complete_labels
+rosparam set konenako/testi/object_detect/model_path resources/tflite_models/ssd_mobilenet_v1_1_metadata_1.tflite
+rosparam set konenako/testi/object_detect/score_threshold 0.3
+rosparam set konenako/video_source resources/videos/test.mp4
+```
+
 <a name="nodes"></a>
 Currently available nodes, their source files and functions:
 
-|Node    | File     | Function  |
-| ------ | -------- | --------- |
-|camera|node_camera.py|Publish a video feed to a topic|
-|object_detector|node_object_detector.py|Run a TF model on a video feed|
-|qr_detector|node_qr_detector.py|Run QR detection on a video feed|
-|rosprinter|node_printer.py|Display the result feed of all nodes|
-|rosinput|node_input.py|Send commands to nodes|
+|Node    | File     | Function  | Needed parameters |
+| ------ | -------- | --------- | ----------------- |
+|camera|node_camera.py|Publish a video feed to a topic| `TODO` |
+|detector_control_node|node_detector_control.py|Run a TF model and QR detector on a video feed| `TODO` |
+|printer|node_printer.py|Display the result feed of all nodes| `TODO` |
 
 **For each node do the following:**
 
