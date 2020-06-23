@@ -29,8 +29,10 @@ class Camera:
         rospy.init_node(name_node_camera)
         self.load_rosparams()
         self.initialize_rostopics()
-    
+
     def initialize_rostopics(self):
+        # Creates topic named "node_name/images" (from constants.topic_images) where
+        # image/video source is being published as an image message.
         # We only want to process the latest frame, and Publisher's queue is
         # FIFO (?), thus queue_size is set to 1.
         self.pub = rospy.Publisher("{}/{}".format(rospy.get_name(), topic_images),
@@ -42,12 +44,16 @@ class Camera:
         self.source = self.load_rosparam(rosparam_video_source)
         # Variable containing the refresh rate
         self.hz = self.load_rosparam(rosparam_camera_hz)
+
         # Use custom video feed if available as rosparam
         if rospy.has_param(rosparam_video_feed_name):
             self.feed_name = rospy.get_param(rosparam_video_feed_name)
         else:
             self.feed_name = self.source
 
+    ## Helper function for loading rosparams.
+    # Polls with intervals from constants.rosparam_poll_interval
+    # until rosparam is found and returns the value.
     def load_rosparam(self, rosparam_name: str) -> str:
         while not rospy.has_param(rosparam_name):
             print(
@@ -57,8 +63,6 @@ class Camera:
         return rospy.get_param(rosparam_name)
 
     ## Main function for camera node.
-    #  Creates topic named "node_name/images" where image/video source
-    #  is being published as an image message.
     def run(self):
         # Counter for identifying the frames
         counter = 1
