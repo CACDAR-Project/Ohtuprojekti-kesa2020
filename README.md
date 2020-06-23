@@ -58,6 +58,7 @@ We also provide already configured Dockerfiles for both x86-64 and armv7 archite
 
 ### Running with roslaunch
 ```sudo docker network create rosnet```
+
 ```sudo docker build -t konenako .```
 ```
 sudo docker run -it --rm \
@@ -74,20 +75,6 @@ sudo docker run -it --rm \
     --env ROS_MASTER_URI=http://master:11311 \
     -t konenako bash -c "cd src/ohtu && poetry run /bin/bash -c 'source ../../devel/setup.bash && ROS_HOME=/catkin_ws/src/ohtu roslaunch test.launch'"
 ```
-
-
-
-### Running nodes in Docker with script file
-
-`./docker_runner.sh`  
-
-Kills containers that are open, builds and runs containers and attaches new terminals to them.
-
-### Running nodes locally with script file
-
-`./runner.sh`
-
-Deletes `catkin_ws`-folder creates catkin workspace and opens nodes in new gnome terminals.
 
 ### Running individual nodes locally
 
