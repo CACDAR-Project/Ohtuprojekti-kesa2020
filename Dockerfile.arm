@@ -25,4 +25,4 @@ RUN poetry install -vvv --no-dev
 COPY . /catkin_ws/src/ohtu/
 WORKDIR /catkin_ws
 RUN /bin/bash -c "source /opt/ros/melodic/setup.bash && catkin_make"
-CMD cd /catkin_ws/src/ohtu && poetry run /bin/bash -c 'source ../../devel/setup.bash && ROS_HOME=/catkin_ws/src/ohtu/src roslaunch test.launch'
+CMD cd /catkin_ws/src/ohtu && poetry run /bin/bash -c 'source ../../devel/setup.bash && ROS_HOME=/catkin_ws/src/ohtu roslaunch test.launch'
