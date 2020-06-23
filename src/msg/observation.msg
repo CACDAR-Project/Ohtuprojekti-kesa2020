@@ -6,3 +6,4 @@ boundingbox bbox
 polygon pol
 uint16 img_height
 uint16 img_width
+uint16 img_channels
