@@ -46,8 +46,9 @@ class QRReader:
 
     def receive_img(self, img):
         # Detect from this image, if not already detecting from another image and within period time constraints
-        if (time.time() - self.last_detect
-            ) > self.period and self.detect_lock.acquire(False):
+        if self.detect_on and (
+                time.time() - self.last_detect
+        ) > self.period and self.detect_lock.acquire(False):
             return self.detect(img)
         return []
 
@@ -93,7 +94,7 @@ class QRReader:
                         point64(o["polygon"][1]["x"], o["polygon"][1]["y"]),
                         point64(o["polygon"][2]["x"], o["polygon"][2]["y"]),
                         point64(o["polygon"][3]["x"], o["polygon"][3]["y"])
-                    ])))
+                    ]), img.shape[0], img.shape[1]))
 
         processing_time = time.time() - self.last_detect
         if processing_time > period:
