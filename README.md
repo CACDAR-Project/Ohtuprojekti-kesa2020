@@ -56,17 +56,19 @@ We also provide already configured Dockerfiles for both x86-64 and armv7 archite
 
 ## Running the application
 
-### Running with roslaunch
-```sudo docker network create rosnet```
-```sudo docker build -t konenako .```
-```
+### Running with docker
+
+`sudo docker network create rosnet`
+
+`sudo docker build -t konenako .`
+```console
 sudo docker run -it --rm \
 --net rosnet \
 --name master \
 ros:melodic-ros-core \
 roscore
 ```
-```
+```console
 sudo docker run -it --rm \
     --net rosnet \
     --name asd \
@@ -74,62 +76,37 @@ sudo docker run -it --rm \
     --env ROS_MASTER_URI=http://master:11311 \
     -t konenako bash -c "cd src/ohtu && poetry run /bin/bash -c 'source ../../devel/setup.bash && ROS_HOME=/catkin_ws/src/ohtu roslaunch test.launch'"
 ```
+or with script `./docker_runner.sh`
 
+### Running locally 
 
+Inside repository's root directory:
 
-### Running nodes in Docker with script file
-
-`./docker_runner.sh`
-
-Kills containers that are open, builds and runs containers and attaches new terminals to them.
-
-### Running nodes locally with script file
-
-`./runner.sh`
-
-Deletes `catkin_ws`-folder creates catkin workspace and opens nodes in new gnome terminals.
-
-### Running individual nodes locally
-
-#### Setup
-
-[Setup ROS catkin workspace](https://wiki.ros.org/catkin/Tutorials/create_a_workspace), `git clone` this repository to `catkin_ws/src/` and build the catkin workspace by running 'catkin_make'.
-```
-cd ~/catkin_ws/src/
-git clone git@github.com:Konenako/Ohtuprojekti-kesa2020.git
-cd Ohtuprojekti-kesa2020
-catkin_make -C ../../
-```
-
-If you haven't already, install the dependencies with poetry.
-```
-poetry install
-```
-
-Enter the virtual environment.
-```
+```console
+poetry install --no-dev
 poetry shell
+source /opt/ros/$(rosversion -d)/setup.bash
+catkin_make
+source devel/setup.bash
+ROS_HOME=`pwd` roslaunch test.launch
 ```
+or with script
+`./check_run.sh`
 
-Source the catkin workspace (must be done after entering the virtual environment).
-```
-source ../../devel/setup.bash
-```
+### Running nodes individually
 
-#### Running nodes
+**All the instructions in this section presume you are in the repository's root directory.**
 
-All the instructions in this section presume you are in the poetry shell, have sourced the setup.bash file and are in the repository's src directory (catkin_ws/src/Ohtuprojekti-kesa2020/src/).
-
-
-For the ROS nodes to communicate, roscore must be running on the system.
-
-```
+For the ROS nodes to communicate, roscore must be running on the system. So make sure it is running
+```console
 roscore
 ```
 
-All the other nodes can be started using rosrun to run the respective python file.
-```
-rosrun konenako node_xxx.py
+In another terminal setup catkin workspace inside project folder
+```console
+cd /path/to/project/folder
+source /opt/ros/$(rosversion -d)/setup.bash
+catkin_make
 ```
 
 <a name="nodes"></a>
@@ -143,8 +120,24 @@ Currently available nodes, their source files and functions:
 |rosprinter|node_printer.py|Display the result feed of all nodes|
 |rosinput|node_input.py|Send commands to nodes|
 
+**For each node do the following:**
 
-### Commands for virtual environment
+Open up new terminal and go to project folder.
+
+Create and activate virtual environment and source catkin files
+```console
+cd /path/to/project/folder
+poetry install
+poetry shell
+source devel/setup.bash
+```
+
+Start any node listed above by running the respective python file with rosrun.
+```
+rosrun konenako node_xxx.py
+```
+
+## Commands for virtual environment
 [poetry](https://github.com/python-poetry/poetry) is used for managing dependencies
 
 #### Creating virtual environment for development
