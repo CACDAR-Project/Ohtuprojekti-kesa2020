@@ -56,6 +56,12 @@ We also provide already configured Dockerfiles for both x86-64 and armv7 archite
 
 ## Running the application
 
+Running program/nodes locally requires [installing ROS](http://wiki.ros.org/ROS/Installation) 
+Running program/nodes locally [requires installing](https://docs.docker.com/engine/install/ubuntu/)
+
+
+Instructions should work at least on Ubuntu.
+
 ### Running with docker
 
 `sudo docker network create rosnet`
@@ -76,7 +82,7 @@ sudo docker run -it --rm \
     --env ROS_MASTER_URI=http://master:11311 \
     -t konenako bash -c "cd src/ohtu && poetry run /bin/bash -c 'source ../../devel/setup.bash && ROS_HOME=/catkin_ws/src/ohtu roslaunch test.launch'"
 ```
-or with script `./docker_runner.sh`
+~~or with script `./docker_runner.sh`~~ _TODO_
 
 ### Running locally 
 
@@ -90,8 +96,7 @@ catkin_make
 source devel/setup.bash
 ROS_HOME=`pwd` roslaunch test.launch
 ```
-or with script
-`./check_run.sh`
+~~or with script `./check_run.sh`~~ _TODO_
 
 ### Running nodes individually
 
