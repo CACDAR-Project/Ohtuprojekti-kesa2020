@@ -20,7 +20,6 @@ interrupted = False
 
 ## Catches received signals and sets the global variable interrupted to True for stopping the node.
 def handle_signal_stop(signum, frame):
-    print(f'[INFO] Received signal: {signum}. Exiting..')
     global interrupted
     interrupted = True
 
