@@ -101,16 +101,7 @@ class DetectorControlNode:
         self.detect_lock.acquire()
         # temporary, TODO: replace with parameter based ?
         for kp in rospy.get_param("testi", {}).items():
-            # TODO: model and label _path should be renamed to _file
-            # TODO: If we actually need the parameter expansion, then we need to
-            #       map the model_path and label_path items in the dict.
-            self.detectors[kp[0]] = ObjectNode(name=kp[0],
-                                               model_path=kp[1]['model_path'],
-                                               label_path=kp[1]['label_path'],
-                                               frequency=kp[1]['frequency'],
-                                               detect_on=kp[1]['detect_on'],
-                                               score_threshold=kp[1]['score_threshold']
-            )
+            self.detectors[kp[0]] = ObjectNode(name=kp[0], **kp[1])
 
         self.detectors["QR"] = QRReader()
         self.detect_lock.release()
