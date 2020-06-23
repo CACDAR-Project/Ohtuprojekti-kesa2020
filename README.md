@@ -89,10 +89,10 @@ sudo docker run -it --rm \
 Inside repository's root directory:
 
 ```console
-poetry install --no-dev
-poetry shell
 source /opt/ros/$(rosversion -d)/setup.bash
 catkin_make
+poetry install --no-dev
+poetry shell
 source devel/setup.bash
 ROS_HOME=`pwd` roslaunch test.launch
 ```
