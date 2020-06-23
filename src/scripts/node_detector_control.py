@@ -9,7 +9,7 @@ from konenako.msg import image, observations
 import konenako.srv as srv
 import rospy
 from helpers.image_converter import msg_to_cv2
-from config.constants import tflite_path, name_node_detector_control, name_node_camera, topic_images, topic_observations, srv_add_object_detector, srv_rm_object_detector, rosparam_poll_interval, rosparam_combine_results, rosparam_combine_toggle
+from config.constants import name_node_detector_control, name_node_camera, topic_images, topic_observations, srv_add_object_detector, srv_rm_object_detector, rosparam_poll_interval, rosparam_combine_results, rosparam_combine_toggle
 
 
 
@@ -43,10 +43,7 @@ class DetectorControlNode:
             return
 
         # Initialize new detector outside Lock for quicker Lock releasing
-        detector_to_add = ObjectNode(
-            msg.name, '{}/{}'.format(tflite_path, msg.model_path),
-            '{}/{}'.format(tflite_path,
-                           msg.label_path))
+        detector_to_add = ObjectNode(msg.name, msg.model_path, msg.label_path)
 
         self.detect_lock.acquire()
         self.detectors[msg.name] = detector_to_add
@@ -107,15 +104,13 @@ class DetectorControlNode:
             # TODO: model and label _path should be renamed to _file
             # TODO: If we actually need the parameter expansion, then we need to
             #       map the model_path and label_path items in the dict.
-            model_path = '{}/{}'.format(tflite_path, kp[1]['model_path'])
-            label_path = '{}/{}'.format(tflite_path, kp[1]['label_path'])
             self.detectors[kp[0]] = ObjectNode(name=kp[0],
-                                               model_path=model_path,
-                                               label_path=label_path,
+                                               model_path=kp[1]['model_path'],
+                                               label_path=kp[1]['label_path'],
                                                frequency=kp[1]['frequency'],
                                                detect_on=kp[1]['detect_on'],
                                                score_threshold=kp[1]['score_threshold']
-                                               )
+            )
 
         self.detectors["QR"] = QRReader()
         self.detect_lock.release()
