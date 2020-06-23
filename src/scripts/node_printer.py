@@ -5,6 +5,10 @@
 
 from konenako.msg import observation, observations, warning
 from std_msgs.msg import String
+# Node names
+from config.constants import name_node_printer, name_node_detector_control, name_node_object_detector, name_node_qr_detector
+# Topic names
+from config.constants import topic_observations, topic_warnings
 
 import rospy
 
@@ -19,14 +23,14 @@ def printCombined(msg):
 def run():
     print("Printer running")
 
-    rospy.init_node("printer")
-    rospy.Subscriber("object_detector/observations", observations, print)
-    rospy.Subscriber("qr_detector/observations", observations, print)
+    rospy.init_node(name_node_printer)
+    rospy.Subscriber('{}/{}'.format(name_node_object_detector, topic_observations), observations, print)
+    rospy.Subscriber('{}/{}'.format(name_node_qr_detector, topic_observations), observations, print)
 
-    rospy.Subscriber("qr_detector/qr_warnings", warning, print)
-    rospy.Subscriber("object_detector/warnings", warning, print)
+    rospy.Subscriber('{}/{}'.format(name_node_qr_detector, topic_warnings), warning, print)
+    rospy.Subscriber('{}/{}'.format(name_node_object_detector, topic_warnings), warning, print)
 
-    rospy.Subscriber("detector_control_node/observations", observations,
+    rospy.Subscriber('{}/{}'.format(name_node_detector_control, topic_observations), observations,
                      printCombined)
 
     rospy.spin()

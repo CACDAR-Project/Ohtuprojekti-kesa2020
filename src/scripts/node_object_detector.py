@@ -12,6 +12,7 @@ from typing import List
 from konenako.msg import observation, observations, boundingbox, polygon, image, warning
 import konenako.srv as srv
 from detector.object_detector import ObjectDetector
+from config.constants import srv_frequency, srv_toggle, srv_score_treshold, topic_warnings
 
 
 ## Class for detecting objects in images.
@@ -86,19 +87,20 @@ class ObjectNode:
         self.detector = ObjectDetector(model_path, label_path)
         self.detector.score_threshold = score_threshold
 
-        self.frequency_service = rospy.Service("{}/frequency".format(name),
+        # Register to services
+        self.frequency_service = rospy.Service("{}/{}".format(name, srv_frequency),
                                                srv.new_frequency,
                                                self.change_frequency)
 
-        self.toggle_service = rospy.Service("{}/toggle".format(name),
-                                            srv.toggle, self.toggle_detection)
+        self.toggle_service = rospy.Service("{}/{}".format(name, srv_toggle), srv.toggle,
+                                            self.toggle_detection)
 
-        self.score_service = rospy.Service("{}/score_threshold".format(name),
+        self.score_service = rospy.Service("{}/{}".format(name, srv_score_treshold),
                                            srv.score_threshold,
                                            self.set_score_threshold)
 
         # Warnings are published when processing takes longer than the given period
-        self.warning = rospy.Publisher("warnings", warning, queue_size=50)
+        self.warning = rospy.Publisher(topic_warnings, warning, queue_size=50)
 
     ## Detects image, if not already detecting from another
     #  image and enough time has passed since the previous detection.
