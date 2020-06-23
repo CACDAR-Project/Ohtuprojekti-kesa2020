@@ -22,6 +22,10 @@ class DetectorControlNode:
             self.combine))
 
     def remove_object_detector(self, msg):
+        if not msg.name or not msg.name in self.detectors:
+            # @TODO: print/publish error message
+            return
+
         # Store detector to remove for quicker Lock releasing
         detector_to_remove = self.detectors[msg.name]
 
@@ -34,6 +38,10 @@ class DetectorControlNode:
         return srv.remove_object_detectorResponse()
 
     def add_object_detector(self, msg):
+        if not msg.model_path or not msg.label_path:
+            # @TODO: print/publish error message
+            return
+
         # Initialize new detector outside Lock for quicker Lock releasing
         detector_to_add = ObjectNode(
             msg.name, '{}/{}'.format(tflite_path, msg.model_path),
