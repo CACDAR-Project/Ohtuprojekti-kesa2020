@@ -56,8 +56,8 @@ We also provide already configured Dockerfiles for both x86-64 and armv7 archite
 
 ## Running the application
 
-Running program/nodes locally requires [installing ROS](http://wiki.ros.org/ROS/Installation) 
-Running program/nodes locally [requires installing](https://docs.docker.com/engine/install/ubuntu/)
+Running program/nodes locally requires [installing ROS](http://wiki.ros.org/ROS/Installation).
+Running program/nodes with docker requires [installing Docker](https://docs.docker.com/engine/install/ubuntu/).
 
 
 Instructions should work at least on Ubuntu.
