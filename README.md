@@ -153,6 +153,33 @@ Start any node listed above by running the respective python file with rosrun.
 ROS_NAMESPACE=konenako rosrun konenako node_xxx.py
 ```
 
+## Using ROS-services with terminal
+
+Source needed files:
+```source dir/to/catkin_workspace/devel/setup.bash```
+
+Run `rosservice list` to get list of available services. Example:
+```console
+user@computer:~$ rosservice list
+/konenako/camera/get_loggers
+/konenako/camera/set_logger_level
+/konenako/detector_control_node/add_object_detector
+/konenako/detector_control_node/combine_toggle
+```
+
+Run `rosservice args /some/ROS/service` to get arguments for service. Example:
+```console
+user@computer:~$ rosservice args /konenako/detector_control_node/combine_toggle
+state
+```
+
+Run `rosservice call /some/ROS/service [arguments...]` to call service with some arguments. Example:
+
+```console
+user@computer:~$ rosservice call /konenako/detector_control_node/combine_toggle true
+response: "Combining results set to True"
+```
+
 ## Commands for virtual environment
 [poetry](https://github.com/python-poetry/poetry) is used for managing dependencies
 
