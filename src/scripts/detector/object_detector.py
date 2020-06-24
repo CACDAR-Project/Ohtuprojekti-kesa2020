@@ -57,7 +57,7 @@ class ObjectNode:
             self.detect_on))
 
     def set_score_threshold(self, msg):
-        self.detector.score_threshold = msg.score_threshold
+        self.detector.score_threshold = msg.score
         return srv.score_thresholdResponse()
 
     def get_labels(self) -> List[str]:
