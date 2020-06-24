@@ -4,6 +4,10 @@
 #  @package scripts
 
 from konenako.srv import new_frequency, toggle, add_object_detector, remove_object_detector, add_object_detectorResponse, remove_object_detectorResponse
+# Names
+from config.constants import name_node_input, name_node_object_detector, name_node_detector_control, name_ros_pkg, name_det_qr
+# Services names
+from config.constants import srv_toggle, srv_add_object_detector, srv_combine_toggle, srv_frequency, srv_rm_object_detector
 import rospy
 import threading
 
@@ -11,6 +15,7 @@ import threading
 
 ## Dictionary for holding the various callable serviceproxies
 services = dict()
+lock = threading.Lock()
 
 
 ## Sends a new frequency with frequency_changer and prints the received response.
@@ -37,7 +42,6 @@ def send_OD_toggle():
     name = input()
     print("Give something for on, empty for off!")
     inp = bool(input())
-    print(inp)
     response = services[f'/{name}/toggle'](inp)
     print("Received response: " + response.response)
 
@@ -73,76 +77,104 @@ def send_detector_remove():
 ## Function running in loop waiting for command to send message
 def run():
     commands = {
-        '1': send_frequency,
-        '2': send_qr_frequency,
-        '3': send_OD_toggle,
-        '4': send_combine_toggle,
-        '5': send_detector_add,
-        '6': send_detector_remove
+        '1': ('1 for changing object detection frequency', send_frequency),
+        '2': ('2 for changing QR code detection frequency', send_qr_frequency),
+        '3': ('3 for toggling object detection on or off', send_OD_toggle),
+        '4': ('4 for toggling result combining', send_combine_toggle),
+        '5': ('5 for adding detectors', send_detector_add),
+        '6': ('6 for removing detectors', send_detector_remove)
     }
-    commands_instruction = '\n'.join(
-        ('Give command.', "1 for changing object detection frequency,",
-         "2 for changing QR code detection frequency,",
-         "3 for toggling object detection on or off,",
-         "4 for toggling result combining,", "5 for adding detectors,",
-         "6 for removing detectors,", "q for shutting off this input node:"))
 
     while not rospy.is_shutdown():
+        print("Give command.")
+        for i in sorted(commands.keys()):
+            print(commands[str(i)][0])
 
-        print(commands_instruction)
+        # Print found services
+        print()
+        print('---')
+        print('DEBUG, loaded services! [Refresh list with enter]')
+        for s in services:
+            print(s)
+        print('---')
+        print()
+        # -----------
+
+        print('q for shutting off this input node:')
+
         inp = input()
 
         if inp == 'q':
             return
 
         # Catch errors if a node is not running
+        lock.acquire()
         try:
             if not inp in commands:
                 print("Command not recognized!")
             else:
-                commands[inp]()
+                commands[inp][1]()
         except Exception as ex:
             print("Got exception:", ex)
+        finally:
+            lock.release()
 
 
 ## Initializes services and sets callable functions in the dictionary
 def initialize_service(service_name: str, service_fun) -> None:
     print(f'[INFO] Waiting for service \'{service_name}\'')
     rospy.wait_for_service(service_name)
+    # Debug printline
+    #print(f'[INFOINFOINFO] found srv {service_name}, trying to subscribe')
+    lock.acquire()
     services[service_name] = rospy.ServiceProxy(service_name, service_fun)
+    lock.release()
     print(f'[INFO] Service \'{service_name}\' found')
 
 
-## Initialized variables containing services
 def init():
-    # TODO: import all variables from config/constants.py
-    rospy.init_node("input")
+    rospy.init_node(name_node_input)
 
     print("Initializing services")
-
-    oNode = "/object_detector"
-    qrNode = "/QR"
-    cNode = "/detector_control_node"
-
     # Use threading for initializing services, thread will run until service is found or node is shut down
-    s1 = threading.Thread(target=initialize_service,
-                          args=(f'{cNode}/combine_toggle', toggle),
-                          daemon=True)
-    s2 = threading.Thread(target=initialize_service,
-                          args=(f'{qrNode}/frequency', new_frequency),
-                          daemon=True)
-    s3 = threading.Thread(target=initialize_service,
-                          args=(f'{cNode}/add_object_detector',
-                                add_object_detector),
-                          daemon=True)
-    s4 = threading.Thread(target=initialize_service,
-                          args=(f'{cNode}/remove_object_detector',
-                                remove_object_detector),
-                          daemon=True)
-    s1.start()
-    s2.start()
-    s3.start()
-    s4.start()
+    services = list()
+    services.append(
+        threading.Thread(
+            target=initialize_service,
+            args=
+            (f'/{name_ros_pkg}/{name_node_detector_control}/{srv_combine_toggle}',
+             toggle),
+            daemon=True))
+    services.append(
+        threading.Thread(
+            target=initialize_service,
+            args=(f'/{name_ros_pkg}/{name_det_qr}/{srv_frequency}',
+                  new_frequency),
+            daemon=True))
+    services.append(
+        threading.Thread(
+            target=initialize_service,
+            args=
+            (f'/{name_ros_pkg}/{name_node_detector_control}/{srv_add_object_detector}',
+             add_object_detector),
+            daemon=True))
+    services.append(
+        threading.Thread(
+            target=initialize_service,
+            args=
+            (f'/{name_ros_pkg}/{name_node_detector_control}/{srv_rm_object_detector}',
+             remove_object_detector),
+            daemon=True))
+
+    # The name 'object_detect' is hardcoded in test.launch param name="test" type="yaml" value="object_detect"....
+    # Also fails with -> python2 ja 3 errors and finally: AttributeError: 'function' object has no attribute '_request_class'
+    #services.append(threading.Thread(target=initialize_service,
+    #                      args=(f'/{name_ros_pkg}/object_detect/{srv_toggle}', send_OD_toggle),
+    #                      daemon=True))
+
+    # Run all threads
+    for s in services:
+        s.start()
 
 
 if __name__ == "__main__":
