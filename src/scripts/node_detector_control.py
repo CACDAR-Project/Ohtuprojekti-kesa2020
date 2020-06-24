@@ -55,7 +55,7 @@ class DetectorControlNode:
         # Get observations from all active nodes
         self.detect_lock.acquire()
         observations_mapobj =  map(
-            lambda node: tuple(node.receive_img(img)), self.detectors.values()
+            lambda node: node.receive_img(img), self.detectors.values()
         )
         self.detect_lock.release()
         
@@ -63,12 +63,13 @@ class DetectorControlNode:
         # If combining is off, each node publishes the results separately.
         if not self.combine:
             for obs in observations_mapobj:
+                obs = tuple(obs)
                 if not obs:
                     # Dont publish empty observations
                     continue
 
                 self.pub.publish(
-                    observations(msg.camera_id, msg.image_counter, tuple(obs))
+                    observations(msg.camera_id, msg.image_counter, obs)
                 )
             return
         
