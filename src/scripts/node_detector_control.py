@@ -49,47 +49,57 @@ class DetectorControlNode:
         self.detect_lock.release()
         return srv.add_object_detectorResponse()
 
+    ## Publishes image observations by calling helper functions
+    #  Observations can be published separately or combined
     def receive_img(self, msg: image):
+        # Call helper function depending on boolean
+        if self.combine:
+            self.publish_combined(msg)
+        else:
+            self.publish_separately(msg)        
+
+    ## Helper function for publishing observations.
+    #  Iterates trough all detectors and publishes the
+    #  observations directly.
+    #  Locks self.detect_lock for iterating the dict.
+    def publish_separately(self, msg: image) -> None:
+        img = msg_to_cv2(msg)[2]
+        
+        self.detect_lock.acquire()
+        for node in self.detectors.values():
+            obs = tuple(node.receive_img(img))
+            # Dont publish empty observations
+            if not obs: continue
+
+            self.pub.publish(
+                observations(msg.camera_id, msg.image_counter, obs)
+            )
+        self.detect_lock.release()
+
+    ## Helper function for publishing observations.
+    #  Maps all detectors results before processing the observations.
+    #  and finally publishes them all in one message.
+    #  Locks self.detect_lock while mapping the detections.
+    def publish_combined(self, msg: image) -> None:
         img = msg_to_cv2(msg)[2]
 
-        # Get observations from all active nodes
         self.detect_lock.acquire()
         observations_mapobj =  map(
             lambda node: node.receive_img(img), self.detectors.values()
         )
         self.detect_lock.release()
         
-
-        # If combining is off, each node publishes the results separately.
-        if not self.combine:
-            for obs in observations_mapobj:
-                obs = tuple(obs)
-                if not obs:
-                    # Dont publish empty observations
-                    continue
-
-                self.pub.publish(
-                    observations(msg.camera_id, msg.image_counter, obs)
-                )
-            return
-        
-        
-        # If combining is on, publish all the results at once.
-
         # Flatten observations for combined observations message
-        obser = (obs for observations_mapobj in observations_mapobj for obs in observations_mapobj)
-        
-        obser = tuple(obser)
+        obs = (obs for observations_mapobj in observations_mapobj for obs in observations_mapobj)
+        obs = tuple(obs)
 
         # Dont publish empty observations
-        if not obser:
+        if not obs:
             return
         
         self.pub.publish(
-            observations(msg.camera_id, msg.image_counter, obser)
+            observations(msg.camera_id, msg.image_counter, obs)
         )
-        
-        
 
     def __init__(self):
         # Locked when self.detectors is altered or iterated
