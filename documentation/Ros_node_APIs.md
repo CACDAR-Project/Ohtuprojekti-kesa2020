@@ -20,6 +20,10 @@
   * [detector_name]/toggle
     * Toggles detections with the specified detector
       * state (bool)
+
+* detector_control_node/labels
+  * returns a list of the objects current detectors can recognise
+  	* labels (string array)
       
 ### Topics
 
