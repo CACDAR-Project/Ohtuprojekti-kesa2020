@@ -86,7 +86,7 @@ class DetectorControlNode:
             return
         
         self.pub.publish(
-            observations(msg.camera_id, msg.image_counter, tuple(obser))
+            observations(msg.camera_id, msg.image_counter, obser)
         )
         
         
