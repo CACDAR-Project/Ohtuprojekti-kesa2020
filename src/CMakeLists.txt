@@ -66,6 +66,7 @@ add_service_files(
   add_object_detector.srv
   remove_object_detector.srv
   score_threshold.srv
+  labels.srv
 )
 
 ## Generate actions in the 'action' folder

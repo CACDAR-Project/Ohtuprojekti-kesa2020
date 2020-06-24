@@ -60,6 +60,9 @@ class ObjectNode:
         self.detector.score_threshold = msg.score_threshold
         return srv.score_thresholdResponse()
 
+    def get_labels(self) -> List[str]:
+        return self.detector.get_labels()
+
     ## Initializes topics and services and sets class variable detect_on to true
     def __init__(self,
                  name,

@@ -28,6 +28,9 @@ class TensorFlowDetector:
         self.input_details = self.interpreter.get_input_details()
         self.output_details = self.interpreter.get_output_details()
 
+    def get_labels(self) -> List[str]:
+        return self.labels
+
     # Input BGR from OpenCV
     def detect(self, img):
         # Prepare the input

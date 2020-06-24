@@ -9,7 +9,7 @@ from konenako.msg import image, observations
 import konenako.srv as srv
 import rospy
 from helpers.image_converter import msg_to_cv2
-from config.constants import name_node_detector_control, name_node_camera, topic_images, topic_observations, srv_add_object_detector, srv_rm_object_detector, rosparam_poll_interval, rosparam_combine_results, rosparam_combine_toggle
+from config.constants import name_node_detector_control, name_node_camera, topic_images, topic_observations, srv_add_object_detector, srv_rm_object_detector, rosparam_poll_interval, rosparam_combine_results, rosparam_combine_toggle, srv_labels
 
 
 class DetectorControlNode:
@@ -19,6 +19,14 @@ class DetectorControlNode:
         self.combine = msg.state
         return srv.toggleResponse("Combining results set to {}".format(
             self.combine))
+
+    def get_labels(self, msg):
+        labels = set()
+        self.detect_lock.acquire()
+        for node in self.detectors.values():
+            labels.update(node.get_labels())
+        self.detect_lock.release()
+        return srv.labelsResponse(labels)
 
     def remove_object_detector(self, msg):
         if not msg.name or not msg.name in self.detectors:
@@ -144,6 +152,9 @@ class DetectorControlNode:
         rospy.Service(
             '{}/{}'.format(rospy.get_name(), rosparam_combine_toggle),
             srv.toggle, self.toggle_combine)
+
+        rospy.Service('{}/{}'.format(rospy.get_name(), srv_labels), srv.labels,
+                      self.get_labels)
 
 
 if __name__ == "__main__":
