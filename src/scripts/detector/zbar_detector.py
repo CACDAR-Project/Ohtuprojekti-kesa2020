@@ -4,7 +4,6 @@ from pyzbar.pyzbar import ZBarSymbol
 
 
 def detect(img):
-    print('zbar')
     height = img.shape[0]
     width = img.shape[1]
 
