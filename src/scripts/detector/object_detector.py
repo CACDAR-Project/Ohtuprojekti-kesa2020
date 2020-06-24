@@ -1,67 +1,149 @@
+#!/usr/bin/env python3.7
+
+## Provides functionality for detecting objects from images and publish observations to a topic
+#  https://github.com/opencv/opencv/wiki/TensorFlow-Object-Detection-API
+#  @package scripts
+
 import cv2 as cv
-import tensorflow as tf
-import numpy as np
+import rospy
+import time
+import threading
 from typing import List
+from konenako.msg import observation, observations, boundingbox, polygon, image, warning
+import konenako.srv as srv
+from detector.tensorflow_detector import TensorFlowDetector
+from config.constants import srv_frequency, srv_toggle, srv_score_treshold, topic_warnings
 
 
-class ObjectDetector:
-    labels: List[str]
-    interpreter: tf.lite.Interpreter
-    score_threshold = 0.3
+## Class for detecting objects in images.
+#  Reads an image stream from a ROS topic, detects objects in the
+#  frames using a Tensorflow Lite model and publishes the results in a topic.
+class ObjectNode:
+    ## Lock used to ensure thread safety when changing frequency
+    frequency_change_lock = threading.Lock()
 
-    def __init__(self, model_path: str, labels_path: str):
-        self.load_model(model_path)
-        self.load_labels(labels_path)
+    ## Class variable containing time of last detection. Used and modified in several functions.
+    last_detect = 0
 
-    def load_labels(self, label_path: str) -> None:
-        self.labels = []
-        with open(label_path) as f:
-            while True:
-                line = f.readline().rstrip()
-                if len(line) == 0:  # File ends
-                    break
-                self.labels.append(line)
+    ## Lock used to ensure that detections are not being done simultaneously.
+    detect_lock = threading.Lock()
 
-    def load_model(self, model_path: str) -> None:
-        self.interpreter = tf.lite.Interpreter(model_path)
-        self.interpreter.allocate_tensors()
-        self.input_details = self.interpreter.get_input_details()
-        self.output_details = self.interpreter.get_output_details()
+    def remove(self):
+        # Close services and topics
+        self.warning.unregister()
+        self.toggle_service.shutdown()
+        self.frequency_service.shutdown()
+        self.score_service.shutdown()
 
-    # Input BGR from OpenCV
+    ## Set a new frequency for the object detection.
+    #  @param new_frequency The new frequency in hz as a new_frequency.srv message.
+    #  @return Confirmation string as a new_frequencyResponse.srv message.
+    def change_frequency(
+            self,
+            new_frequency: srv.new_frequency) -> srv.new_frequencyResponse:
+        with self.frequency_change_lock:
+            self.period = 1.0 / new_frequency.data
+            return srv.new_frequencyResponse(
+                "Object detector freq set to period {}".format(self.period))
+
+    def toggle_detection(self, toggle):
+        if self.detect_on == toggle.state:
+            return srv.toggleResponse(
+                "Object detection was already toggled to {}".format(
+                    self.detect_on))
+
+        self.detect_on = toggle.state
+        return srv.toggleResponse("Object detection toggled to {}".format(
+            self.detect_on))
+
+    def set_score_threshold(self, msg):
+        self.detector.score_threshold = msg.score_threshold
+        return srv.score_thresholdResponse()
+
+    ## Initializes topics and services and sets class variable detect_on to true
+    def __init__(self,
+                 name,
+                 model_path,
+                 label_path,
+                 frequency=5,
+                 detect_on=True,
+                 score_threshold=0.3):
+        self.name = name
+        # Attempt to get configuration parameters from the ROS parameter server
+        self.detect_on = detect_on
+        #if not rospy.has_param("model_file"):
+        #    raise Exception(
+        #        "A model file must be specified as a ROS parameter")
+        #if not rospy.has_param("label_file"):
+        #    raise Exception(
+        #        "A label file must be specified as a ROS parameter")
+        #self.model_file = rospy.get_param("model_file")
+        #self.label_file = rospy.get_param("label_file")
+
+        ## Frequency in hertz
+        self.period = 1 / frequency
+
+        ## Helper class used for detecting objects
+        self.detector = TensorFlowDetector(model_path, label_path)
+        self.detector.score_threshold = score_threshold
+
+        # Register to services
+        self.frequency_service = rospy.Service(
+            "{}/{}".format(name, srv_frequency), srv.new_frequency,
+            self.change_frequency)
+
+        self.toggle_service = rospy.Service("{}/{}".format(name, srv_toggle),
+                                            srv.toggle, self.toggle_detection)
+
+        self.score_service = rospy.Service(
+            "{}/{}".format(name, srv_score_treshold), srv.score_threshold,
+            self.set_score_threshold)
+
+        # Warnings are published when processing takes longer than the given period
+        self.warning = rospy.Publisher(topic_warnings, warning, queue_size=50)
+
+    ## Detects image, if not already detecting from another
+    #  image and enough time has passed since the previous detection.
+    def receive_img(self, img):
+        # Detect from this image, if not already detecting from another image and within period time constraints
+        if self.detect_on and (
+                time.time() - self.last_detect
+        ) > self.period and self.detect_lock.acquire(False):
+            return self.detect(img)
+        return []
+
+    ## Builds observation messages and publishes them.
+    #  Prints a warning if time between detections grows too large.
+    #  @todo Announce "warnings" to a topic
+    #
+    #  @param img cv2 image
+    #  @return observations ROS message of the detections.
     def detect(self, img):
-        # Prepare the input
-        inp = cv.resize(img, (self.input_details[0]['shape'][1],
-                              self.input_details[0]['shape'][2]))
-        inp = inp[:, :, [2, 1, 0]]  # BGR2RGB
-        inp = np.expand_dims(inp, axis=0)
+        # For tracking the frequency
+        self.last_detect = time.time()
+        period = self.period
+        # Convert the image back from an image message to a numpy ndarray
+        observation_list = []
 
-        # Run the model
-        self.interpreter.set_tensor(self.input_details[0]['index'], inp)
-        self.interpreter.invoke()
+        for detection in self.detector.detect(img):
+            observation_list.append(
+                observation(
+                    self.name, detection["class_id"], detection["label"],
+                    detection["score"],
+                    boundingbox(detection["bbox"]["top"],
+                                detection["bbox"]["right"],
+                                detection["bbox"]["bottom"],
+                                detection["bbox"]["left"]), polygon(0, []),
+                    img.shape[0], img.shape[1]))
 
-        # Read results from tensors
-        boxes = self.interpreter.get_tensor(self.output_details[0]['index'])[0]
-        classes = self.interpreter.get_tensor(
-            self.output_details[1]['index'])[0]
-        scores = self.interpreter.get_tensor(
-            self.output_details[2]['index'])[0]
+        processing_time = time.time() - self.last_detect
+        if processing_time > period:
+            self.warning.publish(
+                warning(
+                    "{}: Detecting objects took {}, while the period was set to {}!"
+                    .format(self.name, processing_time, period)))
 
-        detections = []
-        for i in range(len(scores)):
-            classId = int(classes[i])
-            score = float(scores[i])
-            bbox = [float(v) for v in boxes[i]]
-            if score >= self.score_threshold:
-                detections.append({
-                    "class_id": classId,
-                    "label": self.labels[int(classId) + 1],
-                    "score": score,
-                    "bbox": {
-                        "top": bbox[0],
-                        "right": bbox[3],
-                        "bottom": bbox[2],
-                        "left": bbox[1]
-                    }
-                })
-        return detections
+        # Ready to detect the next image
+        self.detect_lock.release()
+
+        return observation_list

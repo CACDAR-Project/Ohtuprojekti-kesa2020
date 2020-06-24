@@ -3,8 +3,8 @@
 import time
 import threading
 
-from node_object_detector import ObjectNode
-from node_qr_detector import QRReader
+from detector.object_detector import ObjectNode
+from detector.qr_detector import QRReader
 from konenako.msg import image, observations
 import konenako.srv as srv
 import rospy
