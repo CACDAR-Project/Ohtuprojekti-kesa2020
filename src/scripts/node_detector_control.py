@@ -2,7 +2,6 @@
 
 import time
 import threading
-from functools import reduce
 
 from node_object_detector import ObjectNode
 from node_qr_detector import QRReader
@@ -79,7 +78,12 @@ class DetectorControlNode:
         # Flatten observations for combined observations message
         obser = (obs for observations_mapobj in observations_mapobj for obs in observations_mapobj)
         
+        obser = tuple(obser)
 
+        # Dont publish empty observations
+        if not obser:
+            return
+        
         self.pub.publish(
             observations(msg.camera_id, msg.image_counter, tuple(obser))
         )
