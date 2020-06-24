@@ -85,21 +85,16 @@ class QRReader:
 
         # Detect QR codes with qr_detector.py, save to list.
         detections_res = qr_detector.detect(img)
-        observations_mapobj = map(lambda qr_code: observation(
-            self.name,
-            0,
-            str(qr_code['data']),
-            1,
-            boundingbox(qr_code['bbox']['top'],
-                        qr_code['bbox']['right'],
-                        qr_code['bbox']['bottom'],
-                        qr_code['bbox']['left']),
-            polygon(len(qr_code['polygon']),
+        observations_mapobj = map(
+            lambda qr_code: observation(
+                self.name, 0, str(qr_code['data']), 1,
+                boundingbox(qr_code['bbox']['top'], qr_code['bbox']['right'],
+                            qr_code['bbox']['bottom'], qr_code['bbox']['left'
+                                                                       ]),
+                polygon(
+                    len(qr_code['polygon']),
                     tuple(point64(p['x'], p['y']) for p in qr_code['polygon'])
-            ),
-            img.shape[0],
-            img.shape[1]
-        ), detections_res)
+                ), img.shape[0], img.shape[1]), detections_res)
 
         processing_time = time.time() - self.last_detect
         if processing_time > period:

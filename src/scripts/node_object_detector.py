@@ -123,21 +123,17 @@ class ObjectNode:
         self.last_detect = time.time()
         period = self.period
         # Convert the image back from an image message to a numpy ndarray
-        
+
         observations_res = self.detector.detect(img)
-        observations_mapobj = map(lambda detection: observation(
-            self.name,
-            detection['class_id'],
-            detection['label'],
-            detection['score'],
-            boundingbox(detection['bbox']['top'],
-                        detection['bbox']['right'],
-                        detection['bbox']['bottom'],
-                        detection['bbox']['left']),
-            polygon(0, tuple()),
-            img.shape[0],
-            img.shape[1]
-        ), observations_res)
+        observations_mapobj = map(
+            lambda detection: observation(
+                self.name, detection['class_id'], detection['label'],
+                detection['score'],
+                boundingbox(detection['bbox']['top'], detection['bbox'][
+                    'right'], detection['bbox']['bottom'
+                                                ], detection['bbox']['left']),
+                polygon(0, tuple()), img.shape[0], img.shape[1]),
+            observations_res)
 
         processing_time = time.time() - self.last_detect
         if processing_time > period:

@@ -56,7 +56,7 @@ class DetectorControlNode:
         if self.combine:
             self.publish_combined(msg)
         else:
-            self.publish_separately(msg)        
+            self.publish_separately(msg)
 
     ## Helper function for publishing observations.
     #  Iterates trough all detectors and publishes the
@@ -64,7 +64,7 @@ class DetectorControlNode:
     #  Locks self.detect_lock for iterating the dict.
     def publish_separately(self, msg: image) -> None:
         img = msg_to_cv2(msg)[2]
-        
+
         self.detect_lock.acquire()
         for node in self.detectors.values():
             obs = tuple(node.receive_img(img))
@@ -72,8 +72,7 @@ class DetectorControlNode:
             if not obs: continue
 
             self.pub.publish(
-                observations(msg.camera_id, msg.image_counter, obs)
-            )
+                observations(msg.camera_id, msg.image_counter, obs))
         self.detect_lock.release()
 
     ## Helper function for publishing observations.
@@ -84,22 +83,20 @@ class DetectorControlNode:
         img = msg_to_cv2(msg)[2]
 
         self.detect_lock.acquire()
-        observations_mapobj =  map(
-            lambda node: node.receive_img(img), self.detectors.values()
-        )
+        observations_mapobj = map(lambda node: node.receive_img(img),
+                                  self.detectors.values())
         self.detect_lock.release()
-        
+
         # Flatten observations for combined observations message
-        obs = (obs for observations_mapobj in observations_mapobj for obs in observations_mapobj)
+        obs = (obs for observations_mapobj in observations_mapobj
+               for obs in observations_mapobj)
         obs = tuple(obs)
 
         # Dont publish empty observations
         if not obs:
             return
-        
-        self.pub.publish(
-            observations(msg.camera_id, msg.image_counter, obs)
-        )
+
+        self.pub.publish(observations(msg.camera_id, msg.image_counter, obs))
 
     def __init__(self):
         # Locked when self.detectors is altered or iterated
