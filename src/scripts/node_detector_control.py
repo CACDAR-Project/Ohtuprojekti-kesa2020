@@ -22,8 +22,10 @@ class DetectorControlNode:
 
     def get_labels(self, msg):
         labels = set()
+        self.detect_lock.acquire()
         for node in self.detectors.values():
             labels.update(node.get_labels())
+        self.detect_lock.release()
         return srv.labelsResponse(labels)
 
     def remove_object_detector(self, msg):
