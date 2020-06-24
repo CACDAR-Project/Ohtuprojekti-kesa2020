@@ -84,19 +84,17 @@ class QRReader:
         period = self.period
 
         # Detect QR codes with qr_detector.py, save to list.
-        observation_list = []
-        for o in qr_detector.detect(img):
-            observation_list.append(
-                observation(
-                    name_det_qr, 0, str(o["data"]), 1,
-                    boundingbox(o["bbox"]["top"], o["bbox"]["right"],
-                                o["bbox"]["bottom"], o["bbox"]["left"]),
-                    polygon(len(o["polygon"]), [
-                        point64(o["polygon"][0]["x"], o["polygon"][0]["y"]),
-                        point64(o["polygon"][1]["x"], o["polygon"][1]["y"]),
-                        point64(o["polygon"][2]["x"], o["polygon"][2]["y"]),
-                        point64(o["polygon"][3]["x"], o["polygon"][3]["y"])
-                    ]), img.shape[0], img.shape[1]))
+        detections_res = qr_detector.detect(img)
+        observations_mapobj = map(
+            lambda qr_code: observation(
+                self.name, 0, str(qr_code['data']), 1,
+                boundingbox(qr_code['bbox']['top'], qr_code['bbox']['right'],
+                            qr_code['bbox']['bottom'], qr_code['bbox']['left'
+                                                                       ]),
+                polygon(
+                    len(qr_code['polygon']),
+                    tuple(point64(p['x'], p['y']) for p in qr_code['polygon'])
+                ), img.shape[0], img.shape[1]), detections_res)
 
         processing_time = time.time() - self.last_detect
         if processing_time > period:
@@ -108,4 +106,4 @@ class QRReader:
         # Ready to detect the next image
         self.detect_lock.release()
 
-        return observation_list
+        return observations_mapobj
