@@ -57,12 +57,12 @@ We also provide already configured Dockerfiles for both x86-64 and armv7 archite
 ## Running the application
 
 Running program/nodes locally requires [installing ROS](http://wiki.ros.org/ROS/Installation).
-Running program/nodes with docker requires [installing Docker](https://docs.docker.com/engine/install/ubuntu/).
+Running program/nodes with docker requires [installing Docker](https://docs.docker.com/engine/install/).
 
 
 Instructions should work at least on Ubuntu.
 
-### Running with docker
+### Running with docker (for x86_64)
 
 `sudo docker network create rosnet`
 
@@ -84,7 +84,7 @@ sudo docker run -it --rm \
 ```
 ~~or with script `./docker_runner.sh`~~ _TODO_
 
-### Running locally 
+### Running locally (for x86_64)
 
 Inside repository's root directory:
 
@@ -98,7 +98,7 @@ ROS_HOME=`pwd` roslaunch test.launch
 ```
 ~~or with script `./check_run.sh`~~ _TODO_
 
-### Running nodes individually
+### Running nodes individually (for x86_64)
 
 **All the instructions in this section presume you are in the repository's root directory.**
 
