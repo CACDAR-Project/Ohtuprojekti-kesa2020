@@ -5,6 +5,7 @@
 import rospy
 import threading
 import time
+from typing import List
 from helpers.image_converter import msg_to_cv2
 import detector.qr_detector as qr_detector
 from std_msgs.msg import String
@@ -52,6 +53,9 @@ class QRReader:
         ) > self.period and self.detect_lock.acquire(False):
             return self.detect(img)
         return []
+
+    def get_labels(self) -> List[str]:
+        return ["QR"]
 
     def __init__(self):
         self.name = name_det_qr

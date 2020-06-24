@@ -3,11 +3,11 @@
 ## Provides functionality to send messages to different nodes using a terminal
 #  @package scripts
 
-from konenako.srv import new_frequency, toggle, add_object_detector, remove_object_detector, add_object_detectorResponse, remove_object_detectorResponse
+from konenako.srv import new_frequency, toggle, add_object_detector, remove_object_detector, add_object_detectorResponse, remove_object_detectorResponse, labels, labelsResponse
 # Names
 from config.constants import name_node_input, name_node_object_detector, name_node_detector_control, name_ros_pkg, name_det_qr
 # Services names
-from config.constants import srv_toggle, srv_add_object_detector, srv_combine_toggle, srv_frequency, srv_rm_object_detector
+from config.constants import srv_toggle, srv_add_object_detector, srv_combine_toggle, srv_frequency, srv_rm_object_detector, srv_labels
 import rospy
 import threading
 
@@ -74,6 +74,12 @@ def send_detector_remove():
     services['/detector_control_node/remove_object_detector'](name)
 
 
+## Displays a list of the labels the detectors can recognise.
+def get_labels():
+    response = services['/konenako/detector_control_node/labels']()
+    print(response)
+
+
 ## Function running in loop waiting for command to send message
 def run():
     commands = {
@@ -82,7 +88,8 @@ def run():
         '3': ('3 for toggling object detection on or off', send_OD_toggle),
         '4': ('4 for toggling result combining', send_combine_toggle),
         '5': ('5 for adding detectors', send_detector_add),
-        '6': ('6 for removing detectors', send_detector_remove)
+        '6': ('6 for removing detectors', send_detector_remove),
+        '7': ('7 for list of supported labels', get_labels)
     }
 
     while not rospy.is_shutdown():
@@ -164,6 +171,12 @@ def init():
             args=
             (f'/{name_ros_pkg}/{name_node_detector_control}/{srv_rm_object_detector}',
              remove_object_detector),
+            daemon=True))
+    services.append(
+        threading.Thread(
+            target=initialize_service,
+            args=(f'/{name_ros_pkg}/{name_node_detector_control}/{srv_labels}',
+                  labels),
             daemon=True))
 
     # The name 'object_detect' is hardcoded in test.launch param name="test" type="yaml" value="object_detect"....
