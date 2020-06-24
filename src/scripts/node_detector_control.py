@@ -2,6 +2,7 @@
 
 import time
 import threading
+from functools import reduce
 
 from node_object_detector import ObjectNode
 from node_qr_detector import QRReader
@@ -50,27 +51,40 @@ class DetectorControlNode:
         return srv.add_object_detectorResponse()
 
     def receive_img(self, msg: image):
-        observation_list = []
         img = msg_to_cv2(msg)[2]
 
         # Get observations from all active nodes
         self.detect_lock.acquire()
-        for node in self.detectors.values():
-            # Publishing from the nodes set to opposite of the combine boolean.
-            # If combining is off, each node publishes the results separately.
-            x = node.receive_img(img)
-            if self.combine:
-                observation_list += x
-            elif x:
-                self.pub.publish(
-                    observations(msg.camera_id, msg.image_counter, x))
-
+        observations_mapobj =  map(
+            lambda node: tuple(node.receive_img(img)), self.detectors.values()
+        )
         self.detect_lock.release()
+        
 
-        if observation_list and self.combine:
-            self.pub.publish(
-                observations(msg.camera_id, msg.image_counter,
-                             observation_list))
+        # If combining is off, each node publishes the results separately.
+        if not self.combine:
+            for obs in observations_mapobj:
+                if not obs:
+                    # Dont publish empty observations
+                    continue
+
+                self.pub.publish(
+                    observations(msg.camera_id, msg.image_counter, tuple(obs))
+                )
+            return
+        
+        
+        # If combining is on, publish all the results at once.
+
+        # Flatten observations for combined observations message
+        obser = (obs for observations_mapobj in observations_mapobj for obs in observations_mapobj)
+        
+
+        self.pub.publish(
+            observations(msg.camera_id, msg.image_counter, tuple(obser))
+        )
+        
+        
 
     def __init__(self):
         # Locked when self.detectors is altered or iterated
