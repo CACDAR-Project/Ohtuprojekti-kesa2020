@@ -3,13 +3,13 @@
 import time
 import threading
 
-from node_object_detector import ObjectNode
-from node_qr_detector import QRReader
+from detector.object_detector import ObjectNode
+from detector.qr_detector import QRReader
 from konenako.msg import image, observations
 import konenako.srv as srv
 import rospy
 from helpers.image_converter import msg_to_cv2
-from config.constants import name_node_detector_control, name_node_camera, topic_images, topic_observations, srv_add_object_detector, srv_rm_object_detector, rosparam_poll_interval, rosparam_combine_results, rosparam_combine_toggle
+from config.constants import name_node_detector_control, name_node_camera, topic_images, topic_observations, srv_add_object_detector, srv_rm_object_detector, rosparam_poll_interval, rosparam_combine_results, rosparam_combine_toggle, srv_labels
 
 
 class DetectorControlNode:
@@ -19,6 +19,14 @@ class DetectorControlNode:
         self.combine = msg.state
         return srv.toggleResponse("Combining results set to {}".format(
             self.combine))
+
+    def get_labels(self, msg):
+        labels = set()
+        self.detect_lock.acquire()
+        for node in self.detectors.values():
+            labels.update(node.get_labels())
+        self.detect_lock.release()
+        return srv.labelsResponse(labels)
 
     def remove_object_detector(self, msg):
         if not msg.name or not msg.name in self.detectors:
@@ -49,28 +57,54 @@ class DetectorControlNode:
         self.detect_lock.release()
         return srv.add_object_detectorResponse()
 
+    ## Publishes image observations by calling helper functions
+    #  Observations can be published separately or combined
     def receive_img(self, msg: image):
-        observation_list = []
+        # Call helper function depending on boolean
+        if self.combine:
+            self.publish_combined(msg)
+        else:
+            self.publish_separately(msg)
+
+    ## Helper function for publishing observations.
+    #  Iterates trough all detectors and publishes the
+    #  observations directly.
+    #  Locks self.detect_lock for iterating the dict.
+    def publish_separately(self, msg: image) -> None:
         img = msg_to_cv2(msg)[2]
 
-        # Get observations from all active nodes
         self.detect_lock.acquire()
         for node in self.detectors.values():
-            # Publishing from the nodes set to opposite of the combine boolean.
-            # If combining is off, each node publishes the results separately.
-            x = node.receive_img(img)
-            if self.combine:
-                observation_list += x
-            elif x:
-                self.pub.publish(
-                    observations(msg.camera_id, msg.image_counter, x))
+            obs = tuple(node.receive_img(img))
+            # Dont publish empty observations
+            if not obs: continue
 
+            self.pub.publish(
+                observations(msg.camera_id, msg.image_counter, obs))
         self.detect_lock.release()
 
-        if observation_list and self.combine:
-            self.pub.publish(
-                observations(msg.camera_id, msg.image_counter,
-                             observation_list))
+    ## Helper function for publishing observations.
+    #  Maps all detectors results before processing the observations.
+    #  and finally publishes them all in one message.
+    #  Locks self.detect_lock while mapping the detections.
+    def publish_combined(self, msg: image) -> None:
+        img = msg_to_cv2(msg)[2]
+
+        self.detect_lock.acquire()
+        observations_mapobj = map(lambda node: node.receive_img(img),
+                                  self.detectors.values())
+        self.detect_lock.release()
+
+        # Flatten observations for combined observations message
+        obs = (obs for observations_mapobj in observations_mapobj
+               for obs in observations_mapobj)
+        obs = tuple(obs)
+
+        # Dont publish empty observations
+        if not obs:
+            return
+
+        self.pub.publish(observations(msg.camera_id, msg.image_counter, obs))
 
     def __init__(self):
         # Locked when self.detectors is altered or iterated
@@ -118,6 +152,9 @@ class DetectorControlNode:
         rospy.Service(
             '{}/{}'.format(rospy.get_name(), rosparam_combine_toggle),
             srv.toggle, self.toggle_combine)
+
+        rospy.Service('{}/{}'.format(rospy.get_name(), srv_labels), srv.labels,
+                      self.get_labels)
 
 
 if __name__ == "__main__":
