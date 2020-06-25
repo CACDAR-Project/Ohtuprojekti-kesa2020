@@ -91,7 +91,7 @@ class QRReader:
         detections_res = qr_detector.detect(img)
         observations_mapobj = map(
             lambda qr_code: observation(
-                self.name, 0, str(qr_code['data']), 1,
+                self.name, (1 << 16)-1, str(qr_code['data']), 1,
                 boundingbox(qr_code['bbox']['top'], qr_code['bbox']['right'],
                             qr_code['bbox']['bottom'], qr_code['bbox']['left'
                                                                        ]),
