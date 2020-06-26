@@ -98,6 +98,60 @@ ROS_HOME=`pwd` roslaunch test.launch
 ```
 ~~or with script `./check_run.sh`~~ _TODO_
 
+### Building for Raspberry Pi
+The Docker image of master branch is automatically built for arm32v7 architecture with qemu-emulator, and deployed to the docker hub.
+If you want to build the image on your own x86_64 machine, you can use the same commands that are in the `.travis.yml`-file.
+
+To retrieve the built image from docker hub:
+``sudo docker pull ohtukonenako/ohtuprojekti_kesa2020:latest``
+
+### Running on Raspberry Pi
+
+Create a network for ros, if not already created.
+```sudo docker network create rosnet```
+
+Start ros master before running the image, if master is not already running.
+```
+sudo docker run -it --rm \
+--net rosnet \
+--name master \
+ros:melodic-ros-core \
+roscore
+```
+
+Start up the image, change ROS_MASTER_URI environment variable to correct address for the ros master, if you did not start up the master with the command previously given. 
+```
+sudo docker run -it --rm \
+    --net rosnet \
+    --privileged \
+    --name konenako \
+    --env ROS_HOSTNAME=konenako \
+    --env ROS_MASTER_URI=http://master:11311 \
+    -v /home/konenako:/asd \
+    ohtukonenako/ohtuprojekti_kesa2020:latest bash -c "cd src/ohtu && poetry run /bin/bash -c 'source ../../devel/setup.bash && ROS_HOME=/catkin_ws/src/ohtu roslaunch /asd/lol.launch'"
+```
+### Mounting models
+You can mount directories to the container with `-v source:dest` flag, for example, `-v /home/konenako/models:/models` and then give model_path as `/models/model1.tflite`, to use model located in `/home/konenako/models/model1.tflite`.
+In a similar manner, your own custom .launch files can be mounted to the container, and then the container started with your launch file by modifying the path given to the roslaunch.
+
+### Using devices
+When the container is started with --privileged flag, you can use devices of the host normally. `/dev/video0` usually corresponds to the first camera of the host.
+
+### Configuring & debugging
+You must connect to the ros core, for example by running the image with only bash opened.
+```
+sudo docker run -it --rm \
+    --net rosnet \
+    --name debug \
+    --privileged \
+    --env ROS_HOSTNAME=debug \
+    --env ROS_MASTER_URI=http://master:11311 \
+    -t ohtukonenako/ohtuprojekti_kesa2020:latest bash
+```
+Now you can debug as you usually would with rostopic etc.
+
+To configure, you can use ros parameters or make your own modified version of the .launch file. To use your own mount file follow instructions in https://github.com/Konenako/Ohtuprojekti-kesa2020#mounting-models.
+
 ### Running nodes individually (for x86_64)
 
 **All the instructions in this section presume you are in the repository's root directory.**
