@@ -78,6 +78,7 @@ roscore
 sudo docker run -it --rm \
     --net rosnet \
     --name asd \
+    --privileged \
     --env ROS_HOSTNAME=asd \
     --env ROS_MASTER_URI=http://master:11311 \
     -t konenako bash -c "cd src/ohtu && poetry run /bin/bash -c 'source ../../devel/setup.bash && ROS_HOME=/catkin_ws/src/ohtu roslaunch test.launch'"
