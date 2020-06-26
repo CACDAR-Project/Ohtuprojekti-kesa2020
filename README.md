@@ -82,7 +82,7 @@ To retrieve the built image from docker hub:
 
 ### Running on Raspberry Pi
 
-Confirm that roscore and rosnet are set up [instructions](#configuring--debugging)
+Confirm that roscore and rosnet are set up [instructions](#roscore--rosnet)
 
 Start up the image, change ROS_MASTER_URI environment variable to correct address for the ros master, if you did not start up the master with the command previously given. 
 ```
@@ -120,7 +120,7 @@ To configure, you can use ros parameters or make your own modified version of th
 Instructions should work at least on Ubuntu.
 
 ### Running with docker (for x86_64)
-Confirm that roscore and rosnet are set up [instructions](#configuring--debugging)
+Confirm that roscore and rosnet are set up [instructions](#roscore--rosnet)
 ```console
 sudo docker run -it --rm \
     --net rosnet \
