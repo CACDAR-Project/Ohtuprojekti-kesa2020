@@ -60,7 +60,7 @@ Running program/nodes locally requires [installing ROS](http://wiki.ros.org/ROS/
 Running program/nodes with docker requires [installing Docker](https://docs.docker.com/engine/install/).
 
 ### Roscore & rosnet
-All of the other instructions require ros master to be running. You can use docker network and start up the master with the following commands, or use an already running instance of master by modifying the `ROS_MASTER_URI` environment variable to the correct address for the runing core.
+All of the other instructions require ros master to be running. You can use docker network and start up the master with the following commands, or use an already running instance of master by modifying the `ROS_MASTER_URI` environment variable to the correct address for the running core.
 ```console
 sudo docker network create rosnet
 ```
