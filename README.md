@@ -135,6 +135,7 @@ Currently available nodes, their source files and functions:
 |camera|node_camera.py|Publish a video feed to a topic| konenako/camhz konenako/video_source |
 |detector_control_node|node_detector_control.py|Run a TF model and QR detector on a video feed| konenako/combine_results konenako/testi/object_detect/detect_on konenako/testi/object_detect/frequency konenako/testi/object_detect/label_path konenako/testi/object_detect/model_path konenako/testi/object_detect/score_threshold |
 |printer|node_printer.py|Display the result feed of all nodes|  |
+|drawer|node_drawer.py|Draws observations onto images and shows them with CV2| |
 
 **For each node do the following:**
 
