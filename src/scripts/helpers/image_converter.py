@@ -13,8 +13,14 @@ import cv2
 #  @param img image as numpy array
 #  @return ROS image message
 def cv2_to_msg(id: str, counter: int, img: np.ndarray) -> image:
+    # If the image-array onyl has one channel, img.shape[2] throws an IndexError
+    if len(img.shape) == 2:
+        chan = 1
+    else:
+        chan = img.shape[2]
+
     # ROS messages need one-dimensional lists as arguments
-    return image(id, counter, img.tobytes(), img.shape[0], img.shape[1])
+    return image(id, counter, img.tobytes(), img.shape[0], img.shape[1], chan)
 
 
 ## Convert ROS image message to numpy array image
@@ -23,4 +29,5 @@ def cv2_to_msg(id: str, counter: int, img: np.ndarray) -> image:
 def msg_to_cv2(msg: image) -> np.ndarray:
     # Convert the channels from bytes to uint8 arrays and reconstruct the shape
     return (msg.camera_id, msg.image_counter,
-            np.frombuffer(msg.data, "uint8").reshape(msg.height, msg.width, 3))
+            np.frombuffer(msg.data, "uint8").reshape(msg.height, msg.width,
+                                                     msg.channels))
