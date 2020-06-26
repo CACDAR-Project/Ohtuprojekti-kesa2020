@@ -44,7 +44,7 @@ class Camera:
         # Variable containing path to video, picture or camera device
         self.source = self.load_rosparam(rosparam_video_source)
         # Variable containing the refresh rate
-        self.hz = self.load_rosparam(rosparam_camera_hz)
+        self.hz = self.load_rosparam(rosparam_camera_hz, 9999)
 
         # Use custom video feed if available as rosparam
         if rospy.has_param(rosparam_video_feed_name):
