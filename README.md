@@ -59,14 +59,11 @@ We also provide already configured Dockerfiles for both x86-64 and armv7 archite
 Running program/nodes locally requires [installing ROS](http://wiki.ros.org/ROS/Installation).
 Running program/nodes with docker requires [installing Docker](https://docs.docker.com/engine/install/).
 
-
-Instructions should work at least on Ubuntu.
-
-### Running with docker (for x86_64)
-
-`sudo docker network create rosnet`
-
-`sudo docker build -t konenako .`
+### Roscore & rosnet
+All of the other instructions require ros master to be running. You can use docker network and start up the master with the following commands, or use an already running instance of master by modifying the `ROS_MASTER_URI` environment variable to the correct address for the runing core.
+```console
+sudo docker network create rosnet
+```
 ```console
 sudo docker run -it --rm \
 --net rosnet \
@@ -74,29 +71,7 @@ sudo docker run -it --rm \
 ros:melodic-ros-core \
 roscore
 ```
-```console
-sudo docker run -it --rm \
-    --net rosnet \
-    --name asd \
-    --env ROS_HOSTNAME=asd \
-    --env ROS_MASTER_URI=http://master:11311 \
-    -t konenako bash -c "cd src/ohtu && poetry run /bin/bash -c 'source ../../devel/setup.bash && ROS_HOME=/catkin_ws/src/ohtu roslaunch test.launch'"
-```
-~~or with script `./docker_runner.sh`~~ _TODO_
 
-### Running locally (for x86_64)
-
-Inside repository's root directory:
-
-```console
-source /opt/ros/$(rosversion -d)/setup.bash
-catkin_make
-poetry install --no-dev
-poetry shell
-source devel/setup.bash
-ROS_HOME=`pwd` roslaunch test.launch
-```
-~~or with script `./check_run.sh`~~ _TODO_
 
 ### Building for Raspberry Pi
 The Docker image of master branch is automatically built for arm32v7 architecture with qemu-emulator, and deployed to the docker hub.
@@ -107,17 +82,7 @@ To retrieve the built image from docker hub:
 
 ### Running on Raspberry Pi
 
-Create a network for ros, if not already created.
-```sudo docker network create rosnet```
-
-Start ros master before running the image, if master is not already running.
-```
-sudo docker run -it --rm \
---net rosnet \
---name master \
-ros:melodic-ros-core \
-roscore
-```
+Confirm that roscore and rosnet are set up [instructions](#configuring--debugging)
 
 Start up the image, change ROS_MASTER_URI environment variable to correct address for the ros master, if you did not start up the master with the command previously given. 
 ```
@@ -150,7 +115,33 @@ sudo docker run -it --rm \
 ```
 Now you can debug as you usually would with rostopic etc.
 
-To configure, you can use ros parameters or make your own modified version of the .launch file. To use your own mount file follow instructions in https://github.com/Konenako/Ohtuprojekti-kesa2020#mounting-models.
+To configure, you can use ros parameters or make your own modified version of the .launch file. To use your own mount file follow instructions in [mounting models](#mounting-models).
+
+Instructions should work at least on Ubuntu.
+
+### Running with docker (for x86_64)
+Confirm that roscore and rosnet are set up [instructions](#configuring--debugging)
+```console
+sudo docker run -it --rm \
+    --net rosnet \
+    --name asd \
+    --env ROS_HOSTNAME=asd \
+    --env ROS_MASTER_URI=http://master:11311 \
+    -t konenako bash -c "cd src/ohtu && poetry run /bin/bash -c 'source ../../devel/setup.bash && ROS_HOME=/catkin_ws/src/ohtu roslaunch test.launch'"
+```
+
+### Running locally (for x86_64)
+
+Inside repository's root directory:
+
+```console
+source /opt/ros/$(rosversion -d)/setup.bash
+catkin_make
+poetry install --no-dev
+poetry shell
+source devel/setup.bash
+ROS_HOME=`pwd` roslaunch test.launch
+```
 
 ### Running nodes individually (for x86_64)
 
