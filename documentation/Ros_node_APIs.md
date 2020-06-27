@@ -7,19 +7,19 @@
     * name (string)
     * model_path (string)
     * label_path (string)
-  * detector_control_node/remove_object_detector
-    * Used to remove models added with add_object_detector
-      * name (string), same that was given with add_object_detector
-  * combine_toggle
-    * Toggle the combining of observations from all detectors to a single Ros message
-      * state (bool)
-  * [detector_name]/frequency
-    * Changes the rate of image processing of the specified detector to the received frequency in hz
-      * frequency (int32)
-    * Replies with a new_frequencyResponse (string) after the rate has been changed
-  * [detector_name]/toggle
-    * Toggles detections with the specified detector
-      * state (bool)
+* detector_control_node/remove_object_detector
+  * Used to remove models added with add_object_detector
+    * name (string), same that was given with add_object_detector
+* combine_toggle
+  * Toggle the combining of observations from all detectors to a single Ros message
+    * state (bool)
+* [detector_name]/frequency
+  * Changes the rate of image processing of the specified detector to the received frequency in hz
+    * frequency (int32)
+  * Replies with a new_frequencyResponse (string) after the rate has been changed
+* [detector_name]/toggle
+  * Toggles detections with the specified detector
+    * state (bool)
 
 * detector_control_node/labels
   * returns a list of the objects current detectors can recognise
@@ -74,7 +74,7 @@ Only model_path and label_path are required, frequency and detect_on have defaul
 
 * video_source (string), path to the device or file to publish video from
 
+## Program structure
 
+![](https://raw.githubusercontent.com/Konenako/Ohtuprojekti-kesa2020/master/documentation/program_structure.png "Program structure")
 
-
-  
