@@ -108,12 +108,15 @@ class ObjectNode:
     ## Detects image, if not already detecting from another
     #  image and enough time has passed since the previous detection.
     def receive_img(self, img):
-        # Detect from this image, if not already detecting from another image and within period time constraints
-        if self.detect_on and (
-                time.time() - self.last_detect
-        ) > self.period and self.detect_lock.acquire(False):
+        # Return -1 if detection is skipped due to the rate limit.
+        if (time.time() - self.last_detect) < self.period:
+            return -1
+        # Return -2 if the detection is turned off.
+        if not self.detect_on:
+            return -2
+        # Detect from this image, if not already detecting from another image.
+        if self.detect_lock.acquire(False):
             return self.detect(img)
-        return []
 
     ## Builds observation messages and publishes them.
     #  Prints a warning if time between detections grows too large.
@@ -133,10 +136,8 @@ class ObjectNode:
                 self.name, detection['class_id'], detection['label'],
                 detection['score'],
                 boundingbox(detection['bbox']['top'], detection['bbox'][
-                    'right'], detection['bbox']['bottom'
-                                                ], detection['bbox']['left']),
-                polygon(0, tuple()), img.shape[0], img.shape[1]),
-            observations_res)
+                    'right'], detection['bbox']['bottom'], detection['bbox'][
+                        'left']), polygon(0, tuple())), observations_res)
 
         processing_time = time.time() - self.last_detect
         if processing_time > period:

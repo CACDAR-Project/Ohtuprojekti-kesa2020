@@ -2,6 +2,7 @@
 
 import time
 import threading
+import json
 
 from detector.object_detector import ObjectNode
 from detector.qr_detector import QRReader
@@ -75,12 +76,26 @@ class DetectorControlNode:
 
         self.detect_lock.acquire()
         for node in self.detectors.values():
-            obs = tuple(node.receive_img(img))
-            # Dont publish empty observations
-            if not obs: continue
+            obs = node.receive_img(img)
+            # Don't publish anything if detector is turned off.
+            if obs == -2: continue
+            # Set metadata for whether the detection was skipped due to the rate limit.
+            if obs == -1:
+                skipped = True
+                obs = []
+            else:
+                skipped = False
+                obs = tuple(obs)
 
             self.pub.publish(
-                observations(msg.camera_id, msg.image_counter, obs))
+                observations(
+                    json.dumps({
+                        "camera_id": msg.camera_id,
+                        "image_counter": msg.image_counter,
+                        "image_height": img.shape[0],
+                        "image_width": img.shape[1],
+                        "detection_skipped": skipped
+                    }), obs))
         self.detect_lock.release()
 
     ## Helper function for publishing observations.
