@@ -78,6 +78,6 @@ You can run doxygen in root with
 
     doxygen    
    
-The documentation files can be found in the documentation-folder.    
+The documentation files can be found in the docs-folder.    
 
 [Project in github](https://github.com/Konenako/Ohtuprojekti-kesa2020)
