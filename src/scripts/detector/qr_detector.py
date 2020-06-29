@@ -60,10 +60,7 @@ class QRReader:
     def get_labels(self) -> List[str]:
         return ["QR"]
 
-    def __init__(self,
-                 name,
-                 frequency=5,
-                 detect_on=True):
+    def __init__(self, name, frequency=5, detect_on=True):
         self.name = name
         self.detect_on = detect_on
 
