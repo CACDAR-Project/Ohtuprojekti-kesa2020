@@ -6,7 +6,7 @@ from konenako.msg import image, observations
 from helpers.image_converter import msg_to_cv2
 from config.constants import name_node_camera, topic_images, name_node_detector_control, topic_observations
 
-latest_observations = observations(0, 0, [])
+latest_observations = observations("", [])
 
 obs_lock = threading.Lock()
 draw_lock = threading.Lock()
@@ -55,7 +55,6 @@ def draw_img(img):
 
 def draw_observations(img, height, width):
     for observation in latest_observations.observations:
-        print(observation)
         top = observation.bbox.top * height
         left = observation.bbox.left * width
         right = observation.bbox.right * width
