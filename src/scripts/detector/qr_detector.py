@@ -47,12 +47,15 @@ class QRReader:
                 "QR detector freq set to period {}".format(self.period))
 
     def receive_img(self, img):
-        # Detect from this image, if not already detecting from another image and within period time constraints
-        if self.detect_on and (
-                time.time() - self.last_detect
-        ) > self.period and self.detect_lock.acquire(False):
+        # Return -1 if detection is skipped due to the rate limit.
+        if (time.time() - self.last_detect) < self.period:
+            return -1
+        # Return -2 if the detection is turned off.
+        if not self.detect_on:
+            return -2
+        # Detect from this image, if not already detecting from another image.
+        if self.detect_lock.acquire(False):
             return self.detect(img)
-        return []
 
     def get_labels(self) -> List[str]:
         return ["QR"]
@@ -97,8 +100,8 @@ class QRReader:
                                                                        ]),
                 polygon(
                     len(qr_code['polygon']),
-                    tuple(point64(p['x'], p['y']) for p in qr_code['polygon'])
-                ), img.shape[0], img.shape[1]), detections_res)
+                    tuple(point64(p['x'], p['y'])
+                          for p in qr_code['polygon']))), detections_res)
 
         processing_time = time.time() - self.last_detect
         if processing_time > period:

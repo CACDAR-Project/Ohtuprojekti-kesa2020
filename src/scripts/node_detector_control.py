@@ -2,6 +2,9 @@
 
 import time
 import threading
+import json
+import numpy as np
+from typing import Iterable
 
 from detector.object_detector import ObjectNode
 from detector.qr_detector import QRReader
@@ -75,36 +78,75 @@ class DetectorControlNode:
 
         self.detect_lock.acquire()
         for node in self.detectors.values():
-            obs = tuple(node.receive_img(img))
-            # Dont publish empty observations
-            if not obs: continue
+            obs = node.receive_img(img)
+            # Don't publish anything if detector is turned off.
+            if obs == -2: continue
+
+            active_detectors = tuple((node.name, ))
+
+            # Set metadata for whether the detection was skipped due to the rate limit.
+            if obs == -1:
+                skipped_detectors = tuple((node.name, ))
+                obs = tuple()
+            else:
+                skipped_detectors = tuple()
+                obs = tuple(obs)
 
             self.pub.publish(
-                observations(msg.camera_id, msg.image_counter, obs))
+                observations(
+                    self.construct_metadata(msg, img, active_detectors, skipped_detectors), obs
+                )
+            )
         self.detect_lock.release()
 
     ## Helper function for publishing observations.
-    #  Maps all detectors results before processing the observations.
-    #  and finally publishes them all in one message.
-    #  Locks self.detect_lock while mapping the detections.
+    # Publishes all detections in one combined observations message.
+    # Locks self.detect_lock for iterating the dict.
     def publish_combined(self, msg: image) -> None:
         img = msg_to_cv2(msg)[2]
 
+        observations_list = list()
+        active_detectors = list()
+        skipped_detectors = list()
+
         self.detect_lock.acquire()
-        observations_mapobj = map(lambda node: node.receive_img(img),
-                                  self.detectors.values())
+        for node in self.detectors.values():
+            obs = node.receive_img(img)
+            # Don't publish anything if detector is turned off.
+            if obs == -2: continue
+
+            # Collect all active detectors into iterable.
+            active_detectors.append(node.name)
+
+            # If the detector was skipped due to the rate limit, add detector name
+            # for metadata.
+            if obs == -1:
+                skipped_detectors.append(node.name)
+                continue
+
+            # Combine all detections to be published into one observations message.
+            observations_list.extend(obs)
         self.detect_lock.release()
 
-        # Flatten observations for combined observations message
-        obs = (obs for observations_mapobj in observations_mapobj
-               for obs in observations_mapobj)
-        obs = tuple(obs)
+        self.pub.publish(observations(
+                self.construct_metadata(msg, img, active_detectors, skipped_detectors), observations_list
+            )
+        )
 
-        # Dont publish empty observations
-        if not obs:
-            return
-
-        self.pub.publish(observations(msg.camera_id, msg.image_counter, obs))
+    ## Helper function for constructing metadata JSON string for
+    #  observations-message.
+    def construct_metadata(self, msg: image,
+                           img: np.ndarray,
+                           active_detectors: Iterable[str],
+                           skipped_detectors: Iterable[str]) -> str:
+        return json.dumps({
+            'camera_id': msg.camera_id,
+            'image_counter': msg.image_counter,
+            'image_height': img.shape[0],
+            'image_width': img.shape[1],
+            'active_detectors': active_detectors,
+            'skipped_detectors': skipped_detectors
+        })
 
     def __init__(self):
         # Locked when self.detectors is altered or iterated
