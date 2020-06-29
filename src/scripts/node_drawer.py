@@ -55,7 +55,6 @@ def draw_img(img):
 
 def draw_observations(img, height, width):
     for observation in latest_observations.observations:
-        print(observation)
         top = observation.bbox.top * height
         left = observation.bbox.left * width
         right = observation.bbox.right * width
