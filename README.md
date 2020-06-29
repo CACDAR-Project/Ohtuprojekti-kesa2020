@@ -92,7 +92,7 @@ sudo docker run -it --rm \
     --name konenako \
     --env ROS_HOSTNAME=konenako \
     --env ROS_MASTER_URI=http://master:11311 \
-    ohtukonenako/ohtuprojekti_kesa2020:latest bash -c "cd src/ohtu && poetry run /bin/bash -c 'source ../../devel/setup.bash && ROS_HOME=/catkin_ws/src/ohtu roslaunch roslaunch test.launch'"
+    ohtukonenako/ohtuprojekti_kesa2020:latest bash -c "cd src/ohtu && poetry run /bin/bash -c 'source ../../devel/setup.bash && ROS_HOME=/catkin_ws/src/ohtu roslaunch test.launch'"
 ```
 ### Mounting models
 You can mount directories to the container with `-v source:dest` flag, for example, `-v /home/konenako/models:/models` and then give model_path as `/models/model1.tflite`, to use model located in `/home/konenako/models/model1.tflite`.
