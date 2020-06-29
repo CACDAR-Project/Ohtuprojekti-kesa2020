@@ -4,8 +4,8 @@
 		<node name="printer" pkg="konenako" type="node_printer.py" output="screen" />
 		<node name="detector_control_node" pkg="konenako" type="node_detector_control.py" output="screen" />
 		<node name="drawer" pkg="konenako" type="node_drawer.py" output="screen" />
-		<!-- param name="video_source" type="str" value="resources/videos/test.mp4" / -->
-		<param name="video_source" type="str" value="/dev/video0" />
+		<param name="video_source" type="str" value="resources/videos/test.mp4" />
+		<!-- param name="video_source" type="str" value="/dev/video0" / -->
 		<param name="camhz" type="int" value="30" />
 		<param name="combine_results" type="bool" value="True" />
 		<param name="testi" type="yaml" value="object_detect: {model_path: 'resources/tflite_models/ssd_mobilenet_v1_1_metadata_1.tflite', label_path: 'resources/tflite_models/mscoco_complete_labels', detect_on: True, frequency: 42, score_threshold: 0.3}" />
