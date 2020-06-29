@@ -12,11 +12,13 @@ We also provide already configured Dockerfiles for both x86-64 and armv7 archite
 
 ## Documentation
 
-[Backlog](https://github.com/Konenako/Ohtuprojekti-kesa2020/projects)
+[Sprint Backlog](https://github.com/Konenako/Ohtuprojekti-kesa2020/projects)
 
-[ROS nodes API](https://docs.google.com/document/d/1ZX2D-lR2-JPhgsHoDeP2K5ocj3jB0FU43SoIwdkePvU)
+[Product backlog](https://docs.google.com/spreadsheets/d/1jyyo4Vl1vxXgr6DDcG-a-Rb9Xx-2B-TYjd2KzZyrj3M/edit?usp=sharing)
 
-[ROS nodes structure](https://docs.google.com/drawings/d/1a4bOr0Cu2g_0QJ_u3QxHUjvKshzWlyNOfwyI5jS2Bu8)
+[ROS nodes API](https://github.com/Konenako/Ohtuprojekti-kesa2020/blob/master/documentation/Ros_node_APIs.md)
+
+[ROS nodes structure](https://github.com/Konenako/Ohtuprojekti-kesa2020/blob/master/documentation/program_structure.png?raw=true)
 
 [Code documentation](https://konenako.github.io/Ohtuprojekti-kesa2020/)
 
