@@ -4,7 +4,7 @@ import time
 import threading
 import json
 import numpy as np
-from operator import itemgetter, attrgetter
+from operator import attrgetter
 from typing import Iterable
 
 from detector.object_detector import ObjectNode
@@ -100,7 +100,6 @@ class DetectorControlNode:
         img = msg_to_cv2(msg)[2]
 
         self.detect_lock.acquire()
-
         for node in self.detectors.values():
             obs = node.receive_img(img)
             # Don't publish anything if detector is turned off.
