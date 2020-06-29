@@ -11,7 +11,7 @@ import detector.zbar_detector as qr_detector
 from std_msgs.msg import String
 from konenako.msg import image, observation, observations, polygon, boundingbox, point64, warning
 from konenako.srv import new_frequency, new_frequencyResponse, toggle, toggleResponse
-from config.constants import name_det_qr, srv_frequency, srv_toggle, topic_warnings
+from config.constants import srv_frequency, srv_toggle, topic_warnings
 
 
 ## Read an image stream from a ROS topic, detect and decode QR codes from the frames and
@@ -60,12 +60,15 @@ class QRReader:
     def get_labels(self) -> List[str]:
         return ["QR"]
 
-    def __init__(self):
-        self.name = name_det_qr
-        # Attempt to get configuration parameters from the ROS parameter server
-        self.detect_on = rospy.get_param("detect_on", True)
+    def __init__(self,
+                 name,
+                 frequency=5,
+                 detect_on=True):
+        self.name = name
+        self.detect_on = detect_on
+
         # Frequency in hertz
-        self.period = 1 / rospy.get_param("frequency", 5)
+        self.period = 1 / frequency
 
         # ROS service for changing detection frequency.
         self.frequency_service = rospy.Service(

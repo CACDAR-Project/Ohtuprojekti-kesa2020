@@ -26,6 +26,7 @@ name_det_qr = 'QR'
 # Sleep time between polling for parameter, in seconds
 rosparam_poll_interval = 1
 # Parameters
+rosparam_initial_detectors = 'init_detectors'
 rosparam_camera_hz = 'camhz'
 rosparam_video_source = 'video_source'
 rosparam_video_feed_name = 'video_feed_name'
