@@ -75,7 +75,7 @@ class DetectorControlNode:
         # the first element and an iterable containing the elements to keep. All others will
         # be filtered out from the observations message.
         filter_by=False
-        #filter_by=('label', ('car', 'bus'))#(5,) # iterable containing class_ids to keep = (0, 12, ..., 22)
+        #filter_by=('label', ('car', 'bus'))
         #filter_by=('class_id', (9, 26))
         #filter_by=('class_id', (2, ))
         #filter_by=('observation_type', ('QR', ))
