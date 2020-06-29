@@ -63,7 +63,6 @@ class ObjectNode:
     def get_labels(self) -> List[str]:
         return self.detector.get_labels()
 
-    ## Initializes topics and services and sets class variable detect_on to true
     def __init__(self,
                  name,
                  model_path,
@@ -72,16 +71,7 @@ class ObjectNode:
                  detect_on=True,
                  score_threshold=0.3):
         self.name = name
-        # Attempt to get configuration parameters from the ROS parameter server
         self.detect_on = detect_on
-        #if not rospy.has_param("model_file"):
-        #    raise Exception(
-        #        "A model file must be specified as a ROS parameter")
-        #if not rospy.has_param("label_file"):
-        #    raise Exception(
-        #        "A label file must be specified as a ROS parameter")
-        #self.model_file = rospy.get_param("model_file")
-        #self.label_file = rospy.get_param("label_file")
 
         ## Frequency in hertz
         self.period = 1 / frequency

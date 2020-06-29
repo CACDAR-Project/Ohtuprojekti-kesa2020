@@ -55,13 +55,14 @@
   
 ### Ros-parameters
 
-Different models can be set up on startup via a dictionary parameter entry, for an example:
+Different detectors can be set up on startup via a 2d dictionary of dictionaries containing parameter entry, for an example:
 
-\<param name="testi" type="yaml" value="object_detect: {model_path: 'ssd_mobilenet_v1_1_metadata_1.tflite', label_path: 'mscoco_complete_labels', detect_on: True, frequency: 42}" /\>
+\<param name="init_detectors" type="yaml" value="{object_detect: {model_path: 'ssd_mobilenet_v1_1_metadata_1.tflite', label_path: 'mscoco_complete_labels', detect_on: True, frequency: 42}, QR: {detect_on: True, frequency: 5}}" /\>
 
-Which results in an object-detection node with the name "object_detect".
 
-Only model_path and label_path are required, frequency and detect_on have default values of 5 and True.
+Which results in an object-detection node with the name "object_detect" and an qr-detection with the name "QR". For every key in the outer dictionary, the dictionary in node_detection_control.py:s constructor must contain the same key with an suitable class as value.
+
+Only name, model_path and label_path are required, frequency and detect_on have default values set in the detector-classes.
 
 
 ## node_camera
