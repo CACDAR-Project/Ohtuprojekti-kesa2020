@@ -92,7 +92,6 @@ sudo docker run -it --rm \
     --name konenako \
     --env ROS_HOSTNAME=konenako \
     --env ROS_MASTER_URI=http://master:11311 \
-    -v /home/konenako:/asd \
     ohtukonenako/ohtuprojekti_kesa2020:latest bash -c "cd src/ohtu && poetry run /bin/bash -c 'source ../../devel/setup.bash && ROS_HOME=/catkin_ws/src/ohtu roslaunch /asd/lol.launch'"
 ```
 ### Mounting models
