@@ -177,19 +177,19 @@ class DetectorControlNode:
         # Dictionary that holds the classes of detectors to initialize,
         # dict key must match rosparam dictionary key. rosparam dict has
         # values for every detector, which are given to the constructor.
-        configured_detectors = {
-            'object_detect': ObjectNode,
-            'QR': QRReader
-        }
+        configured_detectors = {'object_detect': ObjectNode, 'QR': QRReader}
         self.detect_lock.acquire()
         for kp in rospy.get_param(rosparam_initial_detectors, {}).items():
             # @TODO: publish warning in warnings topic.
             if not kp[0] in configured_detectors.keys():
-                print(f'[ERROR] detector \'{kp[0]}\' not configured in node_detector_control.py, but is specified in the rosparam from launchfile')
+                print(
+                    f'[ERROR] detector \'{kp[0]}\' not configured in node_detector_control.py, but is specified in the rosparam from launchfile'
+                )
                 continue
             # Call the constructor for every detector and store the created
             # object in the dictionary.
-            self.detectors[kp[0]] = configured_detectors[kp[0]](name=kp[0], **kp[1])
+            self.detectors[kp[0]] = configured_detectors[kp[0]](name=kp[0],
+                                                                **kp[1])
         self.detect_lock.release()
 
     def load_rosparams(self):
