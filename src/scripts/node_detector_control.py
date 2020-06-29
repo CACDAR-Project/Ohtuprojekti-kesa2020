@@ -94,9 +94,8 @@ class DetectorControlNode:
 
             self.pub.publish(
                 observations(
-                    self.construct_metadata(msg, img, active_detectors, skipped_detectors), obs
-                )
-            )
+                    self.construct_metadata(msg, img, active_detectors,
+                                            skipped_detectors), obs))
         self.detect_lock.release()
 
     ## Helper function for publishing observations.
@@ -128,15 +127,14 @@ class DetectorControlNode:
             observations_list.extend(obs)
         self.detect_lock.release()
 
-        self.pub.publish(observations(
-                self.construct_metadata(msg, img, active_detectors, skipped_detectors), observations_list
-            )
-        )
+        self.pub.publish(
+            observations(
+                self.construct_metadata(msg, img, active_detectors,
+                                        skipped_detectors), observations_list))
 
     ## Helper function for constructing metadata JSON string for
     #  observations-message.
-    def construct_metadata(self, msg: image,
-                           img: np.ndarray,
+    def construct_metadata(self, msg: image, img: np.ndarray,
                            active_detectors: Iterable[str],
                            skipped_detectors: Iterable[str]) -> str:
         return json.dumps({
