@@ -28,8 +28,13 @@
 ### Topics
 
 * observations, observations from all active detectors are published here
-    * camera_id (string)
-    * image_counter (uint64), identifier for the image
+    * metadata (string), JSON-formatted string containing miscellaneous info of the observations. Current detectors use the following:
+      * camera_id, identifier for the video source
+      * image_counter, identifier for the frame
+      * image_height and image_width, image dimensions
+      * active_detectors, list of currently used detectors
+      * skipped_detectors, list of detectors that were skipped due to the rate limit
+
     * observations (observation array)
       * observation_type (string), name of the detector used, "QR" for QR
       * class_id (uint16) class_id given by Tensorflow, if observation is not of type QR

@@ -59,14 +59,11 @@ We also provide already configured Dockerfiles for both x86-64 and armv7 archite
 Running program/nodes locally requires [installing ROS](http://wiki.ros.org/ROS/Installation).
 Running program/nodes with docker requires [installing Docker](https://docs.docker.com/engine/install/).
 
-
-Instructions should work at least on Ubuntu.
-
-### Running with docker (for x86_64)
-
-`sudo docker network create rosnet`
-
-`sudo docker build -t konenako .`
+### Roscore & rosnet
+All of the other instructions require ros master to be running. You can use docker network and start up the master with the following commands, or use an already running instance of master by modifying the `ROS_MASTER_URI` environment variable to the correct address for the running core.
+```console
+sudo docker network create rosnet
+```
 ```console
 sudo docker run -it --rm \
 --net rosnet \
@@ -74,15 +71,66 @@ sudo docker run -it --rm \
 ros:melodic-ros-core \
 roscore
 ```
+
+
+### Building for Raspberry Pi
+The Docker image of master branch is automatically built for arm32v7 architecture with qemu-emulator, and deployed to the docker hub.
+If you want to build the image on your own x86_64 machine, you can use the same commands that are in the `.travis.yml`-file.
+
+To retrieve the built image from docker hub:
+``sudo docker pull ohtukonenako/ohtuprojekti_kesa2020:latest``
+
+### Running on Raspberry Pi
+
+Confirm that roscore and rosnet are set up [instructions](#roscore--rosnet)
+
+Start up the image, change ROS_MASTER_URI environment variable to correct address for the ros master, if you did not start up the master with the command previously given. 
+```
+sudo docker run -it --rm \
+    --net rosnet \
+    --privileged \
+    --name konenako \
+    --env ROS_HOSTNAME=konenako \
+    --env ROS_MASTER_URI=http://master:11311 \
+    ohtukonenako/ohtuprojekti_kesa2020:latest bash -c "cd src/ohtu && poetry run /bin/bash -c 'source ../../devel/setup.bash && ROS_HOME=/catkin_ws/src/ohtu roslaunch test.launch'"
+```
+### Mounting models
+You can mount directories to the container with `-v source:dest` flag, for example, `-v /home/konenako/models:/models` and then give model_path as `/models/model1.tflite`, to use model located in `/home/konenako/models/model1.tflite`.
+In a similar manner, your own custom .launch files can be mounted to the container, and then the container started with your launch file by modifying the path given to the roslaunch.
+
+### Using devices
+When the container is started with --privileged flag, you can use devices of the host normally. `/dev/video0` usually corresponds to the first camera of the host.
+
+### Configuring & debugging
+You must connect to the ros core, for example by running the image with only bash opened.
+```
+sudo docker run -it --rm \
+    --net rosnet \
+    --name debug \
+    --privileged \
+    --env ROS_HOSTNAME=debug \
+    --env ROS_MASTER_URI=http://master:11311 \
+    -t ohtukonenako/ohtuprojekti_kesa2020:latest bash
+```
+Now you can debug as you usually would with rostopic etc.
+
+To configure, you can use ros parameters or make your own modified version of the .launch file. To use your own mount file follow instructions in [mounting models](#mounting-models).
+
+Instructions should work at least on Ubuntu.
+
+### Running with docker (for x86_64)
+Confirm that roscore and rosnet are set up [instructions](#roscore--rosnet)
 ```console
 sudo docker run -it --rm \
     --net rosnet \
     --name asd \
+    --privileged \
     --env ROS_HOSTNAME=asd \
     --env ROS_MASTER_URI=http://master:11311 \
-    -t konenako bash -c "cd src/ohtu && poetry run /bin/bash -c 'source ../../devel/setup.bash && ROS_HOME=/catkin_ws/src/ohtu roslaunch test.launch'"
+    -v /tmp/.X11-unix:/tmp/.X11-unix \
+    -e DISPLAY=$DISPLAY \
+    -t konenako bash -c "cd src/ohtu && poetry run /bin/bash -c 'source ../../devel/setup.bash && QT_X11_NO_MITSHM=1 ROS_HOME=/catkin_ws/src/ohtu roslaunch test.launch'"
 ```
-~~or with script `./docker_runner.sh`~~ _TODO_
 
 ### Running locally (for x86_64)
 
@@ -96,7 +144,6 @@ poetry shell
 source devel/setup.bash
 ROS_HOME=`pwd` roslaunch test.launch
 ```
-~~or with script `./check_run.sh`~~ _TODO_
 
 ### Running nodes individually (for x86_64)
 
@@ -135,6 +182,7 @@ Currently available nodes, their source files and functions:
 |camera|node_camera.py|Publish a video feed to a topic| konenako/camhz konenako/video_source |
 |detector_control_node|node_detector_control.py|Run a TF model and QR detector on a video feed| konenako/combine_results konenako/testi/object_detect/detect_on konenako/testi/object_detect/frequency konenako/testi/object_detect/label_path konenako/testi/object_detect/model_path konenako/testi/object_detect/score_threshold |
 |printer|node_printer.py|Display the result feed of all nodes|  |
+|drawer|node_drawer.py|Draws observations onto images and shows them with CV2| |
 
 **For each node do the following:**
 
