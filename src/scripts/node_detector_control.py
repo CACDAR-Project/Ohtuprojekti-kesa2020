@@ -4,6 +4,7 @@ import time
 import threading
 import json
 import numpy as np
+from operator import itemgetter, attrgetter
 from typing import Iterable
 
 from detector.object_detector import ObjectNode
@@ -63,20 +64,43 @@ class DetectorControlNode:
     ## Publishes image observations by calling helper functions
     #  Observations can be published separately or combined
     def receive_img(self, msg: image):
+        # @TODO: Move sort_by and filter_by to instance variables and create ROS service
+        # for setting sorting and filtering.
+
+        # Sort by observation.msg fields. Give the field as a str, for example: 'class_id', 'label', 'score', 'observation_type'
+        sort_by=False
+        #sort_by='class_id'
+
+        # Filter detections with giving an tuple that contains the observation.msg field name as
+        # the first element and an iterable containing the elements to keep. All others will
+        # be filtered out from the observations message.
+        filter_by=False
+        #filter_by=('label', ('car', 'bus'))#(5,) # iterable containing class_ids to keep = (0, 12, ..., 22)
+        #filter_by=('class_id', (9, 26))
+        #filter_by=('class_id', (2, ))
+        #filter_by=('observation_type', ('QR', ))
+
         # Call helper function depending on boolean
         if self.combine:
-            self.publish_combined(msg)
+            self.publish_combined(msg,
+                                  sort_by=sort_by,
+                                  filter_by=filter_by)
         else:
-            self.publish_separately(msg)
+            self.publish_separately(msg,
+                                    sort_by=sort_by,
+                                    filter_by=filter_by)
 
     ## Helper function for publishing observations.
     #  Iterates trough all detectors and publishes the
     #  observations directly.
     #  Locks self.detect_lock for iterating the dict.
-    def publish_separately(self, msg: image) -> None:
+    def publish_separately(self, msg: image,
+                           sort_by=False,
+                           filter_by=False) -> None:
         img = msg_to_cv2(msg)[2]
 
         self.detect_lock.acquire()
+
         for node in self.detectors.values():
             obs = node.receive_img(img)
             # Don't publish anything if detector is turned off.
@@ -90,6 +114,12 @@ class DetectorControlNode:
                 obs = tuple()
             else:
                 skipped_detectors = tuple()
+
+                if filter_by:
+                    obs = self.filter_observations_iterable(obs, filter_by)
+                if sort_by:
+                    obs = sorted(obs, key=attrgetter(sort_by))
+
                 obs = tuple(obs)
 
             self.pub.publish(
@@ -101,7 +131,9 @@ class DetectorControlNode:
     ## Helper function for publishing observations.
     # Publishes all detections in one combined observations message.
     # Locks self.detect_lock for iterating the dict.
-    def publish_combined(self, msg: image) -> None:
+    def publish_combined(self, msg: image,
+                         sort_by=False,
+                         filter_by=False) -> None:
         img = msg_to_cv2(msg)[2]
 
         observations_list = list()
@@ -123,14 +155,28 @@ class DetectorControlNode:
                 skipped_detectors.append(node.name)
                 continue
 
+            if filter_by:
+                obs = self.filter_observations_iterable(obs, filter_by)
+
             # Combine all detections to be published into one observations message.
             observations_list.extend(obs)
         self.detect_lock.release()
+
+        if sort_by:
+            observations_list.sort(key=attrgetter(sort_by))
 
         self.pub.publish(
             observations(
                 self.construct_metadata(msg, img, active_detectors,
                                         skipped_detectors), observations_list))
+
+    def filter_observations_iterable(self, obs, filter_by):
+        if filter_by[0] == 'class_id':
+            return filter(lambda o: o.class_id in filter_by[1], obs)
+        if filter_by[0] == 'label':
+            return filter(lambda o: o.label in filter_by[1], obs)
+        if filter_by[0] == 'observation_type':
+            return filter(lambda o: o.observation_type in filter_by[1], obs)
 
     ## Helper function for constructing metadata JSON string for
     #  observations-message.
