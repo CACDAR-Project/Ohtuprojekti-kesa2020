@@ -78,9 +78,12 @@ roscore
 sudo docker run -it --rm \
     --net rosnet \
     --name asd \
+    --privileged \
     --env ROS_HOSTNAME=asd \
     --env ROS_MASTER_URI=http://master:11311 \
-    -t konenako bash -c "cd src/ohtu && poetry run /bin/bash -c 'source ../../devel/setup.bash && ROS_HOME=/catkin_ws/src/ohtu roslaunch test.launch'"
+    -v /tmp/.X11-unix:/tmp/.X11-unix \
+    -e DISPLAY=$DISPLAY \
+    -t konenako bash -c "cd src/ohtu && poetry run /bin/bash -c 'source ../../devel/setup.bash && QT_X11_NO_MITSHM=1 ROS_HOME=/catkin_ws/src/ohtu roslaunch test.launch'"
 ```
 ~~or with script `./docker_runner.sh`~~ _TODO_
 

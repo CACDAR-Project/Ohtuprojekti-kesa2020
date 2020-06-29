@@ -35,21 +35,21 @@ def receive_observations(observations):
     obs_lock.release()
 
 def draw_img(img):
-    if draw_lock.locked():
+    if not draw_lock.acquire(False):
         print("Previous image drawing still going on!")
         return
-    
-    draw_lock.acquire()
+      
 
     height = img.shape[0]
     width = img.shape[1]
+
     obs_lock.acquire()
-
     img = draw_observations(img, height, width)
-
     obs_lock.release()
+
     cv.imshow('img', img)
     cv.waitKey(1)
+
     draw_lock.release()
     
 
