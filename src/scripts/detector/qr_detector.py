@@ -11,7 +11,7 @@ import detector.zbar_detector as qr_detector
 from std_msgs.msg import String
 from konenako.msg import image, observation, observations, polygon, boundingbox, point64, warning
 from konenako.srv import new_frequency, new_frequencyResponse, toggle, toggleResponse
-from config.constants import name_det_qr, srv_frequency, srv_toggle, topic_warnings
+from config.constants import srv_frequency, srv_toggle, topic_warnings
 
 
 ## Read an image stream from a ROS topic, detect and decode QR codes from the frames and
@@ -47,22 +47,28 @@ class QRReader:
                 "QR detector freq set to period {}".format(self.period))
 
     def receive_img(self, img):
-        # Detect from this image, if not already detecting from another image and within period time constraints
-        if self.detect_on and (
-                time.time() - self.last_detect
-        ) > self.period and self.detect_lock.acquire(False):
+        # Return -1 if detection is skipped due to the rate limit.
+        if (time.time() - self.last_detect) < self.period:
+            return -1
+        # Return -2 if the detection is turned off.
+        if not self.detect_on:
+            return -2
+        # Detect from this image, if not already detecting from another image.
+        if self.detect_lock.acquire(False):
             return self.detect(img)
-        return []
 
     def get_labels(self) -> List[str]:
         return ["QR"]
 
-    def __init__(self):
-        self.name = name_det_qr
-        # Attempt to get configuration parameters from the ROS parameter server
-        self.detect_on = rospy.get_param("detect_on", True)
+    def __init__(self,
+                 name,
+                 frequency=5,
+                 detect_on=True):
+        self.name = name
+        self.detect_on = detect_on
+
         # Frequency in hertz
-        self.period = 1 / rospy.get_param("frequency", 5)
+        self.period = 1 / frequency
 
         # ROS service for changing detection frequency.
         self.frequency_service = rospy.Service(
@@ -97,8 +103,8 @@ class QRReader:
                                                                        ]),
                 polygon(
                     len(qr_code['polygon']),
-                    tuple(point64(p['x'], p['y']) for p in qr_code['polygon'])
-                ), img.shape[0], img.shape[1]), detections_res)
+                    tuple(point64(p['x'], p['y'])
+                          for p in qr_code['polygon']))), detections_res)
 
         processing_time = time.time() - self.last_detect
         if processing_time > period:

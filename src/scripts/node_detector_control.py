@@ -2,6 +2,9 @@
 
 import time
 import threading
+import json
+import numpy as np
+from typing import Iterable
 
 from detector.object_detector import ObjectNode
 from detector.qr_detector import QRReader
@@ -9,7 +12,7 @@ from konenako.msg import image, observations
 import konenako.srv as srv
 import rospy
 from helpers.image_converter import msg_to_cv2
-from config.constants import name_node_detector_control, name_node_camera, topic_images, topic_observations, srv_add_object_detector, srv_rm_object_detector, rosparam_poll_interval, rosparam_combine_results, rosparam_combine_toggle, srv_labels
+from config.constants import name_node_detector_control, name_node_camera, topic_images, topic_observations, srv_add_object_detector, srv_rm_object_detector, rosparam_poll_interval, rosparam_combine_results, rosparam_combine_toggle, srv_labels, rosparam_initial_detectors
 
 
 class DetectorControlNode:
@@ -75,36 +78,75 @@ class DetectorControlNode:
 
         self.detect_lock.acquire()
         for node in self.detectors.values():
-            obs = tuple(node.receive_img(img))
-            # Dont publish empty observations
-            if not obs: continue
+            obs = node.receive_img(img)
+            # Don't publish anything if detector is turned off.
+            if obs == -2: continue
+
+            active_detectors = tuple((node.name, ))
+
+            # Set metadata for whether the detection was skipped due to the rate limit.
+            if obs == -1:
+                skipped_detectors = tuple((node.name, ))
+                obs = tuple()
+            else:
+                skipped_detectors = tuple()
+                obs = tuple(obs)
 
             self.pub.publish(
-                observations(msg.camera_id, msg.image_counter, obs))
+                observations(
+                    self.construct_metadata(msg, img, active_detectors, skipped_detectors), obs
+                )
+            )
         self.detect_lock.release()
 
     ## Helper function for publishing observations.
-    #  Maps all detectors results before processing the observations.
-    #  and finally publishes them all in one message.
-    #  Locks self.detect_lock while mapping the detections.
+    # Publishes all detections in one combined observations message.
+    # Locks self.detect_lock for iterating the dict.
     def publish_combined(self, msg: image) -> None:
         img = msg_to_cv2(msg)[2]
 
+        observations_list = list()
+        active_detectors = list()
+        skipped_detectors = list()
+
         self.detect_lock.acquire()
-        observations_mapobj = map(lambda node: node.receive_img(img),
-                                  self.detectors.values())
+        for node in self.detectors.values():
+            obs = node.receive_img(img)
+            # Don't publish anything if detector is turned off.
+            if obs == -2: continue
+
+            # Collect all active detectors into iterable.
+            active_detectors.append(node.name)
+
+            # If the detector was skipped due to the rate limit, add detector name
+            # for metadata.
+            if obs == -1:
+                skipped_detectors.append(node.name)
+                continue
+
+            # Combine all detections to be published into one observations message.
+            observations_list.extend(obs)
         self.detect_lock.release()
 
-        # Flatten observations for combined observations message
-        obs = (obs for observations_mapobj in observations_mapobj
-               for obs in observations_mapobj)
-        obs = tuple(obs)
+        self.pub.publish(observations(
+                self.construct_metadata(msg, img, active_detectors, skipped_detectors), observations_list
+            )
+        )
 
-        # Dont publish empty observations
-        if not obs:
-            return
-
-        self.pub.publish(observations(msg.camera_id, msg.image_counter, obs))
+    ## Helper function for constructing metadata JSON string for
+    #  observations-message.
+    def construct_metadata(self, msg: image,
+                           img: np.ndarray,
+                           active_detectors: Iterable[str],
+                           skipped_detectors: Iterable[str]) -> str:
+        return json.dumps({
+            'camera_id': msg.camera_id,
+            'image_counter': msg.image_counter,
+            'image_height': img.shape[0],
+            'image_width': img.shape[1],
+            'active_detectors': active_detectors,
+            'skipped_detectors': skipped_detectors
+        })
 
     def __init__(self):
         # Locked when self.detectors is altered or iterated
@@ -131,12 +173,25 @@ class DetectorControlNode:
         ## Load all required rosparams
         self.load_rosparams()
 
-        self.detect_lock.acquire()
-        # temporary, TODO: replace with parameter based ?
-        for kp in rospy.get_param("testi", {}).items():
-            self.detectors[kp[0]] = ObjectNode(name=kp[0], **kp[1])
+        # Initialize all detectors given as rosparam with the name
+        # specified in constants.rosparam_initial_detectors.
 
-        self.detectors["QR"] = QRReader()
+        # Dictionary that holds the classes of detectors to initialize,
+        # dict key must match rosparam dictionary key. rosparam dict has
+        # values for every detector, which are given to the constructor.
+        configured_detectors = {
+            'object_detect': ObjectNode,
+            'QR': QRReader
+        }
+        self.detect_lock.acquire()
+        for kp in rospy.get_param(rosparam_initial_detectors, {}).items():
+            # @TODO: publish warning in warnings topic.
+            if not kp[0] in configured_detectors.keys():
+                print(f'[ERROR] detector \'{kp[0]}\' not configured in node_detector_control.py, but is specified in the rosparam from launchfile')
+                continue
+            # Call the constructor for every detector and store the created
+            # object in the dictionary.
+            self.detectors[kp[0]] = configured_detectors[kp[0]](name=kp[0], **kp[1])
         self.detect_lock.release()
 
     def load_rosparams(self):

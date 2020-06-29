@@ -1,3 +1,2 @@
-string camera_id
-uint64 image_counter
+string metadata
 observation[] observations
