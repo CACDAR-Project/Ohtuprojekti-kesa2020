@@ -20,11 +20,11 @@ name_node_input = 'input'
 
 # Detector names
 name_det_qr = 'QR'
-#name_det_ob = None # This is currently specified in the test.launch file.
 
 # Rosparameters
 # Sleep time between polling for parameter, in seconds
 rosparam_poll_interval = 1
+
 # Parameters
 rosparam_initial_detectors = 'init_detectors'
 rosparam_camera_hz = 'camhz'
