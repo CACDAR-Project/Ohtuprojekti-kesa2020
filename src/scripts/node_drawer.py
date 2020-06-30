@@ -30,7 +30,8 @@ def receive_img(img_message):
 
 
 def receive_observations(observations):
-    if 'object_detect' in json.loads(observations.metadata, encoding=str)["skipped_detectors"]:
+    if 'object_detect' in json.loads(observations.metadata,
+                                     encoding=str)["skipped_detectors"]:
         return
     obs_lock.acquire()
     global latest_observations
