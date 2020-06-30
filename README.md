@@ -164,7 +164,7 @@ catkin_make
 ```
 
 and set needed parameters  
-**Note:** if you have the environment variable ROS_NAMESPACE set, you must  the /konenako/ -prefix from the commands.
+**Note:** if you have the environment variable ROS_NAMESPACE set, you must omit the /konenako/ -prefix from the commands.
 
 ```console
 rosparam set konenako/camhz 30
