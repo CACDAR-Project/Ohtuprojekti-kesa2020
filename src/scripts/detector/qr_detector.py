@@ -11,7 +11,7 @@ import detector.zbar_detector as qr_detector
 from std_msgs.msg import String
 from konenako.msg import image, observation, observations, polygon, boundingbox, point64, warning
 from konenako.srv import new_frequency, new_frequencyResponse, toggle, toggleResponse
-from config.constants import srv_frequency, srv_toggle, topic_warnings
+from config.constants import srv_frequency, srv_toggle, topic_warnings, qr_class_id, qr_det_score
 
 
 ## Read an image stream from a ROS topic, detect and decode QR codes from the frames and
@@ -94,7 +94,11 @@ class QRReader:
         detections_res = qr_detector.detect(img)
         observations_mapobj = map(
             lambda qr_code: observation(
-                self.name, (1 << 16) - 1, str(qr_code['data']), 1,
+                self.name,
+                qr_class_id,
+                self.name,
+                str(qr_code['data']),
+                qr_det_score,
                 boundingbox(qr_code['bbox']['top'], qr_code['bbox']['right'],
                             qr_code['bbox']['bottom'], qr_code['bbox']['left'
                                                                        ]),

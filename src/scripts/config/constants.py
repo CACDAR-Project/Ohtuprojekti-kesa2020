@@ -20,11 +20,11 @@ name_node_input = 'input'
 
 # Detector names
 name_det_qr = 'QR'
-#name_det_ob = None # This is currently specified in the test.launch file.
 
 # Rosparameters
 # Sleep time between polling for parameter, in seconds
 rosparam_poll_interval = 1
+
 # Parameters
 rosparam_initial_detectors = 'init_detectors'
 rosparam_camera_hz = 'camhz'
@@ -53,3 +53,9 @@ srv_add_object_detector = 'add_object_detector'
 srv_rm_object_detector = 'remove_object_detector'
 srv_score_treshold = 'score_treshold'
 srv_labels = 'labels'
+srv_sort_by = 'sort_by'
+srv_filter_by = 'filter_by'
+
+# Misc
+qr_class_id = (1 << 16) - 1 #uint16 max value
+qr_det_score = 1

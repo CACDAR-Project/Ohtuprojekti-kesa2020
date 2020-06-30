@@ -4,6 +4,7 @@ import time
 import threading
 import json
 import numpy as np
+from operator import attrgetter
 from typing import Iterable
 
 from detector.object_detector import ObjectNode
@@ -12,7 +13,7 @@ from konenako.msg import image, observations
 import konenako.srv as srv
 import rospy
 from helpers.image_converter import msg_to_cv2
-from config.constants import name_node_detector_control, name_node_camera, topic_images, topic_observations, srv_add_object_detector, srv_rm_object_detector, rosparam_poll_interval, rosparam_combine_results, rosparam_combine_toggle, srv_labels, rosparam_initial_detectors
+from config.constants import name_node_detector_control, name_node_camera, topic_images, topic_observations, srv_add_object_detector, srv_rm_object_detector, rosparam_poll_interval, rosparam_combine_results, rosparam_combine_toggle, srv_labels, rosparam_initial_detectors, srv_sort_by, srv_filter_by
 
 
 class DetectorControlNode:
@@ -60,9 +61,49 @@ class DetectorControlNode:
         self.detect_lock.release()
         return srv.add_object_detectorResponse()
 
+    def handle_sort_by_ros_srv(self, msg):
+        if not msg.enabled:
+            self.sort_by = False
+            return srv.sort_byResponse('Sorting detections disabled')
+        if not msg.sort_by:
+            return srv.sort_byResponse('ERROR: empty string to sort by passed as ROS message to {}'.format(rospy.get_name()))
+
+        self.sort_by = msg.sort_by
+        return srv.sort_byResponse('Sorting by: {}'.format(self.sort_by))
+
+    def handle_filter_by_ros_srv(self, msg):
+        if not msg.enabled:
+            self.filter_by = False
+            return srv.filter_byResponse('Filtering detections disabled')
+        if not msg.filter_by_field:
+            return srv.filter_byResponse('ERROR: empty filter_by_field passed as ROS message to {}'.format(rospy.get_name()))
+
+        # Handle special fields as cornercases to be able to
+        # use the same ROS-message for every field.
+        # class_id must be cast to int
+        if msg.filter_by_field == 'class_id':
+            self.filter_by = (msg.filter_by_field, [int(class_id) for class_id in msg.include])
+        else:
+            self.filter_by = (msg.filter_by_field, msg.include)
+
+        return srv.filter_byResponse('Filtering by: {} on field {}'.format(self.filter_by[1], self.filter_by[0]))
+
     ## Publishes image observations by calling helper functions
     #  Observations can be published separately or combined
     def receive_img(self, msg: image):
+        # Sort by observation.msg fields. Give the field as a str, for example: 'class_id', 'label', 'score', 'observation_type'
+        #sort_by=False
+        #sort_by='class_id'
+
+        # Filter detections with giving an tuple that contains the observation.msg field name as
+        # the first element and an iterable containing the elements to keep. All others will
+        # be filtered out from the observations message.
+        #filter_by=False
+        #filter_by=('label', ('car', 'bus'))
+        #filter_by=('class_id', (9, 26))
+        #filter_by=('class_id', (2, ))
+        #filter_by=('observation_type', ('QR', ))
+
         # Call helper function depending on boolean
         if self.combine:
             self.publish_combined(msg)
@@ -90,6 +131,12 @@ class DetectorControlNode:
                 obs = tuple()
             else:
                 skipped_detectors = tuple()
+
+                if self.filter_by:
+                    obs = self.filter_observations_iterable(obs, self.filter_by)
+                if self.sort_by:
+                    obs = sorted(obs, key=attrgetter(self.sort_by))
+
                 obs = tuple(obs)
 
             self.pub.publish(
@@ -123,14 +170,28 @@ class DetectorControlNode:
                 skipped_detectors.append(node.name)
                 continue
 
+            if self.filter_by:
+                obs = self.filter_observations_iterable(obs, self.filter_by)
+
             # Combine all detections to be published into one observations message.
             observations_list.extend(obs)
         self.detect_lock.release()
+
+        if self.sort_by:
+            observations_list.sort(key=attrgetter(self.sort_by))
 
         self.pub.publish(
             observations(
                 self.construct_metadata(msg, img, active_detectors,
                                         skipped_detectors), observations_list))
+
+    def filter_observations_iterable(self, obs, filter_by):
+        if filter_by[0] == 'class_id':
+            return filter(lambda o: o.class_id in filter_by[1], obs)
+        if filter_by[0] == 'label':
+            return filter(lambda o: o.label in filter_by[1], obs)
+        if filter_by[0] == 'observation_type':
+            return filter(lambda o: o.observation_type in filter_by[1], obs)
 
     ## Helper function for constructing metadata JSON string for
     #  observations-message.
@@ -150,6 +211,12 @@ class DetectorControlNode:
         # Locked when self.detectors is altered or iterated
         self.detect_lock = threading.Lock()
 
+        # Dont sort or filter results by default.
+        # TFlite detections are by default sorted by the score
+        # from tensorflow_detector module
+        self.sort_by = False
+        self.filter_by = False
+
         ## Topic with images to analyze
         self.input_sub = rospy.Subscriber(
             '{}/{}'.format(name_node_camera, topic_images), image,
@@ -161,12 +228,19 @@ class DetectorControlNode:
                                    observations,
                                    queue_size=50)
 
+        ## Load services
         rospy.Service(
             '{}/{}'.format(rospy.get_name(), srv_add_object_detector),
             srv.add_object_detector, self.add_object_detector)
 
         rospy.Service('{}/{}'.format(rospy.get_name(), srv_rm_object_detector),
                       srv.remove_object_detector, self.remove_object_detector)
+
+        rospy.Service('{}/{}'.format(rospy.get_name(), srv_filter_by),
+                      srv.filter_by, self.handle_filter_by_ros_srv)
+
+        rospy.Service('{}/{}'.format(rospy.get_name(), srv_sort_by),
+                      srv.sort_by, self.handle_sort_by_ros_srv)
 
         ## Load all required rosparams
         self.load_rosparams()
