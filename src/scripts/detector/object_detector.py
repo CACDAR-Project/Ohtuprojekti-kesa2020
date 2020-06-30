@@ -123,10 +123,7 @@ class ObjectNode:
         observations_res = self.detector.detect(img)
         observations_mapobj = map(
             lambda detection: observation(
-                self.name,
-                detection['class_id'],
-                detection['label'],
-                '',
+                self.name, detection['class_id'], detection['label'], '',
                 detection['score'],
                 boundingbox(detection['bbox']['top'], detection['bbox'][
                     'right'], detection['bbox']['bottom'], detection['bbox'][

@@ -66,7 +66,9 @@ class DetectorControlNode:
             self.sort_by = False
             return srv.sort_byResponse('Sorting detections disabled')
         if not msg.sort_by:
-            return srv.sort_byResponse('ERROR: empty string to sort by passed as ROS message to {}'.format(rospy.get_name()))
+            return srv.sort_byResponse(
+                'ERROR: empty string to sort by passed as ROS message to {}'.
+                format(rospy.get_name()))
 
         self.sort_by = msg.sort_by
         return srv.sort_byResponse('Sorting by: {}'.format(self.sort_by))
@@ -76,17 +78,21 @@ class DetectorControlNode:
             self.filter_by = False
             return srv.filter_byResponse('Filtering detections disabled')
         if not msg.filter_by_field:
-            return srv.filter_byResponse('ERROR: empty filter_by_field passed as ROS message to {}'.format(rospy.get_name()))
+            return srv.filter_byResponse(
+                'ERROR: empty filter_by_field passed as ROS message to {}'.
+                format(rospy.get_name()))
 
         # Handle special fields as cornercases to be able to
         # use the same ROS-message for every field.
         # class_id must be cast to int
         if msg.filter_by_field == 'class_id':
-            self.filter_by = (msg.filter_by_field, [int(class_id) for class_id in msg.include])
+            self.filter_by = (msg.filter_by_field,
+                              [int(class_id) for class_id in msg.include])
         else:
             self.filter_by = (msg.filter_by_field, msg.include)
 
-        return srv.filter_byResponse('Filtering by: {} on field {}'.format(self.filter_by[1], self.filter_by[0]))
+        return srv.filter_byResponse('Filtering by: {} on field {}'.format(
+            self.filter_by[1], self.filter_by[0]))
 
     ## Publishes image observations by calling helper functions
     #  Observations can be published separately or combined
@@ -133,7 +139,8 @@ class DetectorControlNode:
                 skipped_detectors = tuple()
 
                 if self.filter_by:
-                    obs = self.filter_observations_iterable(obs, self.filter_by)
+                    obs = self.filter_observations_iterable(
+                        obs, self.filter_by)
                 if self.sort_by:
                     obs = sorted(obs, key=attrgetter(self.sort_by))
 
