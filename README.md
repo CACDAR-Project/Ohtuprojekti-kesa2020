@@ -164,16 +164,25 @@ catkin_make
 ```
 
 and set needed parameters
+Note: if you have the environment variable ROS_NAMESPACE set, you must  the /konenako/ -prefix from the commands.
 
 ```console
 rosparam set konenako/camhz 30
 rosparam set konenako/combine_results True
-rosparam set konenako/testi/object_detect/detect_on True
-rosparam set konenako/testi/object_detect/frequency 42
-rosparam set konenako/testi/object_detect/label_path resources/tflite_models/mscoco_complete_labels
-rosparam set konenako/testi/object_detect/model_path resources/tflite_models/ssd_mobilenet_v1_1_metadata_1.tflite
-rosparam set konenako/testi/object_detect/score_threshold 0.3
-rosparam set konenako/video_source resources/videos/test.mp4
+rosparam set konenako/video_source <resources/videos/test.mp4 | /dev/video0>
+```
+
+node_detector_control needs parameters for every detector to be run
+
+```console
+rosparam set konenako/init_detectors/object_detect/detect_on True
+rosparam set konenako/init_detectors/object_detect/frequency 42
+rosparam set konenako/init_detectors/object_detect/label_path resources/tflite_models/mscoco_complete_labels
+rosparam set konenako/init_detectors/object_detect/model_path resources/tflite_models/ssd_mobilenet_v1_1_metadata_1.tflite
+rosparam set konenako/init_detectors/object_detect/score_threshold 0.3
+
+rosparam set konenako/init_detectors/QR/detect_on True
+rosparam set konenako/init_detectors/QR/frequency 5
 ```
 
 <a name="nodes"></a>
