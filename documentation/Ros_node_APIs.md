@@ -45,9 +45,10 @@
 
     * observations (observation array)
       * observation_type (string), name of the detector used, "QR" for QR
-      * class_id (uint16) class_id given by Tensorflow, if observation is not of type QR
-      * label (string) mapped to label file with class_id, OR data of a QR code
-      * score (float64) confidence score between 0.0-1.0 from Tensorflow 
+      * class_id (uint16) class_id given by Tensorflow, 65535 for QR-detections
+      * label (string) mapped to label file with class_id, QR-detector sets the name of the detector (currently QR)
+      * score (float64) confidence score between 0.0-1.0 from Tensorflow or 1 from QR-detector
+      * data (string) data from observations, currently only QR-detector sets the data read from QR-code, Tensorflow leaves empty
       * bbox (bbox), bounds of rectangle around the detected object/QR code. Values between 0.0-1.0, offset from top left corner
         * top (float64)
         * right (float64)

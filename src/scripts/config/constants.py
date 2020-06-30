@@ -55,3 +55,7 @@ srv_score_treshold = 'score_treshold'
 srv_labels = 'labels'
 srv_sort_by = 'sort_by'
 srv_filter_by = 'filter_by'
+
+# Misc
+qr_class_id = (1 << 16) - 1 #uint16 max value
+qr_det_score = 1
