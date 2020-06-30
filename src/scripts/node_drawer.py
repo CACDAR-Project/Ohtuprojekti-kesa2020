@@ -2,6 +2,7 @@
 import cv2 as cv
 import rospy
 import threading
+import json
 from konenako.msg import image, observations
 from helpers.image_converter import msg_to_cv2
 from config.constants import name_node_camera, topic_images, name_node_detector_control, topic_observations
@@ -29,9 +30,12 @@ def receive_img(img_message):
 
 
 def receive_observations(observations):
+    if 'object_detect' in json.loads(observations.metadata, encoding=str)["skipped_detectors"]:
+        return
     obs_lock.acquire()
     global latest_observations
     latest_observations = observations
+
     obs_lock.release()
 
 
