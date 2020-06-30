@@ -10,6 +10,14 @@
 * detector_control_node/remove_object_detector
   * Used to remove models added with add_object_detector
     * name (string), same that was given with add_object_detector
+* detector_control_node/filter_by
+  * Used for filtering observations. Default value is false.
+    * enabled (bool) Enable or disable filtering
+    * filter_by_field (string) The ROS msg field to filter by (class_id, label, observation_type)
+    * include (string[]) Array containing the values as strings to keep. All others will be filtered out
+* detector_control_node/sort_by
+  * Used to sort by field in ascending order. Default is false and then detections are sorted by TFlite detector in descending order.
+    * sort_by (string) The name of the ROS msg field to sort by.
 * combine_toggle
   * Toggle the combining of observations from all detectors to a single Ros message
     * state (bool)
